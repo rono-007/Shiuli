@@ -11,7 +11,6 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isMuted, setIsMuted] = useState(true);
-  const [activeStationIndex, setActiveStationIndex] = useState(3); // Default to College Square
   
   const audioCtxRef = useRef<AudioContext | null>(null);
   const soundIntervalRef = useRef<number | null>(null);
@@ -163,13 +162,6 @@ function App() {
     };
   }, []);
 
-  const handleStationSelect = (index: number, anchorId: string) => {
-    setActiveStationIndex(index);
-    const element = document.getElementById(anchorId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
 
   return (
     <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink">

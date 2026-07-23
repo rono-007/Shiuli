@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, MapPin } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface HeroSectionProps {
   onSearch: (query: string) => void;
@@ -8,7 +8,7 @@ interface HeroSectionProps {
   onSelectZone: (zone: 'north' | 'central' | 'south') => void;
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({ onFilterChange, onSelectZone }) => {
+const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const zones = [
@@ -17,12 +17,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onFilterChange, onSelectZone 
     { id: 'south', serial: 'SO-1433-C', name: 'দক্ষিণ কলকাতা', subtitle: 'South Calcutta Tour', desc: 'ম্যাডক্স স্কোয়ার, সুরুচি সঙ্ঘ, ত্রিধারা (শীঘ্রই আসছে)', active: false, stampColor: 'bg-zinc-400' }
   ];
 
-  const scrollToJourney = () => {
-    const target = document.getElementById('today-journey');
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
 
   return (
     <div className="relative w-full h-[100svh] bg-night overflow-hidden font-serif">

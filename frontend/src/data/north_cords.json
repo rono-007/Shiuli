@@ -1,0 +1,498 @@
+[
+  {
+    "name": "Ahiritola Jubak Brinda",
+    "api_name": "Ahiritola Jubak Brinda",
+    "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+    "lat": 22.5945774,
+    "lon": 88.3605889,
+    "status": "found"
+  },
+  {
+    "name": "Ahiritola Sarbojanin",
+    "api_name": "Ahiritola Sarbojonin Durgotsab Samity",
+    "address": "haro dhol lean, 22, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+    "lat": 22.5948383,
+    "lon": 88.3571698,
+    "status": "found"
+  },
+  {
+    "name": "Arjunpur Amra Sabai Club",
+    "api_name": "Arjunpur Amra Sabai Club",
+    "address": "NC-15, Arjunpur Rd, Taltala, K.B.Sarani, Kamardanga, Kolkata, West Bengal 700080, India",
+    "lat": 22.624292,
+    "lon": 88.4245361,
+    "status": "found"
+  },
+  {
+    "name": "Ashwini Nagar Bandhu Mahal",
+    "api_name": "Aswininagar Bandhumahal Club, Baguiati",
+    "address": "JC6M+253, Ashwini Nagar, Baguiati, Kolkata, West Bengal 700159, India",
+    "lat": 22.6100164,
+    "lon": 88.4329278,
+    "status": "found"
+  },
+  {
+    "name": "Aurobinda Setu Sarbojanin",
+    "api_name": "AUROBINDO SETU SARBOJANIN DURGAPUJA SAMITI",
+    "address": "9/1/5, Canal E Rd, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+    "lat": 22.594482499999998,
+    "lon": 88.3805509,
+    "status": "found"
+  },
+  {
+    "name": "Baghbazar Sarbojanin Durgotsav & Exhibition",
+    "api_name": "Baghbazar Sarbojanin Durgotsav & Exhibition",
+    "address": "78, Bagbazar St, Baghbazar, Kolkata, West Bengal 700003, India",
+    "lat": 22.6044897,
+    "lon": 88.36561499999999,
+    "status": "found"
+  },
+  {
+    "name": "Beadon Street Sarbojanin",
+    "api_name": "Beadon Street Sarbojanin Durgotsav",
+    "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+    "lat": 22.5892707,
+    "lon": 88.3676133,
+    "status": "found"
+  },
+  {
+    "name": "Belgachia Sadharan Durgatsab",
+    "api_name": "Belgachia Sadharon Durgotsav",
+    "address": "J95M+33X, Tala, Belgachia, Kolkata, West Bengal 700037, India",
+    "lat": 22.607731899999997,
+    "lon": 88.3827393,
+    "status": "found"
+  },
+  {
+    "name": "Bidhan Sarani Atlas Club",
+    "api_name": "Bidhan Sarani Atlas Club",
+    "address": "101, Bidhan Sarani Rd, Fariapukur, Shyam Bazar, Kolkata, West Bengal 700004, India",
+    "lat": 22.599686,
+    "lon": 88.37291809999999,
+    "status": "found"
+  },
+  {
+    "name": "Brindaban Matri Mandir",
+    "api_name": "Brindabon Matri Mandir",
+    "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+    "lat": 22.582717199999998,
+    "lon": 88.3729053,
+    "status": "found"
+  },
+  {
+    "name": "Dum Dum Park Bharat Chakra",
+    "api_name": "Dum Dum Park Bharat Chakra",
+    "address": "Tank No. 2, Dum Dum Park, South Dumdum, West Bengal 700055, India",
+    "lat": 22.610821299999998,
+    "lon": 88.4146001,
+    "status": "found"
+  },
+  {
+    "name": "Dum Dum Park Sarbojanin",
+    "api_name": "Dum Dum Park Sarbojanin Durga Puja Samity",
+    "address": "225/1, Dum Dum Park, South Dumdum, West Bengal 700055, India",
+    "lat": 22.6094363,
+    "lon": 88.4164052,
+    "status": "found"
+  },
+  {
+    "name": "Dum Dum Park Tarun Sangha",
+    "api_name": "Dum Dum Park Tarun Sangha Club",
+    "address": "496, Dum Dum Park, Kolkata, West Bengal 700055, India",
+    "lat": 22.610051,
+    "lon": 88.41148799999999,
+    "status": "found"
+  },
+  {
+    "name": "Dum Dum Park Yubak Brinda",
+    "api_name": "Dum Dum Park Yubak Brinda Durga Puja",
+    "address": "JC49+54G, Dum Dum Park, South Dumdum, West Bengal 700055, India",
+    "lat": 22.6054302,
+    "lon": 88.41781879999999,
+    "status": "found"
+  },
+  {
+    "name": "Dum Dum Tarun Dal",
+    "api_name": "Dum Dum Park Sarbojanin Durga Puja Samity",
+    "address": "225/1, Dum Dum Park, South Dumdum, West Bengal 700055, India",
+    "lat": 22.6094363,
+    "lon": 88.4164052,
+    "status": "found"
+  },
+  {
+    "name": "Golaghata Sammilani",
+    "api_name": "Golaghata Sammelani Club",
+    "address": "2, Golaghata Rd, Sreebhumi, Lake Town, South Dumdum, West Bengal 700048, India",
+    "lat": 22.597338999999998,
+    "lon": 88.3991458,
+    "status": "found"
+  },
+  {
+    "name": "Gouriberia",
+    "api_name": "Gauri Bari Sarbojanin Durga Puja Pandal",
+    "address": "700067, 4, Gouri Bari Ln, Manicktala, Gouri Bari, Kolkata, West Bengal 700004, India",
+    "lat": 22.594448099999997,
+    "lon": 88.37908569999999,
+    "status": "found"
+  },
+  {
+    "name": "Hatibagan Sarbojanin",
+    "api_name": "Hatibagan Sarbojonin",
+    "address": "134, Sri Aurobinda Sarani, Principal Khudiram Bose Rd, Sovabazar, Hati Bagan, Kolkata, West Bengal 700006, India",
+    "lat": 22.5943863,
+    "lon": 88.3720004,
+    "status": "found"
+  },
+  {
+    "name": "Jagat Mukherjee Park",
+    "api_name": "Jagat Mukherjee Park",
+    "address": "1, Jatindra Mohan Ave, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+    "lat": 22.5994903,
+    "lon": 88.3660388,
+    "status": "found"
+  },
+  {
+    "name": "Kankurgachi Jubak Brinda",
+    "api_name": "Kankurgachi Jubak Brinda",
+    "address": "H9HQ+P6X, Phoolbagan, Kankurgachi, Kolkata, West Bengal 700054, India",
+    "lat": 22.579356800000003,
+    "lon": 88.3881073,
+    "status": "found"
+  },
+  {
+    "name": "Karbagan Sarbojanin",
+    "api_name": "Karbagan Sarbojanin Durgotsab Committee",
+    "address": "17/1/H/25, Karbagan Durga puja, Ultadanga Main Rd, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+    "lat": 22.595240999999998,
+    "lon": 88.3842775,
+    "status": "found"
+  },
+  {
+    "name": "Kashi Bose Lane",
+    "api_name": "Kashi Bose Lane Durga Puja Committee",
+    "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+    "lat": 22.590897899999998,
+    "lon": 88.36891740000002,
+    "status": "found"
+  },
+  {
+    "name": "Kestopur Prafullakanan Adhibasibrinda",
+    "api_name": "Kestopur durga puja",
+    "address": "AB-69, Prafulla Kanan, Narayantala, Kolkata, West Bengal 700101, India",
+    "lat": 22.604006,
+    "lon": 88.422618,
+    "status": "found"
+  },
+  {
+    "name": "Kestopur Prafullakanan Balak Brinda Purba",
+    "api_name": "Prafulla Kanan Balak Brinda Club (East)",
+    "address": "AC 62, Prafulla Kanan Rd, Rabindrapally, Kestopur, Kolkata, West Bengal 700101, India",
+    "lat": 22.6020024,
+    "lon": 88.42484999999999,
+    "status": "found"
+  },
+  {
+    "name": "Kumartuli Park",
+    "api_name": "Kumartuli Park",
+    "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+    "lat": 22.598982700000004,
+    "lon": 88.36146629999999,
+    "status": "found"
+  },
+  {
+    "name": "Kumartuli Sarbojanin",
+    "api_name": "Kumartuli Park",
+    "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+    "lat": 22.598982700000004,
+    "lon": 88.36146629999999,
+    "status": "found"
+  },
+  {
+    "name": "Laketown Adhibasi Brinda",
+    "api_name": "Lake Town Adhibasi Brinda",
+    "address": "Children's Park, Lake Town Rd, Block A, Lake Town, South Dumdum, West Bengal 700089, India",
+    "lat": 22.6044508,
+    "lon": 88.4039701,
+    "status": "found"
+  },
+  {
+    "name": "Laketown Netaji Sporting Club",
+    "api_name": "Netaji Sporting Club Durga Puja",
+    "address": "Block A, Lake Town, South Dumdum, West Bengal 700089, India",
+    "lat": 22.6083271,
+    "lon": 88.4003968,
+    "status": "found"
+  },
+  {
+    "name": "Lalabagan Nabankur",
+    "api_name": "Lalabagan Nabankur Durga Puja Pandal entrance gate",
+    "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+    "lat": 22.5883732,
+    "lon": 88.3767567,
+    "status": "found"
+  },
+  {
+    "name": "Manasbag Sarbojanin",
+    "api_name": "MANASBAG SARBOJONIN DURGOTSAV",
+    "address": "sporting club & library, Manasbag, Belgharia, Landmark B.T Rd, near 11 no. bus stand, Manasbag, Belghoria, Kolkata, West Bengal 700056, India",
+    "lat": 22.6663891,
+    "lon": 88.3783907,
+    "status": "found"
+  },
+  {
+    "name": "Masterda Smriti Sangha",
+    "api_name": "Master Da Smriti Sangha Club",
+    "address": "AB-61/1, Prafulla Kanan, Kestopur, Kolkata, West Bengal 700101, India",
+    "lat": 22.603813700000003,
+    "lon": 88.4225761,
+    "status": "found"
+  },
+  {
+    "name": "Mitali Kankurgachi",
+    "api_name": "Mitali Sangha Durga Puja Pandal",
+    "address": "179A, 1A, Maniktala Main Rd, Kadapara, Sector 1, Kankurgachi, Kolkata, West Bengal 700054, India",
+    "lat": 22.579987,
+    "lon": 88.3942125,
+    "status": "found"
+  },
+  {
+    "name": "Nabinpally Hatibagan",
+    "api_name": "Hatibagan Nabinpally Durga Puja Committee",
+    "address": "9/1, Nalin Sarkar Street Sovabazar, 16, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+    "lat": 22.595902799999998,
+    "lon": 88.3734176,
+    "status": "found"
+  },
+  {
+    "name": "Nalin Sarkar Street Sarbojanin Durgotsab",
+    "api_name": "Nalin sarkar street durga puja",
+    "address": "H9WF+577, Nalin Sarkar St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+    "lat": 22.59542,
+    "lon": 88.37318069999999,
+    "status": "found"
+  },
+  {
+    "name": "Naopara Dadabhai Sangha",
+    "api_name": "Nawpara Dada Bhai Sangha",
+    "address": "79, AK Mukherjee Rd, Noapara, Palpara, Baranagar, West Bengal 700090, India",
+    "lat": 22.6416696,
+    "lon": 88.3886567,
+    "status": "found"
+  },
+  {
+    "name": "Netaji Colony Lowland",
+    "api_name": "Baranagar Netaji Colony Sarbojanin Durga Puja Highland",
+    "address": "106, Netaji Colony, Joyshree, Baranagar, West Bengal 700090, India",
+    "lat": 22.636647,
+    "lon": 88.379064,
+    "status": "found"
+  },
+  {
+    "name": "North Tridhara Sarbojanin",
+    "api_name": "North Tridhara Durga Puja",
+    "address": "H9WF+9QF, 158N, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+    "lat": 22.5958155,
+    "lon": 88.3745568,
+    "status": "found"
+  },
+  {
+    "name": "Pathuriaghata Pancher Pally",
+    "api_name": "Pathuriaghata Pancher Pally Sarbojonin Durgotsab Committee",
+    "address": "H9Q5+C3R, Malapara, Santoshpur, Jorabagan, Kolkata, West Bengal 700006, India",
+    "lat": 22.588606799999997,
+    "lon": 88.35763170000001,
+    "status": "found"
+  },
+  {
+    "name": "Patipukur Adi Sarbojanin",
+    "api_name": "Patipukur Adi Sarbojonin Durga Puja Committee",
+    "address": "145, 1, Swamiji Sarani Rd, Kalindi Housing Estate, Goalabagan, South Dumdum, West Bengal 700048, India",
+    "lat": 22.6110099,
+    "lon": 88.3978877,
+    "status": "found"
+  },
+  {
+    "name": "Railpukur United Club",
+    "api_name": "Railpukur United club",
+    "address": "DA-4, Rail Pukur Rd, Deshbandhu Nagar, Saha Para, Desh Bandhu Nagar, Baguiati, Kolkata, West Bengal 700059, India",
+    "lat": 22.6124668,
+    "lon": 88.4274064,
+    "status": "found"
+  },
+  {
+    "name": "Sammilita Lalabagan Sarbojanin",
+    "api_name": "Lalabagan Nabankur Durga Puja Pandal entrance gate",
+    "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+    "lat": 22.5883732,
+    "lon": 88.3767567,
+    "status": "found"
+  },
+  {
+    "name": "Sarkar Bagan Sammilita Sangha",
+    "api_name": "Sarkar Bagan Sammilita Sangha",
+    "address": "3/2, Nilmoni Mitra Row, Tala, Bidhan Sarani, Kolkata, West Bengal 700002, India",
+    "lat": 22.6062589,
+    "lon": 88.37729569999999,
+    "status": "found"
+  },
+  {
+    "name": "Shastribagan Sporting Club",
+    "api_name": "Shastri Bagan Sporting Club",
+    "address": "DC 2/13, Shastri Bagan, Joramandir, Baguiati, Kolkata, West Bengal 700059, India",
+    "lat": 22.612952999999997,
+    "lon": 88.4292806,
+    "status": "found"
+  },
+  {
+    "name": "Shyambazar Pally Sangha",
+    "api_name": "Shyambazar Palli Sangha",
+    "address": "48, Shyam Bazar St, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+    "lat": 22.6000564,
+    "lon": 88.3693864,
+    "status": "found"
+  },
+  {
+    "name": "Sikdar Bagan",
+    "api_name": "Sikdar Bagan Durga Puja",
+    "address": "H9WC+MR3, Sikdar Bagan St, Shyambazar, 27, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+    "lat": 22.596625,
+    "lon": 88.3721388,
+    "status": "found"
+  },
+  {
+    "name": "Sovabazar Beniatola",
+    "api_name": "Sovabazar Beniatola Durga Puja",
+    "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+    "lat": 22.5958452,
+    "lon": 88.3611126,
+    "status": "found"
+  },
+  {
+    "name": "Sree Bhumi Sporting Club",
+    "api_name": "Sree Bhumi Sporting Club",
+    "address": "HCX3+H53, Canal St, near P.S, Sreebhumi, Lake Town, South Dumdum, West Bengal 700048, India",
+    "lat": 22.5988987,
+    "lon": 88.4029328,
+    "status": "found"
+  },
+  {
+    "name": "Swapnar Bagan Yubak Brinda",
+    "api_name": "Swapnar Bagan Yubak Brinda Durga Puja",
+    "address": "175/D, near Ghosh Brothers, Kadapara, Phoolbagan, Kankurgachi, Kolkata, West Bengal 700054, India",
+    "lat": 22.5794453,
+    "lon": 88.3959577,
+    "status": "found"
+  },
+  {
+    "name": "Tala Barowari",
+    "api_name": "Tala Barowari Durgotsob",
+    "address": "6-1, NG Chatterjee Ln, Tala, Bidhan Sarani, Paikpara, Kolkata, West Bengal 700002, India",
+    "lat": 22.6067969,
+    "lon": 88.3762168,
+    "status": "found"
+  },
+  {
+    "name": "Tala Park Prattay",
+    "api_name": "Tala Prattoy Durga Puja Art",
+    "address": "J95M+G26, Tala Park Rd, Tala, Kolkata, West Bengal 700037, India",
+    "lat": 22.608791099999998,
+    "lon": 88.382502,
+    "status": "found"
+  },
+  {
+    "name": "Tala Ponero Pally",
+    "api_name": "Tala Ponero (15) Pally Durga Puja",
+    "address": "J96M+XWR, Gangulipara, Paikpara, Kolkata, West Bengal 700037, India",
+    "lat": 22.612476299999997,
+    "lon": 88.3847732,
+    "status": "found"
+  },
+  {
+    "name": "Telengabagan",
+    "api_name": "TELENGABAGAN",
+    "address": "35, Adhar Chandra Das Ln, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+    "lat": 22.5962942,
+    "lon": 88.3869813,
+    "status": "found"
+  },
+  {
+    "name": "Ultadanga Bidhan Sangha",
+    "api_name": "Bidhan Sangha durga puja club",
+    "address": "National Academy of Customs Indirect Taxes & Narcotics (NACIN, H9VM+FW9, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+    "lat": 22.5936517,
+    "lon": 88.38486449999999,
+    "status": "found"
+  },
+  {
+    "name": "Ultadanga Jagarani Sangha",
+    "api_name": "Ultadanga Jagarani Sangha",
+    "address": "16/1, Biplabi Barin Ghosh Sarani, Murari Pukur, Ultadanga, Kolkata, West Bengal 700067, India",
+    "lat": 22.5932927,
+    "lon": 88.3849094,
+    "status": "found"
+  },
+  {
+    "name": "Ultadanga Pallysree",
+    "api_name": "Pallysree Durga Puja Ground",
+    "address": "1/1P, Jaharlal Dutta Ln, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+    "lat": 22.5957731,
+    "lon": 88.38468820000001,
+    "status": "found"
+  },
+  {
+    "name": "Ultadanga Yuba Brinda",
+    "api_name": "Yuba Brinda DurgaPuja Mandop",
+    "address": "H9WJ+9W8, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+    "lat": 22.595916,
+    "lon": 88.3823154,
+    "status": "found"
+  },
+  {
+    "name": "Simla Byayam Samity",
+    "api_name": "Simla Byayam Samity",
+    "address": "9B, Singhee Lane, P O, Abhedananda Rd, Simla, Machuabazar, Kolkata, West Bengal 700006, India",
+    "lat": 22.5851371,
+    "lon": 88.3645461,
+    "status": "found"
+  },
+  {
+    "name": "Chorebagan Sarbojanin",
+    "api_name": "CHOREBAGAN SARBOJANIN DURGOTSAB SAMITY",
+    "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+    "lat": 22.5834284,
+    "lon": 88.3635965,
+    "status": "found"
+  },
+  {
+    "name": "Manicktala Chaltabagan Lohapatty",
+    "api_name": "Maniktala chaltabagan lohapatty",
+    "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+    "lat": 22.5848905,
+    "lon": 88.3721509,
+    "status": "found"
+  },
+  {
+    "name": "Sovabazar Rajbari",
+    "api_name": "Sovabazar Rajbari",
+    "address": "Raja Nabakrishna St, Raja Nabakrishna Street, Sovabazar, Kolkata, West Bengal 700005, India",
+    "lat": 22.5962644,
+    "lon": 88.3673797,
+    "status": "found"
+  },
+  {
+    "name": "Girish Park Sarbojanin",
+    "api_name": "CHOREBAGAN SARBOJANIN DURGOTSAB SAMITY",
+    "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+    "lat": 22.5834284,
+    "lon": 88.3635965,
+    "status": "found"
+  },
+  {
+    "name": "Vivekananda Sporting Club",
+    "api_name": "Vivekananda Sporting Club",
+    "address": "77/1, Simla St, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700006, India",
+    "lat": 22.584103799999998,
+    "lon": 88.3664881,
+    "status": "found"
+  }
+]

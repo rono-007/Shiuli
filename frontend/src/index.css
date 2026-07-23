@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(247, 241, 231, 0.15) #101827;
+    font-family: 'Tiro Bangla', 'Noto Serif Bengali', serif;
+  }
+
+  /* Custom scrollbar for the entire web app */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ::-webkit-scrollbar-track {
+    background: #101827; /* matches the theme night color */
+  }
+  
+  ::-webkit-scrollbar-thumb {
+    background: rgba(247, 241, 231, 0.15);
+    border-radius: 9999px;
+    border: 2px solid #101827; /* provides a nice padding look */
+  }
+  
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 162, 76, 0.5); /* matches the theme lamp color */
+  }
+
+  body {
+    font-family: 'Tiro Bangla', 'Noto Serif Bengali', serif;
+    @apply bg-night text-paper antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Tiro Bangla', 'Noto Serif Bengali', serif;
+    @apply text-lamp font-normal;
+  }
+}
+
+@layer utilities {
+  .ticket-border {
+    border: 1px dashed rgba(212, 162, 76, 0.5);
+  }
+  
+  .ticket-cutout {
+    position: relative;
+  }
+  
+  .ticket-cutout::before,
+  .ticket-cutout::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: theme('colors.night');
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+    border: 1px dashed rgba(212, 162, 76, 0.5);
+  }
+
+  .ticket-cutout::before {
+    left: -10px;
+    clip-path: polygon(50% 0, 100% 0, 100% 100%, 50% 100%);
+  }
+
+  .ticket-cutout::after {
+    right: -10px;
+    clip-path: polygon(0 0, 50% 0, 50% 100%, 0 100%);
+  }
+
+  .drop-cap::first-letter {
+    float: left;
+    font-size: 5rem;
+    line-height: 0.8;
+    padding-top: 0.1em;
+    padding-right: 0.1em;
+    padding-left: 0;
+    color: theme('colors.bengali-red');
+    font-family: theme('fontFamily.serif');
+  }
+
+  .photo-border {
+    padding: 12px;
+    background-color: theme('colors.paper');
+    border: 1px solid rgba(42, 42, 42, 0.2);
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+  }
+
+  .writing-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  /* Custom Minimalist Scrollbar */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(247, 241, 231, 0.2) transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(247, 241, 231, 0.2);
+    border-radius: 9999px;
+    transition: background 0.3s ease;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(212, 162, 76, 0.6);
+  }
+}

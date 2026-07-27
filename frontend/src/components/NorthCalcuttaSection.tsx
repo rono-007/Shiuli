@@ -36,8 +36,9 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
   const fetchData = async () => {
     setLoading(true);
     setErrorInfo(null);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
     try {
-      const response = await fetch('/api/pandals/north');
+      const response = await fetch(`${baseUrl}/api/pandals/north`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -45,6 +46,7 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
       setPandals(data);
       setDataSource('fastapi');
     } catch (e: any) {
+
       console.warn('FastAPI backend not reachable, using local fallback:', e);
       setPandals(fallbackData as Pandal[]);
       setDataSource('fallback');

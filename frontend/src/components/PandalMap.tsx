@@ -184,7 +184,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     if (!map.current || !activePandalName || !userLocation) {
       // Clear route if no pandal or location
       if (map.current && map.current.getSource('route-src')) {
-        (map.current.getSource('route-src') as maplibregl.GeoJSONSource).setData({
+        (map.current.getSource('route-src') as any).setData({
           type: 'FeatureCollection',
           features: [],
         });
@@ -213,7 +213,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
       };
 
       if (map.current!.getSource('route-src')) {
-        (map.current!.getSource('route-src') as maplibregl.GeoJSONSource).setData(geojson);
+        (map.current!.getSource('route-src') as any).setData(geojson);
       } else {
         map.current!.addSource('route-src', {
           type: 'geojson',

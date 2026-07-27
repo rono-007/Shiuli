@@ -16,6 +16,35 @@ from typing import List
 from functools import lru_cache
 import folium
 
+import asyncio
+import httpx
+from contextlib import asynccontextmanager
+
+# ─── Self Keep-Alive Task (Prevents Render Free Tier Sleeping) ───────────────
+KEEP_ALIVE_URL = os.getenv("RENDER_EXTERNAL_URL", "https://shiuli-backend.onrender.com/health")
+PING_INTERVAL_SECONDS = 14 * 60  # Render sleeps after 15 mins of inactivity
+
+async def keep_alive_pinger():
+    """Background task that pings the server periodically to prevent spin-down."""
+    await asyncio.sleep(10)  # Initial delay after server boot
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        while True:
+            try:
+                # Ping the health check endpoint
+                res = await client.get(KEEP_ALIVE_URL)
+                print(f"[Keep-Alive] Ping sent to {KEEP_ALIVE_URL} - Status: {res.status_code}")
+            except Exception as err:
+                print(f"[Keep-Alive] Ping failed: {err}")
+            await asyncio.sleep(PING_INTERVAL_SECONDS)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: Launch keep-alive background task
+    pinger_task = asyncio.create_task(keep_alive_pinger())
+    yield
+    # Shutdown: Cancel background task
+    pinger_task.cancel()
+
 # ─── Admin Config ──────────────────────────────────────────────────────────
 ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "Pujopath2k26")   # Fallback to default if env var not set
 MAX_LOG_ENTRIES = 500                  # Keep last 500 requests in memory
@@ -27,7 +56,8 @@ server_start_time = datetime.now(timezone.utc)
 app = FastAPI(
     title="PujoPoth API", 
     description="API backend for PujoPoth application",
-    default_response_class=ORJSONResponse
+    default_response_class=ORJSONResponse,
+    lifespan=lifespan
 )
 
 # Enable GZip compression for responses > 500 bytes
@@ -36,9 +66,10 @@ app.add_middleware(GZipMiddleware, minimum_size=500)
 # ─── Request Logging Middleware ────────────────────────────────────────────
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
-    # Do not log admin dashboard polling to avoid skewing the average
-    if request.url.path.startswith("/admin/"):
+    # Do not log admin dashboard polling or keep-alive pings to avoid skewing stats
+    if request.url.path.startswith("/admin/") or request.headers.get("user-agent", "").startswith("python-httpx"):
         return await call_next(request)
+
 
     start_time = time.perf_counter()
     request_id = str(uuid.uuid4())[:8]

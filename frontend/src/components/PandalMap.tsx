@@ -171,7 +171,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
           const durationMin = Math.round(route.duration / 60);
           setRouteInfo({ distance: `${distanceKm} km`, duration: `${durationMin} min` });
 
-          const geojson: GeoJSON.FeatureCollection = {
+          const geojson: any = {
             type: 'FeatureCollection',
             features: [
               {

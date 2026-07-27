@@ -59,6 +59,8 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
   const [routeInfo, setRouteInfo] = useState<{ distance: string; duration: string } | null>(null);
   const [activePandalName, setActivePandalName] = useState<string | null>(selectedPandalName);
 
+  const userMarkerRef = useRef<maplibregl.Marker | null>(null);
+
   useEffect(() => {
     setActivePandalName(selectedPandalName);
   }, [selectedPandalName]);
@@ -87,7 +89,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
     // Add geolocation control & watch position
     const geolocate = new maplibregl.GeolocateControl({
-      positionOptions: { enableHighAccuracy: true },
+      positionOptions: { enableHighAccuracy: false, timeout: 10000, maximumAge: 30000 },
       trackUserLocation: true,
       showUserLocation: true,
     });
@@ -109,9 +111,17 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
           setUserLocation([pos.coords.longitude, pos.coords.latitude]);
         },
         (err) => console.warn('Geolocation error:', err),
-        { enableHighAccuracy: true }
+        { enableHighAccuracy: false, timeout: 10000, maximumAge: 30000 }
       );
     };
+
+    const watchId = navigator.geolocation?.watchPosition(
+      (pos) => {
+        setUserLocation([pos.coords.longitude, pos.coords.latitude]);
+      },
+      (err) => console.warn('WatchPosition error:', err),
+      { enableHighAccuracy: false, timeout: 15000, maximumAge: 30000 }
+    );
 
     map.current.on('load', handleLoad);
     map.current.on('error', (e) => {
@@ -134,66 +144,46 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     }
 
     return () => {
+      if (watchId !== undefined) navigator.geolocation?.clearWatch(watchId);
       clearTimeout(safetyTimer);
       resizeObserver.disconnect();
+      userMarkerRef.current?.remove();
       map.current?.remove();
       map.current = null;
     };
   }, []);
 
-  // Add user location marker layer when userLocation changes
+  // Add user location marker on map when userLocation changes
   useEffect(() => {
-    if (!map.current || !isMapLoaded || !userLocation) return;
+    if (!userLocation || !map.current) return;
 
-    // Remove existing user marker source/layer if any
-    if (map.current.getSource('user-location-src')) {
-      const src = map.current.getSource('user-location-src') as maplibregl.GeoJSONSource;
-      src.setData({
-        type: 'Feature',
-        properties: {},
-        geometry: { type: 'Point', coordinates: userLocation },
-      });
-      return;
+    if (!userMarkerRef.current) {
+      const el = document.createElement('div');
+      el.className = 'user-location-pin';
+      el.innerHTML = `
+        <div style="
+          width: 22px;
+          height: 22px;
+          background: #1E88E5;
+          border: 3px solid #FAF6ED;
+          border-radius: 50%;
+          box-shadow: 0 0 12px rgba(30, 136, 229, 0.8);
+          animation: pulse 2s infinite;
+        "></div>
+      `;
+      userMarkerRef.current = new maplibregl.Marker({ element: el })
+        .setLngLat(userLocation)
+        .addTo(map.current);
+    } else {
+      userMarkerRef.current.setLngLat(userLocation);
     }
-
-    map.current.addSource('user-location-src', {
-      type: 'geojson',
-      data: {
-        type: 'Feature',
-        properties: {},
-        geometry: { type: 'Point', coordinates: userLocation },
-      },
-    });
-
-    map.current.addLayer({
-      id: 'user-location-halo',
-      type: 'circle',
-      source: 'user-location-src',
-      paint: {
-        'circle-radius': 16,
-        'circle-color': '#1E88E5',
-        'circle-opacity': 0.25,
-      },
-    });
-
-    map.current.addLayer({
-      id: 'user-location-point',
-      type: 'circle',
-      source: 'user-location-src',
-      paint: {
-        'circle-radius': 8,
-        'circle-color': '#1E88E5',
-        'circle-stroke-width': 2.5,
-        'circle-stroke-color': '#FAF6ED',
-      },
-    });
   }, [userLocation, isMapLoaded]);
 
   // Fetch route and draw path on map when a pandal is selected
   useEffect(() => {
-    if (!map.current || !isMapLoaded || !activePandalName || !userLocation) {
+    if (!map.current || !activePandalName || !userLocation) {
       // Clear route if no pandal or location
-      if (map.current && isMapLoaded && map.current.getSource('route-src')) {
+      if (map.current && map.current.getSource('route-src')) {
         (map.current.getSource('route-src') as maplibregl.GeoJSONSource).setData({
           type: 'FeatureCollection',
           features: [],
@@ -206,82 +196,108 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     const pandal = pandals.find(p => p.name === activePandalName);
     if (!pandal) return;
 
+    const drawRouteOnMap = (geometry: any, distanceMeters: number, durationSeconds: number) => {
+      const distanceKm = (distanceMeters / 1000).toFixed(1);
+      const durationMin = Math.round(durationSeconds / 60);
+      setRouteInfo({ distance: `${distanceKm} km`, duration: `${durationMin > 0 ? durationMin : 1} min` });
+
+      const geojson: any = {
+        type: 'FeatureCollection',
+        features: [
+          {
+            type: 'Feature',
+            properties: {},
+            geometry: geometry,
+          },
+        ],
+      };
+
+      if (map.current!.getSource('route-src')) {
+        (map.current!.getSource('route-src') as maplibregl.GeoJSONSource).setData(geojson);
+      } else {
+        map.current!.addSource('route-src', {
+          type: 'geojson',
+          data: geojson,
+        });
+
+        map.current!.addLayer({
+          id: 'route-casing',
+          type: 'line',
+          source: 'route-src',
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round',
+          },
+          paint: {
+            'line-color': '#1a1a1a',
+            'line-width': 8,
+            'line-opacity': 0.6,
+          },
+        });
+
+        map.current!.addLayer({
+          id: 'route-line',
+          type: 'line',
+          source: 'route-src',
+          layout: {
+            'line-join': 'round',
+            'line-cap': 'round',
+          },
+          paint: {
+            'line-color': '#8B1E2D',
+            'line-width': 5,
+            'line-opacity': 0.95,
+          },
+        });
+      }
+
+      // Fit map bounds to encompass user location and target pandal
+      const bounds = new maplibregl.LngLatBounds();
+      bounds.extend(userLocation);
+      bounds.extend([pandal.lon, pandal.lat]);
+      map.current!.fitBounds(bounds, {
+        padding: { top: 80, bottom: 80, left: 80, right: 80 },
+        maxZoom: 16,
+        duration: 1200,
+      });
+    };
+
     const fetchRoute = async () => {
       try {
         const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${userLocation[0]},${userLocation[1]};${pandal.lon},${pandal.lat}?overview=full&geometries=geojson`;
-        const res = await fetch(osrmUrl);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        
+        const res = await fetch(osrmUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
         const data = await res.json();
 
         if (data.routes && data.routes.length > 0) {
           const route = data.routes[0];
-          const distanceKm = (route.distance / 1000).toFixed(1);
-          const durationMin = Math.round(route.duration / 60);
-          setRouteInfo({ distance: `${distanceKm} km`, duration: `${durationMin} min` });
-
-          const geojson: any = {
-            type: 'FeatureCollection',
-            features: [
-              {
-                type: 'Feature',
-                properties: {},
-                geometry: route.geometry,
-              },
-            ],
-          };
-
-          if (map.current!.getSource('route-src')) {
-            (map.current!.getSource('route-src') as maplibregl.GeoJSONSource).setData(geojson);
-          } else {
-            map.current!.addSource('route-src', {
-              type: 'geojson',
-              data: geojson,
-            });
-
-            // Outer route line (casing for contrast)
-            map.current!.addLayer({
-              id: 'route-casing',
-              type: 'line',
-              source: 'route-src',
-              layout: {
-                'line-join': 'round',
-                'line-cap': 'round',
-              },
-              paint: {
-                'line-color': '#1a1a1a',
-                'line-width': 8,
-                'line-opacity': 0.6,
-              },
-            });
-
-            // Inner highlighted route line (gold/red theme)
-            map.current!.addLayer({
-              id: 'route-line',
-              type: 'line',
-              source: 'route-src',
-              layout: {
-                'line-join': 'round',
-                'line-cap': 'round',
-              },
-              paint: {
-                'line-color': '#8B1E2D',
-                'line-width': 5,
-                'line-opacity': 0.95,
-              },
-            });
-          }
-
-          // Fit map bounds to encompass user location and target pandal
-          const bounds = new maplibregl.LngLatBounds();
-          bounds.extend(userLocation);
-          bounds.extend([pandal.lon, pandal.lat]);
-          map.current!.fitBounds(bounds, {
-            padding: { top: 80, bottom: 80, left: 80, right: 80 },
-            maxZoom: 16,
-            duration: 1200,
-          });
+          drawRouteOnMap(route.geometry, route.distance, route.duration);
+        } else {
+          throw new Error('No OSRM route found');
         }
       } catch (err) {
-        console.warn('Failed to fetch OSRM route:', err);
+        console.warn('OSRM routing failed or timed out, using fallback straight-line route:', err);
+        // Fallback: Haversine distance & straight LineString
+        const R = 6371000;
+        const dLat = (pandal.lat - userLocation[1]) * Math.PI / 180;
+        const dLon = (pandal.lon - userLocation[0]) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(userLocation[1] * Math.PI / 180) * Math.cos(pandal.lat * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const dist = R * c;
+
+        drawRouteOnMap(
+          {
+            type: 'LineString',
+            coordinates: [userLocation, [pandal.lon, pandal.lat]],
+          },
+          dist,
+          dist / 8.33
+        );
       }
     };
 

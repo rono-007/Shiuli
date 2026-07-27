@@ -31,6 +31,9 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
   const popupRef = useRef<maplibregl.Popup | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
 
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const [routeInfo, setRouteInfo] = useState<{ distance: string; duration: string } | null>(null);
+
   // Initialize the map
   useEffect(() => {
     if (!mapContainer.current || map.current) return;
@@ -43,29 +46,41 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
       attributionControl: false,
     });
 
-    // Add compact attribution
     map.current.addControl(
       new maplibregl.AttributionControl({ compact: true }),
       'bottom-right'
     );
 
-    // Add navigation controls (zoom +/-)
     map.current.addControl(
       new maplibregl.NavigationControl({ showCompass: true }),
       'top-right'
     );
 
-    // Add geolocation control
-    map.current.addControl(
-      new maplibregl.GeolocateControl({
-        positionOptions: { enableHighAccuracy: true },
-        trackUserLocation: false,
-      }),
-      'top-right'
-    );
+    // Add geolocation control & watch position
+    const geolocate = new maplibregl.GeolocateControl({
+      positionOptions: { enableHighAccuracy: true },
+      trackUserLocation: true,
+      showUserLocation: true,
+    });
+
+    geolocate.on('geolocate', (e: any) => {
+      const { longitude, latitude } = e.coords;
+      setUserLocation([longitude, latitude]);
+    });
+
+    map.current.addControl(geolocate, 'top-right');
 
     map.current.on('load', () => {
       setIsMapLoaded(true);
+
+      // Trigger geolocation automatically if available
+      navigator.geolocation?.getCurrentPosition(
+        (pos) => {
+          setUserLocation([pos.coords.longitude, pos.coords.latitude]);
+        },
+        (err) => console.warn('Geolocation error:', err),
+        { enableHighAccuracy: true }
+      );
     });
 
     return () => {
@@ -73,6 +88,153 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
       map.current = null;
     };
   }, []);
+
+  // Add user location marker layer when userLocation changes
+  useEffect(() => {
+    if (!map.current || !isMapLoaded || !userLocation) return;
+
+    // Remove existing user marker source/layer if any
+    if (map.current.getSource('user-location-src')) {
+      const src = map.current.getSource('user-location-src') as maplibregl.GeoJSONSource;
+      src.setData({
+        type: 'Feature',
+        properties: {},
+        geometry: { type: 'Point', coordinates: userLocation },
+      });
+      return;
+    }
+
+    map.current.addSource('user-location-src', {
+      type: 'geojson',
+      data: {
+        type: 'Feature',
+        properties: {},
+        geometry: { type: 'Point', coordinates: userLocation },
+      },
+    });
+
+    map.current.addLayer({
+      id: 'user-location-halo',
+      type: 'circle',
+      source: 'user-location-src',
+      paint: {
+        'circle-radius': 16,
+        'circle-color': '#1E88E5',
+        'circle-opacity': 0.25,
+      },
+    });
+
+    map.current.addLayer({
+      id: 'user-location-point',
+      type: 'circle',
+      source: 'user-location-src',
+      paint: {
+        'circle-radius': 8,
+        'circle-color': '#1E88E5',
+        'circle-stroke-width': 2.5,
+        'circle-stroke-color': '#FAF6ED',
+      },
+    });
+  }, [userLocation, isMapLoaded]);
+
+  // Fetch route and draw path on map when a pandal is selected
+  useEffect(() => {
+    if (!map.current || !isMapLoaded || !selectedPandalName || !userLocation) {
+      // Clear route if no pandal or location
+      if (map.current && isMapLoaded && map.current.getSource('route-src')) {
+        (map.current.getSource('route-src') as maplibregl.GeoJSONSource).setData({
+          type: 'FeatureCollection',
+          features: [],
+        });
+        setRouteInfo(null);
+      }
+      return;
+    }
+
+    const pandal = pandals.find(p => p.name === selectedPandalName);
+    if (!pandal) return;
+
+    const fetchRoute = async () => {
+      try {
+        const osrmUrl = `https://router.project-osrm.org/route/v1/driving/${userLocation[0]},${userLocation[1]};${pandal.lon},${pandal.lat}?overview=full&geometries=geojson`;
+        const res = await fetch(osrmUrl);
+        const data = await res.json();
+
+        if (data.routes && data.routes.length > 0) {
+          const route = data.routes[0];
+          const distanceKm = (route.distance / 1000).toFixed(1);
+          const durationMin = Math.round(route.duration / 60);
+          setRouteInfo({ distance: `${distanceKm} km`, duration: `${durationMin} min` });
+
+          const geojson: GeoJSON.FeatureCollection = {
+            type: 'FeatureCollection',
+            features: [
+              {
+                type: 'Feature',
+                properties: {},
+                geometry: route.geometry,
+              },
+            ],
+          };
+
+          if (map.current!.getSource('route-src')) {
+            (map.current!.getSource('route-src') as maplibregl.GeoJSONSource).setData(geojson);
+          } else {
+            map.current!.addSource('route-src', {
+              type: 'geojson',
+              data: geojson,
+            });
+
+            // Outer route line (casing for contrast)
+            map.current!.addLayer({
+              id: 'route-casing',
+              type: 'line',
+              source: 'route-src',
+              layout: {
+                'line-join': 'round',
+                'line-cap': 'round',
+              },
+              paint: {
+                'line-color': '#1a1a1a',
+                'line-width': 8,
+                'line-opacity': 0.6,
+              },
+            });
+
+            // Inner highlighted route line (gold/red theme)
+            map.current!.addLayer({
+              id: 'route-line',
+              type: 'line',
+              source: 'route-src',
+              layout: {
+                'line-join': 'round',
+                'line-cap': 'round',
+              },
+              paint: {
+                'line-color': '#8B1E2D',
+                'line-width': 5,
+                'line-opacity': 0.95,
+              },
+            });
+          }
+
+          // Fit map bounds to encompass user location and target pandal
+          const bounds = new maplibregl.LngLatBounds();
+          bounds.extend(userLocation);
+          bounds.extend([pandal.lon, pandal.lat]);
+          map.current!.fitBounds(bounds, {
+            padding: { top: 80, bottom: 80, left: 80, right: 80 },
+            maxZoom: 16,
+            duration: 1200,
+          });
+        }
+      } catch (err) {
+        console.warn('Failed to fetch OSRM route:', err);
+      }
+    };
+
+    fetchRoute();
+  }, [selectedPandalName, userLocation, isMapLoaded, pandals]);
 
   // Add/update markers when pandals change or map loads
   useEffect(() => {
@@ -154,7 +316,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
             text-transform: uppercase;
             margin-bottom: 4px;
             opacity: 0.7;
-          ">NC${String(idx + 1).padStart(2, '0')}</div>
+          ">${String(idx + 1).padStart(2, '0')}</div>
           <div style="
             font-size: 16px;
             font-weight: 600;
@@ -223,7 +385,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     }
   }, [pandals, isMapLoaded, searchQuery]);
 
-  // Fly to selected pandal when it changes
+  // Fly to selected pandal when it changes (if no route logic triggered)
   useEffect(() => {
     if (!map.current || !isMapLoaded || !selectedPandalName) return;
 
@@ -236,19 +398,19 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
       popupRef.current = null;
     }
 
-    // Fly to the pandal
-    map.current.flyTo({
-      center: [pandal.lon, pandal.lat],
-      zoom: 16,
-      duration: 1500,
-      essential: true,
-    });
+    if (!userLocation) {
+      map.current.flyTo({
+        center: [pandal.lon, pandal.lat],
+        zoom: 16,
+        duration: 1500,
+        essential: true,
+      });
+    }
 
     // Open the marker's popup after flying
     setTimeout(() => {
       const idx = pandals.indexOf(pandal);
       if (idx >= 0) {
-        // Find the corresponding marker in the filtered set
         const q = searchQuery.toLowerCase().trim();
         const filteredPandals = q
           ? pandals.filter(p =>
@@ -264,7 +426,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
         }
       }
     }, 1600);
-  }, [selectedPandalName, isMapLoaded]);
+  }, [selectedPandalName, isMapLoaded, userLocation]);
 
   return (
     <div className="relative w-full h-full rounded-2xl md:rounded-3xl overflow-hidden">
@@ -283,8 +445,8 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
         </div>
       )}
 
-      {/* Map legend */}
-      <div className="absolute bottom-4 left-4 bg-[#FAF6ED]/95 backdrop-blur-sm border border-ink/10 rounded-xl px-4 py-3 z-10 shadow-md">
+      {/* Map legend & Route info badge */}
+      <div className="absolute bottom-4 left-4 bg-[#FAF6ED]/95 backdrop-blur-sm border border-ink/10 rounded-xl px-4 py-3 z-10 shadow-md space-y-2">
         <div className="flex items-center gap-2">
           <div style={{
             width: '14px',
@@ -298,9 +460,25 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
             পুজো মণ্ডপ • {pandals.length} টি
           </span>
         </div>
+
+        {userLocation && (
+          <div className="flex items-center gap-2 border-t border-ink/10 pt-1.5">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#1E88E5] border border-white" />
+            <span className="text-[10px] font-mono text-[#1E88E5] font-semibold tracking-wider uppercase">
+              আপনার অবস্থান (Your Location)
+            </span>
+          </div>
+        )}
+
+        {routeInfo && (
+          <div className="text-[10px] font-mono text-[#8B1E2D] font-bold bg-[#8B1E2D]/10 px-2 py-1 rounded border border-[#8B1E2D]/20">
+            পথের দূরত্ব: {routeInfo.distance} (~{routeInfo.duration})
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 export default PandalMap;
+

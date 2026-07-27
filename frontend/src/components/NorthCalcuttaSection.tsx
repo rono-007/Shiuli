@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, AlertCircle, ArrowUp } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, ArrowUp } from 'lucide-react';
+import PandalMap from './PandalMap';
 import fallbackData from '../data/north_cords.json';
 
 interface Pandal {
@@ -193,60 +194,22 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
             <p className="text-xs font-sans text-ink/50 italic">লোড হচ্ছে...</p>
           </div>
         ) : viewMode === 'map' ? (
-          /* Interactive Map View */
-          dataSource === 'fastapi' ? (
-            <div className="w-full h-[85vh] md:h-[calc(100vh-280px)] min-h-[600px] bg-[#FAF6ED] border border-ink/10 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg relative animate-fade-in-slow">
-              <iframe 
-                src={`/api/map?q=${encodeURIComponent(debouncedQuery)}&selected=${encodeURIComponent(selectedPandalName || '')}`} 
-                className="w-full h-full border-0" 
-                title="North Calcutta Puja Pandals Map"
-              />
-              <button
-                onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-                className="absolute bottom-6 right-6 md:hidden bg-[#8B1E2D] hover:bg-[#8B1E2D]/90 text-[#FAF6ED] px-4 py-2.5 rounded-full shadow-xl border border-[#D4A24C]/35 flex items-center gap-1.5 active:scale-95 transition-all z-20 font-sans text-xs font-bold"
-                title="Go to Top"
-              >
-                <ArrowUp className="w-4 h-4" />
-                <span>উপরে যান (Top)</span>
-              </button>
-            </div>
-          ) : (
-            /* Map Offline Placeholder */
-            <div className="max-w-2xl mx-auto bg-[#FAF6ED] border border-ink/10 p-10 md:p-12 rounded-3xl text-center space-y-6 shadow-md animate-fade-in-slow">
-              <div className="w-16 h-16 rounded-full bg-[#8B1E2D]/10 border border-bengali-red/20 flex items-center justify-center text-bengali-red mx-auto animate-pulse">
-                <AlertCircle className="w-8 h-8" />
-              </div>
-              <div className="space-y-2">
-                <h3 className="text-2xl font-serif text-ink font-bold">মানচিত্র ভিউয়ের জন্য ব্যাকএন্ড অফলাইন</h3>
-                <p className="text-sm font-sans text-ink/70 leading-relaxed max-w-md mx-auto">
-                  কাস্টম ফোলিয়াম (Folium) মানচিত্রটি সার্ভার-সাইডে তৈরি করা হয়। এটি দেখতে আপনার পাইথন ফাস্টএপি সার্ভারটি চালু করুন:
-                </p>
-              </div>
-              
-              <div className="bg-night text-paper border border-lamp/20 p-5 rounded-2xl max-w-sm mx-auto font-mono text-left text-xs space-y-1.5 shadow-lg select-all">
-                <div className="text-paper/40 select-none"># ব্যাকএন্ড সার্ভার চালু করার কমান্ড:</div>
-                <div className="text-lamp">cd backend</div>
-                <div className="text-lamp">python main.py</div>
-              </div>
-
-              <div className="pt-4 flex justify-center gap-4">
-                <button
-                  onClick={fetchData}
-                  className="bg-night text-[#FAF6ED] px-5 py-2.5 text-xs font-mono uppercase tracking-widest hover:bg-night/90 transition-colors flex items-center gap-2"
-                >
-                  <RefreshCw className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '3s' }} />
-                  <span>পুনরায় চেষ্টা করুন (Retry)</span>
-                </button>
-                <button
-                  onClick={() => setViewMode('cards')}
-                  className="bg-paper border border-ink/20 text-ink px-5 py-2.5 text-xs font-mono uppercase tracking-widest hover:bg-ink/5 transition-colors flex items-center gap-2"
-                >
-                  <LayoutGrid className="w-3.5 h-3.5" />
-                  <span>কার্ড তালিকায় ফিরে যান</span>
-                </button>
-              </div>
-            </div>
-          )
+          /* Interactive MapLibre GL Map View */
+          <div className="w-full h-[85vh] md:h-[calc(100vh-280px)] min-h-[600px] bg-[#FAF6ED] border border-ink/10 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg relative animate-fade-in-slow">
+            <PandalMap
+              pandals={filteredPandals}
+              selectedPandalName={selectedPandalName}
+              searchQuery={debouncedQuery}
+            />
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="absolute bottom-6 right-6 md:hidden bg-[#8B1E2D] hover:bg-[#8B1E2D]/90 text-[#FAF6ED] px-4 py-2.5 rounded-full shadow-xl border border-[#D4A24C]/35 flex items-center gap-1.5 active:scale-95 transition-all z-20 font-sans text-xs font-bold"
+              title="Go to Top"
+            >
+              <ArrowUp className="w-4 h-4" />
+              <span>উপরে যান (Top)</span>
+            </button>
+          </div>
         ) : filteredPandals.length > 0 ? (
           /* Postage Stamp Album Layout */
           <div className="bg-[#F5EFE6] p-6 md:p-10 rounded-3xl border border-ink/10 shadow-inner">

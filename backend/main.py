@@ -17,7 +17,7 @@ from functools import lru_cache
 import folium
 
 # ─── Admin Config ──────────────────────────────────────────────────────────
-ADMIN_TOKEN = "Pujopath2k26"   # Change this to a strong secret!
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "Pujopath2k26")   # Fallback to default if env var not set
 MAX_LOG_ENTRIES = 500                  # Keep last 500 requests in memory
 
 # ─── In-memory log store ───────────────────────────────────────────────────
@@ -135,6 +135,11 @@ def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
 @app.get("/")
 def read_root():
     return {"message": "Welcome to PujoPoth API. Use /api/pandals/north to get North Calcutta puja pandals."}
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint for deployment monitoring (Render/K8s)."""
+    return {"status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
 
 # ─── Admin Endpoints ───────────────────────────────────────────────────────
 

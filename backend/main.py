@@ -293,7 +293,11 @@ def load_pandals_data() -> List[dict]:
 
 @app.get("/api/pandals/north")
 def get_north_pandals():
-    return ORJSONResponse(content=load_pandals_data())
+    headers = {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    }
+    return ORJSONResponse(content=load_pandals_data(), headers=headers)
+
 
 
 @lru_cache(maxsize=128)

@@ -36,6 +36,26 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
   const fetchData = async () => {
     setLoading(true);
     setErrorInfo(null);
+
+    const CACHE_KEY = 'pujopath_north_pandals_cache';
+    const CACHE_TIME_KEY = 'pujopath_north_pandals_cache_time';
+    const ONE_HOUR_MS = 60 * 60 * 1000;
+
+    // Check localStorage cache first
+    try {
+      const cachedData = localStorage.getItem(CACHE_KEY);
+      const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+      
+      if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
+        setPandals(JSON.parse(cachedData));
+        setDataSource('fastapi');
+        setLoading(false);
+        return;
+      }
+    } catch (err) {
+      console.warn('Failed to read from localStorage cache:', err);
+    }
+
     const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
     try {
       const response = await fetch(`${baseUrl}/api/pandals/north`);
@@ -45,8 +65,15 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
       const data = await response.json();
       setPandals(data);
       setDataSource('fastapi');
-    } catch (e: any) {
 
+      // Save to localStorage cache
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+        localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+      } catch (err) {
+        console.warn('Failed to save to localStorage cache:', err);
+      }
+    } catch (e: any) {
       console.warn('FastAPI backend not reachable, using local fallback:', e);
       setPandals(fallbackData as Pandal[]);
       setDataSource('fallback');
@@ -55,6 +82,7 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     fetchData();

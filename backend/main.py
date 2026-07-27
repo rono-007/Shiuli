@@ -165,7 +165,17 @@ def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to PujoPoth API. Use /api/pandals/north to get North Calcutta puja pandals."}
+    return {
+        "message": "Welcome to PujoPoth API.",
+        "endpoints": {
+            "all": "/api/pandals",
+            "north": "/api/pandals/north",
+            "south": "/api/pandals/south",
+            "central": "/api/pandals/central",
+            "bonedi": "/api/pandals/bonedi",
+            "map": "/api/map"
+        }
+    }
 
 @app.get("/health")
 def health_check():
@@ -355,11 +365,27 @@ def get_bonedi_pandals():
     }
     return ORJSONResponse(content=load_bonedi_pandals_data(), headers=headers)
 
+@lru_cache(maxsize=1)
+def load_all_pandals_data() -> List[dict]:
+    combined = []
+    loaders = [load_pandals_data, load_south_pandals_data, load_central_pandals_data, load_bonedi_pandals_data]
+    for loader in loaders:
+        try:
+            combined.extend(loader())
+        except Exception:
+            pass
+    return combined
 
+@app.get("/api/pandals")
+def get_all_pandals():
+    headers = {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    }
+    return ORJSONResponse(content=load_all_pandals_data(), headers=headers)
 
 @lru_cache(maxsize=128)
 def generate_map_html(q: str, selected: str = "") -> str:
-    all_pandals = load_pandals_data()
+    all_pandals = load_all_pandals_data()
     
     if q:
         search_q = q.lower()

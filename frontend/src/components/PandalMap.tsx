@@ -75,8 +75,9 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
     map.current.addControl(geolocate, 'top-right');
 
-    map.current.on('load', () => {
+    const handleLoad = () => {
       setIsMapLoaded(true);
+      map.current?.resize();
 
       // Trigger geolocation automatically if available
       navigator.geolocation?.getCurrentPosition(
@@ -86,9 +87,31 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
         (err) => console.warn('Geolocation error:', err),
         { enableHighAccuracy: true }
       );
+    };
+
+    map.current.on('load', handleLoad);
+    map.current.on('error', (e) => {
+      console.warn('MapLibre error:', e);
+      setIsMapLoaded(true);
     });
 
+    // Safety timeout: ensure map loading overlay disappears even if style load event is delayed
+    const safetyTimer = setTimeout(() => {
+      setIsMapLoaded(true);
+      map.current?.resize();
+    }, 1500);
+
+    // ResizeObserver to handle container size changes on Vercel/responsive layout
+    const resizeObserver = new ResizeObserver(() => {
+      map.current?.resize();
+    });
+    if (mapContainer.current) {
+      resizeObserver.observe(mapContainer.current);
+    }
+
     return () => {
+      clearTimeout(safetyTimer);
+      resizeObserver.disconnect();
       map.current?.remove();
       map.current = null;
     };

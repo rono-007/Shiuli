@@ -290,6 +290,18 @@ def load_pandals_data() -> List[dict]:
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to read pandal data: {str(e)}")
 
+@lru_cache(maxsize=1)
+def load_south_pandals_data() -> List[dict]:
+    file_path = os.path.join(os.path.dirname(__file__), "data", "south_kolkata.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="South Calcutta pandals data file not found")
+        
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to read pandal data: {str(e)}")
+
 
 @app.get("/api/pandals/north")
 def get_north_pandals():
@@ -297,6 +309,14 @@ def get_north_pandals():
         "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
     }
     return ORJSONResponse(content=load_pandals_data(), headers=headers)
+
+@app.get("/api/pandals/south")
+def get_south_pandals():
+    headers = {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    }
+    return ORJSONResponse(content=load_south_pandals_data(), headers=headers)
+
 
 
 

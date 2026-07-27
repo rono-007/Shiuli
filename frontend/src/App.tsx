@@ -4,13 +4,16 @@ import JourneySection from './components/JourneySection';
 import EditorialSection from './components/EditorialSection';
 import EssentialsSection from './components/EssentialsSection';
 import NorthCalcuttaSection from './components/NorthCalcuttaSection';
+import SouthCalcuttaSection from './components/SouthCalcuttaSection';
 import { Heart } from 'lucide-react';
 
+
 function App() {
-  const [view, setView] = useState<'home' | 'north'>('home');
+  const [view, setView] = useState<'home' | 'north' | 'south'>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isMuted, setIsMuted] = useState(true);
+
   
   const audioCtxRef = useRef<AudioContext | null>(null);
   const soundIntervalRef = useRef<number | null>(null);
@@ -193,10 +196,10 @@ function App() {
               {isMuted ? 'ধ্বনি সচল' : 'ধ্বনি বন্ধ'}
             </button>
             <button 
-              onClick={() => setView(view === 'home' ? 'north' : 'home')}
-              className="text-[10px] font-mono uppercase tracking-widest text-[#E5B05C] hover:opacity-100 transition-opacity focus:outline-none font-bold"
+              onClick={() => setView('home')}
+              className={`text-[10px] font-mono uppercase tracking-widest hover:opacity-100 transition-opacity focus:outline-none font-bold ${view !== 'home' ? 'text-[#E5B05C]' : 'opacity-60'}`}
             >
-              {view === 'home' ? 'উত্তর কলকাতা' : 'হোম'}
+              {view !== 'home' ? 'হোম (Home)' : ''}
             </button>
           </div>
           
@@ -210,6 +213,8 @@ function App() {
       <main className="w-full relative z-20">
         {view === 'north' ? (
           <NorthCalcuttaSection onBack={() => setView('home')} />
+        ) : view === 'south' ? (
+          <SouthCalcuttaSection onBack={() => setView('home')} />
         ) : (
           <>
             <HeroSection 
@@ -219,6 +224,8 @@ function App() {
               onSelectZone={(zone) => {
                 if (zone === 'north') {
                   setView('north');
+                } else if (zone === 'south') {
+                  setView('south');
                 }
               }}
             />

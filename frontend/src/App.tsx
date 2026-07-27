@@ -6,11 +6,12 @@ import EssentialsSection from './components/EssentialsSection';
 import NorthCalcuttaSection from './components/NorthCalcuttaSection';
 import SouthCalcuttaSection from './components/SouthCalcuttaSection';
 import CentralCalcuttaSection from './components/CentralCalcuttaSection';
+import BonediCalcuttaSection from './components/BonediCalcuttaSection';
 import { Heart } from 'lucide-react';
 
 
 function App() {
-  const [view, setView] = useState<'home' | 'north' | 'south' | 'central'>('home');
+  const [view, setView] = useState<'home' | 'north' | 'south' | 'central' | 'bonedi'>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isMuted, setIsMuted] = useState(true);
@@ -218,6 +219,8 @@ function App() {
           <SouthCalcuttaSection onBack={() => setView('home')} />
         ) : view === 'central' ? (
           <CentralCalcuttaSection onBack={() => setView('home')} />
+        ) : view === 'bonedi' ? (
+          <BonediCalcuttaSection onBack={() => setView('home')} />
         ) : (
           <>
             <HeroSection 
@@ -231,6 +234,8 @@ function App() {
                   setView('south');
                 } else if (zone === 'central') {
                   setView('central');
+                } else if (zone === 'bonedi') {
+                  setView('bonedi');
                 }
               }}
             />

@@ -5,7 +5,7 @@ interface HeroSectionProps {
   onSearch: (query: string) => void;
   onFilterChange: (filter: string) => void;
   activeFilter: string;
-  onSelectZone: (zone: 'north' | 'central' | 'south') => void;
+  onSelectZone: (zone: 'north' | 'central' | 'south' | 'bonedi') => void;
 }
 
 const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
@@ -14,7 +14,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
   const zones = [
     { id: 'north', serial: 'NO-1433-A', name: 'উত্তর কলকাতা', subtitle: 'North Calcutta Tour', desc: 'বাগবাজার সর্বজনীন, কলেজ স্কোয়ার, শোভাবাজার রাজবাড়ি', active: true, stampColor: 'bg-[#8B1E2D]' },
     { id: 'central', serial: 'CE-1433-B', name: 'মধ্য কলকাতা', subtitle: 'Central Calcutta Tour', desc: 'সন্তোষ মিত্র স্কোয়ার, লেবুতলা পার্ক', active: true, stampColor: 'bg-[#8B1E2D]' },
-    { id: 'south', serial: 'SO-1433-C', name: 'দক্ষিণ কলকাতা', subtitle: 'South Calcutta Tour', desc: 'ম্যাডক্স স্কোয়ার, সুরুচি সঙ্ঘ, ত্রিধারা', active: true, stampColor: 'bg-[#8B1E2D]' }
+    { id: 'south', serial: 'SO-1433-C', name: 'দক্ষিণ কলকাতা', subtitle: 'South Calcutta Tour', desc: 'ম্যাডক্স স্কোয়ার, সুরুচি সঙ্ঘ, ত্রিধারা', active: true, stampColor: 'bg-[#8B1E2D]' },
+    { id: 'bonedi', serial: 'BN-1433-D', name: 'বনেদি কলকাতা', subtitle: 'Bonedi (Heritage) Tour', desc: 'শোভাবাজার রাজবাড়ি, ঠাকুরবাড়ি, দত্তবাড়ি', active: true, stampColor: 'bg-[#8B1E2D]' }
   ];
 
 

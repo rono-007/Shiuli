@@ -336,6 +336,24 @@ def get_central_pandals():
     }
     return ORJSONResponse(content=load_central_pandals_data(), headers=headers)
 
+@lru_cache(maxsize=1)
+def load_bonedi_pandals_data() -> List[dict]:
+    file_path = os.path.join(os.path.dirname(__file__), "data", "bonedi_kolkata.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Bonedi Kolkata pandals data file not found")
+        
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to read pandal data: {str(e)}")
+
+@app.get("/api/pandals/bonedi")
+def get_bonedi_pandals():
+    headers = {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    }
+    return ORJSONResponse(content=load_bonedi_pandals_data(), headers=headers)
 
 
 

@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, ArrowUp } from 'lucide-react';
 import PandalMap from './PandalMap';
 import fallbackData from '../data/south_kolkata.json';
@@ -77,7 +77,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
       console.warn('FastAPI backend not reachable, using local fallback:', e);
       setPandals(fallbackData as Pandal[]);
       setDataSource('fallback');
-      setErrorInfo('à¦¬à§à¦¯à¦¾à¦•à¦à¦¨à§à¦¡ à¦¸à¦¾à¦°à§à¦­à¦¾à¦° à¦…à¦«à¦²à¦¾à¦‡à¦¨, à¦²à§‹à¦•à¦¾à¦² à¦¡à¦¾à¦Ÿà¦¾ à¦¬à§à¦¯à¦¬à¦¹à§ƒà¦¤ à¦¹à¦šà§à¦›à§‡');
+      setErrorInfo('ব্যাকএন্ড সার্ভার অফলাইন, লোকাল ডাটা ব্যবহৃত হচ্ছে');
     } finally {
       setLoading(false);
     }
@@ -112,16 +112,16 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
               className="flex items-center gap-2 group text-xs font-mono uppercase tracking-widest text-bengali-red hover:text-ink transition-colors focus:outline-none"
             >
               <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-              <span>à¦«à¦¿à¦°à§‡ à¦¯à¦¾à¦¨</span>
+              <span>ফিরে যান</span>
             </button>
             
             <div className="space-y-2">
-              <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-ink/40">III â€¢ à¦ªà¦°à¦¿à¦•à§à¦°à¦®à¦¾ à¦¸à§‚à¦šà§€</span>
+              <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-ink/40">III • পরিক্রমা সূচী</span>
               <h2 className="text-4xl md:text-5xl font-serif text-ink italic font-normal tracking-wide">
-                à¦‰à¦¤à§à¦¤à¦° à¦•à¦²à¦•à¦¾à¦¤à¦¾à¦° à¦®à¦£à§à¦¡à¦ªà¦¸à¦®à§‚à¦¹
+                দক্ষিণ কলকাতার মণ্ডপসমূহ
               </h2>
               <p className="text-xs font-sans text-ink/60 max-w-lg leading-relaxed">
-                à¦à¦¤à¦¿à¦¹à§à¦¯à¦¬à¦¾à¦¹à§€ à¦¬à¦¾à¦—à¦¬à¦¾à¦œà¦¾à¦° à¦¥à§‡à¦•à§‡ à¦¶à§à¦¯à¦¾à¦®à¦¬à¦¾à¦œà¦¾à¦° à¦“ à¦¶à§‹à¦­à¦¾à¦¬à¦¾à¦œà¦¾à¦°à§‡à¦° à¦¶à¦¤à¦¾à¦¬à§à¦¦à§€à¦ªà§à¦°à¦¾à¦šà§€à¦¨ à¦¦à§à¦°à§à¦—à¦¾à¦ªà§à¦œà§‹ à¦à¦¬à¦‚ à¦¤à¦¾à¦¦à§‡à¦° à¦¸à¦ à¦¿à¦• à¦•à¦¾à¦¸à§à¦Ÿà¦® à¦®à¦¾à¦¨à¦šà¦¿à¦¤à§à¦° à¦¨à¦¿à¦°à§à¦¦à§‡à¦¶à¦¿à¦•à¦¾à¥¤
+                ঐতিহ্যবাহী বাগবাজার থেকে শ্যামবাজার ও শোভাবাজারের শতাব্দীপ্রাচীন দুর্গাপুজো এবং তাদের সঠিক কাস্টম মানচিত্র নির্দেশিকা।
               </p>
             </div>
           </div>
@@ -129,18 +129,18 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
           {/* Source Indicator / Refresh */}
           <div className="flex flex-col items-start md:items-end gap-3">
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-mono tracking-wider uppercase text-ink/40">à¦‰à§Žà¦¸:</span>
+              <span className="text-[9px] font-mono tracking-wider uppercase text-ink/40">উৎস:</span>
               {loading ? (
                 <span className="h-2 w-2 rounded-full bg-lamp animate-pulse"></span>
               ) : dataSource === 'fastapi' ? (
                 <span className="flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 px-2 py-0.5 border border-emerald-500/20 text-[9px] font-mono rounded-full">
                   <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                  FastAPI backend (à¦¸à¦šà¦²)
+                  FastAPI backend (সচল)
                 </span>
               ) : (
                 <span className="flex items-center gap-1.5 bg-[#8B1E2D]/5 text-bengali-red px-2 py-0.5 border border-bengali-red/20 text-[9px] font-mono rounded-full" title={errorInfo || ''}>
                   <span className="h-1.5 w-1.5 rounded-full bg-bengali-red animate-pulse"></span>
-                  à¦²à§‹à¦•à¦¾à¦² à¦¡à¦¾à¦Ÿà¦¾ (à¦…à¦«à¦²à¦¾à¦‡à¦¨)
+                  লোকাল ডাটা (অফলাইন)
                 </span>
               )}
             </div>
@@ -151,7 +151,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
               className="flex items-center gap-2 bg-night text-[#FAF6ED] px-4 py-2 hover:bg-night/90 text-xs font-mono uppercase tracking-widest transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-              <span>à¦°à¦¿à¦«à§à¦°à§‡à¦¶</span>
+              <span>রিফ্রেশ</span>
             </button>
           </div>
         </div>
@@ -163,7 +163,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
           <div className="flex items-center gap-4 text-ink/70">
             <Layers className="w-5 h-5 text-bengali-red/60" />
             <div className="text-left font-serif">
-              <span className="text-xl font-bold text-ink">{filteredPandals.length}</span> / {pandals.length} à¦®à¦£à§à¦¡à¦ª à¦ªà§à¦°à¦¦à¦°à§à¦¶à¦¿à¦¤
+              <span className="text-xl font-bold text-ink">{filteredPandals.length}</span> / {pandals.length} মণ্ডপ প্রদর্শিত
             </div>
           </div>
 
@@ -178,7 +178,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" />
-              <span>à¦¤à¦¾à¦²à¦¿à¦•à¦¾ (Cards)</span>
+              <span>তালিকা (Cards)</span>
             </button>
             <button
               onClick={() => setViewMode('map')}
@@ -189,7 +189,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
               }`}
             >
               <Map className="w-3.5 h-3.5" />
-              <span>à¦®à¦¾à¦¨à¦šà¦¿à¦¤à§à¦° (Map)</span>
+              <span>মানচিত্র (Map)</span>
             </button>
           </div>
 
@@ -202,7 +202,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
                 type="text" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="à¦®à¦£à§à¦¡à¦ªà§‡à¦° à¦¨à¦¾à¦® à¦¬à¦¾ à¦ à¦¿à¦•à¦¾à¦¨à¦¾ à¦–à§à¦à¦œà§à¦¨..."
+                placeholder="মণ্ডপের নাম বা ঠিকানা খুঁজুন..."
                 className="w-full bg-transparent text-sm font-sans placeholder-ink/40 focus:outline-none"
               />
               {searchQuery && (
@@ -221,7 +221,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 space-y-4">
             <div className="w-10 h-10 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin"></div>
-            <p className="text-xs font-sans text-ink/50 italic">à¦²à§‹à¦¡ à¦¹à¦šà§à¦›à§‡...</p>
+            <p className="text-xs font-sans text-ink/50 italic">লোড হচ্ছে...</p>
           </div>
         ) : viewMode === 'map' ? (
           /* Interactive MapLibre GL Map View */
@@ -237,7 +237,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
               title="Go to Top"
             >
               <ArrowUp className="w-4 h-4" />
-              <span>à¦‰à¦ªà¦°à§‡ à¦¯à¦¾à¦¨ (Top)</span>
+              <span>উপরে যান (Top)</span>
             </button>
           </div>
         ) : filteredPandals.length > 0 ? (
@@ -252,7 +252,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
                     setViewMode('map');
                   }}
                   className="bg-paper p-1.5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
-                  title={`${pandal.name}\n${pandal.address}\n(à¦®à¦¾à¦¨à¦šà¦¿à¦¤à§à¦°à§‡ à¦°à§à¦Ÿ à¦¦à§‡à¦–à¦¤à§‡ à¦•à§à¦²à¦¿à¦• à¦•à¦°à§à¦¨)`}
+                  title={`${pandal.name}\n${pandal.address}\n(মানচিত্রে রুট দেখতে ক্লিক করুন)`}
                 >
                   {/* The Inner Stamp Edge */}
                   <div 
@@ -279,7 +279,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
                           className="text-ink/20 hover:text-bengali-red p-0.5 transition-colors"
-                          title="Google Maps à¦ à¦¦à§‡à¦–à§à¦¨"
+                          title="Google Maps এ দেখুন"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
@@ -296,7 +296,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
 
                     {/* Bottom Row: Post Office / Year */}
                     <div className="text-[7px] font-sans text-ink/40 text-center uppercase tracking-[0.2em] border-t border-ink/10 pt-1.5 relative z-10">
-                      KOLKATA â€¢ 2026
+                      KOLKATA • 2026
                     </div>
                   </div>
                 </div>
@@ -307,16 +307,16 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
           /* Empty state */
           <div className="text-center py-24 bg-[#FAF6ED] border border-ink/10 max-w-xl mx-auto rounded-3xl">
             <p className="text-base font-serif italic text-ink/50">
-              à¦•à§‹à¦¨à§‹ à¦®à¦£à§à¦¡à¦ª à¦–à§à¦à¦œà§‡ à¦ªà¦¾à¦“à§Ÿà¦¾ à¦¯à¦¾à§Ÿà¦¨à¦¿à¥¤
+              কোনো মণ্ডপ খুঁজে পাওয়া যায়নি।
             </p>
             <p className="text-xs font-sans text-ink/40 mt-1">
-              à¦…à¦¨à§à¦¯ à¦•à§‹à¦¨à§‹ à¦®à¦£à§à¦¡à¦ª à¦¬à¦¾ à¦ à¦¿à¦•à¦¾à¦¨à¦¾ à¦¦à¦¿à§Ÿà§‡ à¦…à¦¨à§à¦¸à¦¨à§à¦§à¦¾à¦¨ à¦•à¦°à¦¾à¦° à¦šà§‡à¦·à§à¦Ÿà¦¾ à¦•à¦°à§à¦¨à¥¤
+              অন্য কোনো মণ্ডপ বা ঠিকানা দিয়ে অনুসন্ধান করার চেষ্টা করুন।
             </p>
             <button 
               onClick={() => setSearchQuery('')} 
               className="mt-4 text-xs font-sans text-bengali-red underline hover:text-ink transition-colors font-semibold"
             >
-              à¦…à¦¨à§à¦¸à¦¨à§à¦§à¦¾à¦¨ à¦®à§à¦›à§à¦¨
+              অনুসন্ধান মুছুন
             </button>
           </div>
         )}
@@ -327,4 +327,3 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
 };
 
 export default SouthCalcuttaSection;
-

@@ -26,3 +26,6 @@ logs.txt
 .idea/
 .DS_Store
 Thumbs.db
+
+# Analysis Output
+backend/analysis_output/

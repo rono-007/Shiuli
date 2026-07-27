@@ -33,6 +33,11 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [routeInfo, setRouteInfo] = useState<{ distance: string; duration: string } | null>(null);
+  const [activePandalName, setActivePandalName] = useState<string | null>(selectedPandalName);
+
+  useEffect(() => {
+    setActivePandalName(selectedPandalName);
+  }, [selectedPandalName]);
 
   // Initialize the map
   useEffect(() => {
@@ -139,7 +144,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
   // Fetch route and draw path on map when a pandal is selected
   useEffect(() => {
-    if (!map.current || !isMapLoaded || !selectedPandalName || !userLocation) {
+    if (!map.current || !isMapLoaded || !activePandalName || !userLocation) {
       // Clear route if no pandal or location
       if (map.current && isMapLoaded && map.current.getSource('route-src')) {
         (map.current.getSource('route-src') as maplibregl.GeoJSONSource).setData({
@@ -151,7 +156,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
       return;
     }
 
-    const pandal = pandals.find(p => p.name === selectedPandalName);
+    const pandal = pandals.find(p => p.name === activePandalName);
     if (!pandal) return;
 
     const fetchRoute = async () => {
@@ -234,7 +239,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     };
 
     fetchRoute();
-  }, [selectedPandalName, userLocation, isMapLoaded, pandals]);
+  }, [activePandalName, userLocation, isMapLoaded, pandals]);
 
   // Add/update markers when pandals change or map loads
   useEffect(() => {
@@ -354,6 +359,11 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
           </a>
         </div>
       `;
+
+      // Click listener on marker to trigger route highlighting
+      el.addEventListener('click', () => {
+        setActivePandalName(pandal.name);
+      });
 
       const popup = new maplibregl.Popup({
         offset: 20,

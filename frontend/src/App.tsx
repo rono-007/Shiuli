@@ -198,18 +198,12 @@ function App() {
             >
               {isMuted ? 'ধ্বনি সচল' : 'ধ্বনি বন্ধ'}
             </button>
-            <button 
-              onClick={() => setView(view === 'facilities' ? 'home' : 'facilities')}
-              className={`text-[10px] font-mono uppercase tracking-widest hover:opacity-100 transition-opacity focus:outline-none font-bold ${view === 'facilities' ? 'text-bengali-red' : 'opacity-75 text-[#E5B05C]'}`}
-            >
-              {view === 'facilities' ? 'হোম (Home)' : 'সুযোগ-সুবিধা (Facilities)'}
-            </button>
-            {view !== 'home' && view !== 'facilities' && (
+            {view !== 'home' && (
               <button 
                 onClick={() => setView('home')}
                 className="text-[10px] font-mono uppercase tracking-widest hover:opacity-100 transition-opacity focus:outline-none font-bold text-[#E5B05C]"
               >
-                হোম (Home)
+                হোম (Home) &rarr;
               </button>
             )}
           </div>
@@ -249,6 +243,7 @@ function App() {
                   setView('bonedi');
                 }
               }}
+              onSelectFacilities={() => setView('facilities')}
             />
             
             {/* CONTENT SECTION */}

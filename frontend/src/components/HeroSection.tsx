@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
+import { X, Utensils } from 'lucide-react';
+import KashParticles from './KashParticles';
 
 interface HeroSectionProps {
   onSearch: (query: string) => void;
   onFilterChange: (filter: string) => void;
   activeFilter: string;
   onSelectZone: (zone: 'north' | 'central' | 'south' | 'bonedi') => void;
+  onSelectFacilities?: () => void;
 }
 
-const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
+const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone, onSelectFacilities }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const zones = [
@@ -33,11 +35,14 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
         />
         {/* Dark overlay to ensure text readability */}
         <div className="absolute inset-0 bg-night/50 mix-blend-multiply pointer-events-none"></div>
+
+        {/* Atmospheric Kash Phool Floating Micro-Animations */}
+        <KashParticles />
       </div>
 
       {/* 3-Column Editorial Layout */}
       <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 w-full px-8 md:px-16 lg:px-24 z-20 flex flex-col lg:flex-row items-center justify-between gap-12 max-w-[1600px] mx-auto pointer-events-none">
-        
+
         {/* LEFT COLUMN: Title & CTA */}
         <div className="w-full lg:max-w-xl pointer-events-auto flex flex-col items-start text-left animate-fade-in-slow" style={{ animationDelay: '0.4s' }}>
           {/* Small top label */}
@@ -48,12 +53,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
           </div>
 
           {/* Massive Title */}
-          <h1 className="text-7xl md:text-[8rem] lg:text-[10rem] leading-none font-normal text-paper tracking-tighter mb-12 drop-shadow-2xl">
+          <h1 className="text-7xl md:text-[8rem] lg:text-[10rem] leading-none font-normal text-paper tracking-tighter mb-8 drop-shadow-2xl">
             শিউ<span className="text-[#E5B05C]">লি</span>
           </h1>
 
           {/* Poetic Subtitle */}
-          <div className="mb-12 border-l border-[#E5B05C]/30 pl-6">
+          <div className="mb-8 border-l border-[#E5B05C]/30 pl-6">
             <p className="text-xl md:text-2xl text-paper/90 leading-relaxed font-light drop-shadow-md">
               শহর যখন আলোয় সেজে ওঠে,<br />
               প্রতিটি গলিই হয়ে ওঠে<br />
@@ -61,17 +66,46 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
             </p>
           </div>
 
-          {/* CTA Area */}
-          <div className="flex items-center gap-6">
-            <button 
-              onClick={() => setIsModalOpen(true)}
-              className="bg-[#E5B05C] hover:bg-[#d4a050] text-night px-8 py-4 text-sm font-sans tracking-widest uppercase transition-colors shadow-lg pointer-events-auto"
-            >
-              পথচলা শুরু করুন &rarr;
-            </button>
-            <span className="text-[10px] font-mono tracking-widest text-paper/50">
-              ০৮ মিনিটের পাঠ
-            </span>
+          {/* CTA Area & Live Stats Bar */}
+          <div className="flex flex-col gap-6">
+            <div className="flex items-center gap-4 flex-wrap">
+              <button 
+                onClick={() => setIsModalOpen(true)}
+                className="bg-[#E5B05C] hover:bg-[#d4a050] text-night px-8 py-4 text-sm font-sans tracking-widest uppercase transition-all shadow-lg pointer-events-auto rounded-xl font-bold flex items-center gap-2 group"
+              >
+                <span>পথচলা শুরু করুন</span>
+                <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
+              </button>
+              {onSelectFacilities && (
+                <button
+                  onClick={onSelectFacilities}
+                  className="bg-paper/15 hover:bg-paper/25 text-paper border border-paper/30 hover:border-[#E5B05C] px-6 py-4 text-sm font-serif tracking-wide transition-all shadow-lg pointer-events-auto rounded-xl font-bold flex items-center gap-2"
+                >
+                  <Utensils className="w-4 h-4 text-[#E5B05C]" />
+                  <span>সুযোগ-সুবিধা (Facilities)</span>
+                </button>
+              )}
+            </div>
+
+            {/* LIVE STATS BAR */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-night/60 backdrop-blur-md border border-[#E5B05C]/20 p-4 rounded-2xl max-w-xl pointer-events-auto">
+              <div className="text-left space-y-0.5 border-r border-paper/10 pr-2">
+                <div className="text-xl font-mono font-bold text-[#E5B05C]">১০০+</div>
+                <div className="text-[10px] font-serif text-paper/70">বিখ্যাত মণ্ডপ</div>
+              </div>
+              <div className="text-left space-y-0.5 border-r border-paper/10 pr-2">
+                <div className="text-xl font-mono font-bold text-amber-400">১,০০০+</div>
+                <div className="text-[10px] font-serif text-paper/70">ক্যাফে ও রেস্তোরাঁ</div>
+              </div>
+              <div className="text-left space-y-0.5 border-r border-paper/10 pr-2">
+                <div className="text-xl font-mono font-bold text-[#E5B05C]">১৫+</div>
+                <div className="text-[10px] font-serif text-paper/70">মেট্রো রুট সংযুক্ত</div>
+              </div>
+              <div className="text-left space-y-0.5">
+                <div className="text-xl font-mono font-bold text-amber-400">১২+</div>
+                <div className="text-[10px] font-serif text-paper/70">ঐতিহ্যবাহী রাজবাড়ি</div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -87,7 +121,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
               <span className="text-[#E5B05C] text-[10px] font-mono tracking-widest uppercase">সহযাত্রী</span>
               <div className="h-px flex-grow bg-paper/20"></div>
             </div>
-            
+
             <div className="space-y-4">
               <p className="text-paper/90 text-sm leading-relaxed font-light text-justify">
                 <strong className="text-[#E5B05C] font-normal">শিউলি</strong> একটি আধুনিক ওয়েব মাধ্যম, যা কলকাতার দুর্গাপূজা ভ্রমণের অভিজ্ঞতাকে আরও সহজ ও আনন্দময় করে তোলে। দর্শনার্থীরা সহজেই বিখ্যাত সব প্যান্ডেল ও সেখানে পৌঁছানোর সেরা পথ খুঁজে নেওয়ার পাশাপাশি কাছাকাছি মেট্রো স্টেশন, রেস্তোরাঁ, ক্যাফে, হাসপাতাল, ফার্মেসি এবং পুলিশ স্টেশনের অবস্থান এক ছাদের তলায় পেয়ে যাবেন।
@@ -107,7 +141,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent pointer-events-none"></div>
 
             {/* Close Button */}
-            <button 
+            <button
               onClick={() => setIsModalOpen(false)}
               className="absolute top-4 right-4 w-8 h-8 rounded-full border border-ink/10 flex items-center justify-center text-ink/40 hover:text-bengali-red hover:border-[#8B1E2D]/30 transition-all duration-300 z-20"
             >
@@ -136,11 +170,10 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
                         setIsModalOpen(false);
                       }
                     }}
-                    className={`w-full text-left relative overflow-hidden flex items-stretch border rounded-2xl transition-all duration-500 group/ticket ${
-                      zone.active
+                    className={`w-full text-left relative overflow-hidden flex items-stretch border rounded-2xl transition-all duration-500 group/ticket ${zone.active
                         ? 'border-ink/10 bg-white hover:border-[#D4A24C] hover:shadow-xl hover:-rotate-1 hover:scale-[1.02] cursor-pointer'
                         : 'border-ink/5 bg-ink/5 opacity-55 cursor-not-allowed'
-                    }`}
+                      }`}
                   >
                     {/* Ticket Punch Circles */}
                     <div className="absolute top-1/2 -translate-y-1/2 -left-2.5 w-5 h-5 rounded-full bg-[#FAF6ED] border-r border-ink/15 z-10"></div>
@@ -160,7 +193,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
                           </div>
                           <span className="text-[9px] font-mono text-ink/30 tracking-widest uppercase block mt-0.5">{zone.subtitle}</span>
                         </div>
-                        
+
                         {zone.active ? (
                           <span className="text-[9px] font-mono text-[#8B1E2D] bg-[#8B1E2D]/10 border border-[#8B1E2D]/20 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider animate-pulse">ACTIVE</span>
                         ) : (
@@ -178,7 +211,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
                   </button>
                 ))}
               </div>
-              
+
               {/* Decorative bottom element */}
               <div className="text-center pt-2">
                 <span className="text-[8px] font-mono text-ink/30 tracking-[0.4em] uppercase select-none">শিউলি দুর্গাপূজা ভ্রমণ সহায়িকা</span>

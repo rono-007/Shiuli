@@ -14,19 +14,22 @@
     width: 8px;
     height: 8px;
   }
-  
+
   ::-webkit-scrollbar-track {
-    background: #101827; /* matches the theme night color */
+    background: #101827;
+    /* matches the theme night color */
   }
-  
+
   ::-webkit-scrollbar-thumb {
     background: rgba(247, 241, 231, 0.15);
     border-radius: 9999px;
-    border: 2px solid #101827; /* provides a nice padding look */
+    border: 2px solid #101827;
+    /* provides a nice padding look */
   }
-  
+
   ::-webkit-scrollbar-thumb:hover {
-    background: rgba(212, 162, 76, 0.5); /* matches the theme lamp color */
+    background: rgba(212, 162, 76, 0.5);
+    /* matches the theme lamp color */
   }
 
   body {
@@ -34,7 +37,12 @@
     @apply bg-night text-paper antialiased;
   }
 
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     font-family: 'Tiro Bangla', 'Noto Serif Bengali', serif;
     @apply text-lamp font-normal;
   }
@@ -44,11 +52,11 @@
   .ticket-border {
     border: 1px dashed rgba(212, 162, 76, 0.5);
   }
-  
+
   .ticket-cutout {
     position: relative;
   }
-  
+
   .ticket-cutout::before,
   .ticket-cutout::after {
     content: '';
@@ -87,7 +95,7 @@
     padding: 12px;
     background-color: theme('colors.paper');
     border: 1px solid rgba(42, 42, 42, 0.2);
-    box-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
   }
 
   .writing-vertical {
@@ -100,21 +108,21 @@
     scrollbar-width: thin;
     scrollbar-color: rgba(247, 241, 231, 0.2) transparent;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-thumb {
     background: rgba(247, 241, 231, 0.2);
     border-radius: 9999px;
     transition: background 0.3s ease;
   }
-  
+
   .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(212, 162, 76, 0.6);
   }

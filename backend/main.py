@@ -131,25 +131,24 @@ class Pandal(BaseModel):
     lon: float
     status: str
 
-# Load extracted landmarks & facilities from facilities.json if available
-FACILITIES_FILE = os.path.join(os.path.dirname(__file__), "data", "facilities.json")
-if os.path.exists(FACILITIES_FILE):
-    with open(FACILITIES_FILE, "r", encoding="utf-8") as f:
-        FACILITIES = json.load(f)
-else:
-    FACILITIES = [
-        {"name": "শ্যামবাজার মেট্রো (Shyambazar Metro)", "category": "🚇 Metro", "lat": 22.6006, "lon": 88.3697, "type": "Metro Station"},
-        {"name": "শোভাবাজার সুতানুটি মেট্রো (Shobhabazar Metro)", "category": "🚇 Metro", "lat": 22.5959, "lon": 88.3658, "type": "Metro Station"},
-        {"name": "গিরীশ পার্ক মেট্রো (Girish Park Metro)", "category": "🚇 Metro", "lat": 22.5855, "lon": 88.3653, "type": "Metro Station"},
-        {"name": "মহাত্মা গান্ধী রোড মেট্রো (M.G. Road Metro)", "category": "🚇 Metro", "lat": 22.5801, "lon": 88.3654, "type": "Metro Station"},
-        {"name": "বেলগাছিয়া মেট্রো (Belgachia Metro)", "category": "🚇 Metro", "lat": 22.6062, "lon": 88.3807, "type": "Metro Station"},
-        {"name": "আর জি কর মেডিকেল কলেজ (R.G. Kar Hospital)", "category": "🏥 Hospital", "lat": 22.6042, "lon": 88.3792, "type": "Hospital"},
-        {"name": "কলকাতা মেডিকেল কলেজ (Calcutta Medical College)", "category": "🏥 Hospital", "lat": 22.5746, "lon": 88.3619, "type": "Hospital"},
-        {"name": "শ্যামপুকুর থানা (Shyampukur Police Station)", "category": "👮 Police", "lat": 22.5979, "lon": 88.3678, "type": "Police"},
-        {"name": "ইন্ডিয়ান কফি হাউস (Indian Coffee House)", "category": "🍽️ Restaurant", "lat": 22.5759, "lon": 88.3630, "type": "Restaurant"},
-        {"name": "মিত্র ক্যাফে (Mitra Cafe)", "category": "🍽️ Restaurant", "lat": 22.5959, "lon": 88.3695, "type": "Restaurant"},
-        {"name": "পুঁটিরাম সুইটস (Putiram Sweets)", "category": "🍽️ Restaurant", "lat": 22.5752, "lon": 88.3639, "type": "Restaurant"},
-    ]
+# Defined landmarks & facilities in North Calcutta with coordinates
+FACILITIES = [
+    {"name": "শ্যামবাজার মেট্রো (Shyambazar Metro)", "category": "🚇 Metro", "lat": 22.6006, "lon": 88.3697},
+    {"name": "শোভাবাজার সুতানুটি মেট্রো (Shobhabazar Metro)", "category": "🚇 Metro", "lat": 22.5959, "lon": 88.3658},
+    {"name": "গিরীশ পার্ক মেট্রো (Girish Park Metro)", "category": "🚇 Metro", "lat": 22.5855, "lon": 88.3653},
+    {"name": "মহাত্মা গান্ধী রোড মেট্রো (M.G. Road Metro)", "category": "🚇 Metro", "lat": 22.5801, "lon": 88.3654},
+    {"name": "বেলগাছিয়া মেট্রো (Belgachia Metro)", "category": "🚇 Metro", "lat": 22.6062, "lon": 88.3807},
+    {"name": "আর জি কর মেডিকেল কলেজ (R.G. Kar Hospital)", "category": "🏥 Hospital", "lat": 22.6042, "lon": 88.3792},
+    {"name": "কলকাতা মেডিকেল কলেজ (Calcutta Medical College)", "category": "🏥 Hospital", "lat": 22.5746, "lon": 88.3619},
+    {"name": "শ্যামপুকুর থানা (Shyampukur Police Station)", "category": "👮 Police", "lat": 22.5979, "lon": 88.3678},
+    {"name": "বড়তলা থানা (Burtolla Police Station)", "category": "👮 Police", "lat": 22.5901, "lon": 88.3662},
+    {"name": "উল্টোডাঙা থানা (Ultadanga Police Station)", "category": "👮 Police", "lat": 22.5960, "lon": 88.3845},
+    {"name": "জোড়াসাঁকো থানা (Jorasanko Police Station)", "category": "👮 Police", "lat": 22.5852, "lon": 88.3590},
+    {"name": "আমহার্স্ট স্ট্রিট থানা (Amherst St Police Station)", "category": "👮 Police", "lat": 22.5843, "lon": 88.3696},
+    {"name": "ইন্ডিয়ান কফি হাউস (Indian Coffee House)", "category": "☕ Food/Cafe", "lat": 22.5759, "lon": 88.3630},
+    {"name": "মিত্র ক্যাফে (Mitra Cafe)", "category": "☕ Food/Cafe", "lat": 22.5959, "lon": 88.3695},
+    {"name": "পুঁটিরাম সুইটস (Putiram Sweets)", "category": "☕ Food/Cafe", "lat": 22.5752, "lon": 88.3639},
+]
 
 def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> float:
     # Earth's radius in kilometers
@@ -174,22 +173,9 @@ def read_root():
             "south": "/api/pandals/south",
             "central": "/api/pandals/central",
             "bonedi": "/api/pandals/bonedi",
-            "facilities": "/api/facilities",
             "map": "/api/map"
         }
     }
-
-@app.get("/api/facilities")
-def get_facilities(category: str = "", type: str = ""):
-    """Returns facilities/restaurants/amenities near Kolkata pandals."""
-    result = FACILITIES
-    if category:
-        c_lower = category.lower()
-        result = [f for f in result if c_lower in f.get("category", "").lower()]
-    if type:
-        t_lower = type.lower()
-        result = [f for f in result if t_lower in f.get("type", "").lower()]
-    return result
 
 @app.get("/health")
 def health_check():
@@ -396,6 +382,24 @@ def get_all_pandals():
         "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
     }
     return ORJSONResponse(content=load_all_pandals_data(), headers=headers)
+
+@lru_cache(maxsize=1)
+def load_north_eateries_data() -> List[dict]:
+    file_path = os.path.join(os.path.dirname(__file__), "data", "north_eateries.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="North eateries data file not found")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to read eateries data: {str(e)}")
+
+@app.get("/api/eateries/north")
+def get_north_eateries():
+    headers = {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    }
+    return ORJSONResponse(content=load_north_eateries_data(), headers=headers)
 
 @lru_cache(maxsize=128)
 def generate_map_html(q: str, selected: str = "") -> str:

@@ -7,11 +7,12 @@ import NorthCalcuttaSection from './components/NorthCalcuttaSection';
 import SouthCalcuttaSection from './components/SouthCalcuttaSection';
 import CentralCalcuttaSection from './components/CentralCalcuttaSection';
 import BonediCalcuttaSection from './components/BonediCalcuttaSection';
+import FacilitiesSection from './components/FacilitiesSection';
 import { Heart } from 'lucide-react';
 
 
 function App() {
-  const [view, setView] = useState<'home' | 'north' | 'south' | 'central' | 'bonedi'>('home');
+  const [view, setView] = useState<'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities'>('home');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isMuted, setIsMuted] = useState(true);
@@ -198,11 +199,19 @@ function App() {
               {isMuted ? 'ধ্বনি সচল' : 'ধ্বনি বন্ধ'}
             </button>
             <button 
-              onClick={() => setView('home')}
-              className={`text-[10px] font-mono uppercase tracking-widest hover:opacity-100 transition-opacity focus:outline-none font-bold ${view !== 'home' ? 'text-[#E5B05C]' : 'opacity-60'}`}
+              onClick={() => setView(view === 'facilities' ? 'home' : 'facilities')}
+              className={`text-[10px] font-mono uppercase tracking-widest hover:opacity-100 transition-opacity focus:outline-none font-bold ${view === 'facilities' ? 'text-bengali-red' : 'opacity-75 text-[#E5B05C]'}`}
             >
-              {view !== 'home' ? 'হোম (Home)' : ''}
+              {view === 'facilities' ? 'হোম (Home)' : 'সুযোগ-সুবিধা (Facilities)'}
             </button>
+            {view !== 'home' && view !== 'facilities' && (
+              <button 
+                onClick={() => setView('home')}
+                className="text-[10px] font-mono uppercase tracking-widest hover:opacity-100 transition-opacity focus:outline-none font-bold text-[#E5B05C]"
+              >
+                হোম (Home)
+              </button>
+            )}
           </div>
           
           <div className="text-right space-y-1 opacity-50 hidden md:block">
@@ -221,6 +230,8 @@ function App() {
           <CentralCalcuttaSection onBack={() => setView('home')} />
         ) : view === 'bonedi' ? (
           <BonediCalcuttaSection onBack={() => setView('home')} />
+        ) : view === 'facilities' ? (
+          <FacilitiesSection onBack={() => setView('home')} />
         ) : (
           <>
             <HeroSection 

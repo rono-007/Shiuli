@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import { getNearestEateries } from '../utils/nearbyEateries';
 
 interface Pandal {
   name: string;
@@ -290,8 +291,8 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
             font-size: 11px;
             color: #555;
             line-height: 1.45;
-            margin-bottom: 12px;
-            padding-bottom: 10px;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
             border-bottom: 1px dashed rgba(139, 30, 45, 0.2);
           ">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1E2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;">
@@ -300,6 +301,40 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
             </svg>
             <span>${pandal.address}</span>
           </div>
+
+          {/* NEARBY EATERIES SECTION (Exact Coordinates & Proper Restaurants/Cafes Only) */}
+          ${(() => {
+            const eateries = getNearestEateries(pandal.lat, pandal.lon, 3);
+            if (!eateries || eateries.length === 0) return '';
+            return `
+              <div style="margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 30, 45, 0.2);">
+                <div style="font-size: 10px; font-weight: 700; color: #8B1E2D; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; items-center: center; gap: 4px;">
+                  🍽️ কাছাকাছি রেস্তোরাঁ ও ক্যাফে (Nearby Restaurants & Cafes):
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                  ${eateries.map(e => `
+                    <div style="background: rgba(139, 30, 45, 0.04); border: 1px solid rgba(139, 30, 45, 0.1); padding: 5px 7px; border-radius: 6px; font-size: 10px;">
+                      <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; margin-bottom: 2px;">
+                        <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 170px;">
+                          <span style="font-weight: 700; color: #1a1a1a;">${e.title}</span>
+                          ${e.subTitle ? `<span style="color: #8B1E2D; font-size: 9px; margin-left: 3px;">(${e.subTitle})</span>` : ''}
+                        </div>
+                        <span style="background: rgba(217, 119, 6, 0.15); color: #b45309; padding: 1px 4px; border-radius: 4px; font-weight: 700; font-family: monospace; font-size: 9px; flex-shrink: 0;">
+                          ${e.distanceMeters < 1000 ? `${e.distanceMeters}m` : `${(e.distanceMeters/1000).toFixed(1)}km`} (${e.walkMinutes} min)
+                        </span>
+                      </div>
+                      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 9px; color: #666;">
+                        <span style="font-style: italic; color: #8B1E2D;">${e.categoryName || 'Restaurant'}</span>
+                        <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank" rel="noopener noreferrer" style="color: #8B1E2D; font-weight: bold; text-decoration: underline;" title="GPS স্থানাঙ্ক দেখুন">
+                          Google Maps GPS (${e.lat.toFixed(4)}, ${e.lng.toFixed(4)}) ↗
+                        </a>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+              </div>
+            `;
+          })()}
 
           <a
             href="https://www.google.com/maps/search/?api=1&query=${pandal.lat},${pandal.lon}"
@@ -325,7 +360,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
               <polyline points="15 3 21 3 21 9"/>
               <line x1="10" y1="14" x2="21" y2="3"/>
             </svg>
-            <span>Google Maps এ দিকনির্দেশ দেখুন</span>
+            <span>Google Maps এ মণ্ডপটি দেখুন</span>
           </a>
         </div>
       `;
@@ -334,7 +369,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
         offset: 20,
         closeButton: true,
         closeOnClick: false,
-        maxWidth: '280px',
+        maxWidth: '310px',
       }).setHTML(popupContent);
 
       const marker = new maplibregl.Marker({

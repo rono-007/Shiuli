@@ -4,7 +4,7 @@ import {
   MapMarker,
   MarkerContent,
   MapRoute,
-} from "@/components/ui/map";
+} from "./ui/map";
 
 interface Pandal {
   name: string;

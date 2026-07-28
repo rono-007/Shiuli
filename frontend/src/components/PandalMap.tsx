@@ -248,54 +248,84 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
       // Create popup content
       const popupContent = `
-        <div style="
-          font-family: 'Noto Serif Bengali', Georgia, serif;
-          max-width: 260px;
-          padding: 4px;
-        ">
-          <div style="
-            font-size: 11px;
-            font-family: monospace;
-            color: #8B1E2D;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin-bottom: 4px;
-            opacity: 0.7;
-          ">${String(idx + 1).padStart(2, '0')}</div>
-          <div style="
-            font-size: 16px;
-            font-weight: 600;
+        <div style="font-family: 'Tiro Bangla', 'Noto Serif Bengali', Georgia, serif; width: 250px; padding: 2px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+            <span style="
+              background: rgba(139, 30, 45, 0.1);
+              color: #8B1E2D;
+              font-size: 10px;
+              font-weight: 700;
+              font-family: monospace;
+              padding: 2px 7px;
+              border-radius: 10px;
+              letter-spacing: 0.05em;
+              border: 1px solid rgba(139, 30, 45, 0.2);
+            ">
+              মণ্ডপ #${String(idx + 1).padStart(2, '0')}
+            </span>
+            <span style="
+              font-size: 10px;
+              color: #8B1E2D;
+              font-weight: 600;
+              opacity: 0.8;
+            ">
+              দুর্গাপুজো ২০২৬
+            </span>
+          </div>
+
+          <h3 style="
+            font-size: 15px;
+            font-weight: 700;
             color: #1a1a1a;
-            margin-bottom: 6px;
-            line-height: 1.3;
-          ">${pandal.name}</div>
+            line-height: 1.35;
+            margin: 0 0 6px 0;
+          ">
+            ${pandal.name}
+          </h3>
+
           <div style="
+            display: flex;
+            align-items: flex-start;
+            gap: 5px;
             font-size: 11px;
-            color: #666;
-            line-height: 1.5;
-            margin-bottom: 8px;
-          ">${pandal.address}</div>
+            color: #555;
+            line-height: 1.45;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed rgba(139, 30, 45, 0.2);
+          ">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1E2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;">
+              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            <span>${pandal.address}</span>
+          </div>
+
           <a
             href="https://www.google.com/maps/search/?api=1&query=${pandal.lat},${pandal.lon}"
             target="_blank"
             rel="noopener noreferrer"
             style="
-              display: inline-flex;
+              display: flex;
               align-items: center;
-              gap: 4px;
+              justify-content: center;
+              gap: 6px;
+              background: #8B1E2D;
+              color: #FAF6ED;
+              padding: 7px 12px;
+              border-radius: 8px;
               font-size: 11px;
-              color: #8B1E2D;
-              text-decoration: none;
               font-weight: 600;
-              letter-spacing: 0.05em;
+              text-decoration: none;
+              box-shadow: 0 2px 8px rgba(139, 30, 45, 0.3);
             "
           >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
               <polyline points="15 3 21 3 21 9"/>
               <line x1="10" y1="14" x2="21" y2="3"/>
             </svg>
-            Google Maps এ দেখুন
+            <span>Google Maps এ দিকনির্দেশ দেখুন</span>
           </a>
         </div>
       `;

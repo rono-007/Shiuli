@@ -67,6 +67,9 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
       center: KOLKATA_CENTER,
       zoom: DEFAULT_ZOOM,
       attributionControl: false,
+      cooperativeGestures: true,
+      dragRotate: false,
+      touchPitch: false,
     });
 
     map.current.addControl(

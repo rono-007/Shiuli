@@ -21,32 +21,10 @@ interface PandalMapProps {
 const KOLKATA_CENTER: [number, number] = [88.37, 22.60];
 const DEFAULT_ZOOM = 12.5;
 
-// Free CARTO Voyager basemap (warm vintage tone, guaranteed to load on Vercel)
-const MAP_STYLE: maplibregl.StyleSpecification = {
-  version: 8,
-  sources: {
-    'carto-voyager': {
-      type: 'raster',
-      tiles: [
-        'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
-        'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
-        'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
-        'https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
-      ],
-      tileSize: 256,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    },
-  },
-  layers: [
-    {
-      id: 'carto-voyager-layer',
-      type: 'raster',
-      source: 'carto-voyager',
-      minzoom: 0,
-      maxzoom: 20,
-    },
-  ],
-};
+// CARTO Voyager GL style URL — vector tiles with proper lifecycle events
+// This is the same style mapcn uses; it fires load/style.load correctly
+// so that addSource/addLayer work reliably on Vercel production.
+const MAP_STYLE = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json';
 
 const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, searchQuery }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
@@ -54,6 +32,8 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
   const markersRef = useRef<maplibregl.Marker[]>([]);
   const popupRef = useRef<maplibregl.Popup | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
+  const [isStyleReady, setIsStyleReady] = useState(false);
+  const routeSourceAddedRef = useRef(false);
 
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
   const [routeInfo, setRouteInfo] = useState<{ distance: string; duration: string } | null>(null);
@@ -104,6 +84,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     const handleLoad = () => {
       setIsMapLoaded(true);
       map.current?.resize();
+      console.log('[Map] load event fired');
 
       // Trigger geolocation automatically if available
       navigator.geolocation?.getCurrentPosition(
@@ -115,6 +96,37 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
       );
     };
 
+    // style.load fires when GL style JSON + sprites/glyphs are ready
+    // This is the correct event after which addSource/addLayer are safe
+    const handleStyleLoad = () => {
+      console.log('[Map] style.load event fired — sources/layers are now safe');
+      setIsStyleReady(true);
+
+      // Pre-add route source and layers so they exist before any pandal click
+      if (map.current && !map.current.getSource('route-src')) {
+        map.current.addSource('route-src', {
+          type: 'geojson',
+          data: { type: 'FeatureCollection', features: [] },
+        });
+        map.current.addLayer({
+          id: 'route-casing',
+          type: 'line',
+          source: 'route-src',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: { 'line-color': '#1a1a1a', 'line-width': 8, 'line-opacity': 0.6 },
+        });
+        map.current.addLayer({
+          id: 'route-line',
+          type: 'line',
+          source: 'route-src',
+          layout: { 'line-join': 'round', 'line-cap': 'round' },
+          paint: { 'line-color': '#8B1E2D', 'line-width': 5, 'line-opacity': 0.95 },
+        });
+        routeSourceAddedRef.current = true;
+        console.log('[Map] Pre-added route source + layers');
+      }
+    };
+
     const watchId = navigator.geolocation?.watchPosition(
       (pos) => {
         setUserLocation([pos.coords.longitude, pos.coords.latitude]);
@@ -124,6 +136,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     );
 
     map.current.on('load', handleLoad);
+    map.current.on('style.load', handleStyleLoad);
     map.current.on('error', (e) => {
       console.warn('MapLibre error:', e);
       setIsMapLoaded(true);
@@ -133,7 +146,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     const safetyTimer = setTimeout(() => {
       setIsMapLoaded(true);
       map.current?.resize();
-    }, 1500);
+    }, 3000);
 
     // ResizeObserver to handle container size changes on Vercel/responsive layout
     const resizeObserver = new ResizeObserver(() => {
@@ -180,16 +193,18 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
   }, [userLocation, isMapLoaded]);
 
   // Fetch route and draw path on map when a pandal is selected
+  // Uses the same pattern as mapcn's MapRoute: source+layers are pre-added
+  // on style.load, so here we only update the source data.
   useEffect(() => {
-    if (!map.current || !isMapLoaded || !activePandalName || !userLocation) {
+    if (!map.current || !isStyleReady || !activePandalName || !userLocation) {
       // Clear route if no pandal or location
-      if (map.current && map.current.getSource('route-src')) {
+      if (map.current && routeSourceAddedRef.current) {
         try {
-          (map.current.getSource('route-src') as any).setData({
+          (map.current.getSource('route-src') as any)?.setData({
             type: 'FeatureCollection',
             features: [],
           });
-        } catch (_e) { /* source may not exist yet */ }
+        } catch (_e) { /* ignore */ }
         setRouteInfo(null);
       }
       return;
@@ -200,85 +215,26 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
     console.log('[Route] Drawing route to:', pandal.name, 'from:', userLocation);
 
-    const ensureMapReady = (): Promise<void> => {
-      return new Promise((resolve) => {
-        if (map.current!.isStyleLoaded()) {
-          resolve();
-        } else {
-          const onLoad = () => { resolve(); };
-          map.current!.once('idle', onLoad);
-          // Safety fallback — resolve after 2s even if idle doesn't fire
-          setTimeout(() => { resolve(); }, 2000);
-        }
-      });
-    };
-
-    const addRouteSourceAndLayers = (geojson: any) => {
-      try {
-        if (map.current!.getSource('route-src')) {
-          (map.current!.getSource('route-src') as any).setData(geojson);
-          console.log('[Route] Updated existing route source');
-        } else {
-          map.current!.addSource('route-src', {
-            type: 'geojson',
-            data: geojson,
-          });
-
-          map.current!.addLayer({
-            id: 'route-casing',
-            type: 'line',
-            source: 'route-src',
-            layout: {
-              'line-join': 'round',
-              'line-cap': 'round',
-            },
-            paint: {
-              'line-color': '#1a1a1a',
-              'line-width': 8,
-              'line-opacity': 0.6,
-            },
-          });
-
-          map.current!.addLayer({
-            id: 'route-line',
-            type: 'line',
-            source: 'route-src',
-            layout: {
-              'line-join': 'round',
-              'line-cap': 'round',
-            },
-            paint: {
-              'line-color': '#8B1E2D',
-              'line-width': 5,
-              'line-opacity': 0.95,
-            },
-          });
-          console.log('[Route] Created route source + layers');
-        }
-      } catch (e) {
-        console.error('[Route] Failed to add source/layers:', e);
+    const updateRouteSource = (geojson: any) => {
+      const source = map.current?.getSource('route-src');
+      if (source) {
+        (source as any).setData(geojson);
+        console.log('[Route] Updated route source data');
+      } else {
+        console.error('[Route] route-src source not found — this should not happen');
       }
     };
 
-    const drawRouteOnMap = async (geometry: any, distanceMeters: number, durationSeconds: number) => {
+    const drawRouteOnMap = (geometry: any, distanceMeters: number, durationSeconds: number) => {
       const distanceKm = (distanceMeters / 1000).toFixed(1);
       const durationMin = Math.round(durationSeconds / 60);
       setRouteInfo({ distance: `${distanceKm} km`, duration: `${durationMin > 0 ? durationMin : 1} min` });
 
-      const geojson: any = {
-        type: 'FeatureCollection',
-        features: [
-          {
-            type: 'Feature',
-            properties: {},
-            geometry: geometry,
-          },
-        ],
-      };
-
-      // Wait for map style to be fully loaded before modifying sources
-      await ensureMapReady();
-      addRouteSourceAndLayers(geojson);
+      updateRouteSource({
+        type: 'Feature',
+        properties: {},
+        geometry: geometry,
+      });
 
       // Fit map bounds to encompass user location and target pandal
       const bounds = new maplibregl.LngLatBounds();
@@ -301,7 +257,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
       for (const osrmUrl of osrmServers) {
         try {
-          console.log('[Route] Trying OSRM server:', osrmUrl.split('/route/')[0]);
+          console.log('[Route] Trying:', osrmUrl.split('/route/')[0]);
           const controller = new AbortController();
           const timeoutId = setTimeout(() => controller.abort(), 5000);
 
@@ -309,7 +265,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
           clearTimeout(timeoutId);
 
           if (!res.ok) {
-            console.warn('[Route] OSRM server returned status:', res.status);
+            console.warn('[Route] Server returned status:', res.status);
             continue;
           }
 
@@ -317,19 +273,19 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
           if (data.routes && data.routes.length > 0) {
             const route = data.routes[0];
-            console.log('[Route] OSRM route found, distance:', route.distance, 'duration:', route.duration);
-            await drawRouteOnMap(route.geometry, route.distance, route.duration);
-            return; // Success — exit
+            console.log('[Route] Route found, distance:', route.distance);
+            drawRouteOnMap(route.geometry, route.distance, route.duration);
+            return;
           } else {
-            console.warn('[Route] OSRM returned no routes');
+            console.warn('[Route] No routes returned');
           }
         } catch (err) {
-          console.warn('[Route] OSRM server failed:', err);
+          console.warn('[Route] Server failed:', err);
         }
       }
 
       // All OSRM servers failed — fallback to straight-line
-      console.log('[Route] All OSRM servers failed, drawing straight-line fallback');
+      console.log('[Route] Fallback: drawing straight line');
       const R = 6371000;
       const dLat = (pandal.lat - userLocation[1]) * Math.PI / 180;
       const dLon = (pandal.lon - userLocation[0]) * Math.PI / 180;
@@ -339,18 +295,15 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       const dist = R * c;
 
-      await drawRouteOnMap(
-        {
-          type: 'LineString',
-          coordinates: [userLocation, [pandal.lon, pandal.lat]],
-        },
+      drawRouteOnMap(
+        { type: 'LineString', coordinates: [userLocation, [pandal.lon, pandal.lat]] },
         dist,
         dist / 8.33
       );
     };
 
     fetchRoute();
-  }, [activePandalName, userLocation, isMapLoaded, pandals]);
+  }, [activePandalName, userLocation, isStyleReady, pandals]);
 
   // Add/update markers when pandals change or map loads
   useEffect(() => {

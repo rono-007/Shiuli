@@ -3,7 +3,7 @@ import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
 import { getNearestFacilities } from '../utils/nearbyFacilities';
-import { MapPin, Navigation, Utensils, Star, AlertCircle, Fuel, CreditCard, Hospital, Bath, X, Layers, Pill } from 'lucide-react';
+import { MapPin, Navigation, Utensils, Star, AlertCircle, Fuel, CreditCard, Hospital, Bath, X, Layers, Pill, Train } from 'lucide-react';
 
 interface Pandal {
   name: string;
@@ -624,6 +624,27 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
                 জরুরি সুবিধাসমূহ (ক্লিক করে মানচিত্রে দেখুন)
               </h4>
               <div className="grid grid-cols-2 gap-2 text-[10px]">
+
+                {/* Metro Station */}
+                <button
+                  type="button"
+                  onClick={() => highlightSingleItemOnMap(activeFacilities?.metro, '🚇', '#8B1E2D')}
+                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group col-span-2 ${selectedFacilityTitle === activeFacilities?.metro?.title
+                      ? 'border-bengali-red ring-2 ring-bengali-red/30 bg-bengali-red/10 shadow-sm'
+                      : 'border-ink/5 hover:border-bengali-red/30 text-ink/70'
+                    }`}
+                >
+                  <Train className="w-3.5 h-3.5 text-bengali-red flex-shrink-0" />
+                  <div className="truncate flex-1">
+                    <div className="font-serif font-bold text-bengali-red group-hover:underline truncate flex items-center justify-between">
+                      <span>🚇 {activeFacilities?.metro?.title || 'নিকটবর্তী মেট্রো স্টেশন'}</span>
+                    </div>
+                    <div className="text-[9px] font-mono text-ink/60 flex items-center justify-between mt-0.5">
+                      <span>{activeFacilities?.metro ? `${activeFacilities.metro.distanceMeters}m দূরে` : 'মেট্রো'}</span>
+                      <span className="text-bengali-red font-bold">📍 মানচিত্রে দেখুন</span>
+                    </div>
+                  </div>
+                </button>
 
                 {/* Petrol Pump */}
                 <button

@@ -1,4 +1,5 @@
 import rawFacilities from '../data/north_other_facilities.json';
+import rawMetros from '../data/metros.json';
 
 interface NearbyFacility {
   title: string;
@@ -12,6 +13,7 @@ interface NearbyFacility {
 }
 
 export interface NearestFacilitiesGroup {
+  metro: NearbyFacility | null;
   petrolPump: NearbyFacility | null;
   atm: NearbyFacility | null;
   hospital: NearbyFacility | null;
@@ -31,18 +33,44 @@ function getDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: numbe
 }
 
 export function getNearestFacilities(lat: number, lon: number): NearestFacilitiesGroup {
+  let closestMetro: NearbyFacility | null = null;
   let closestPetrol: NearbyFacility | null = null;
   let closestAtm: NearbyFacility | null = null;
   let closestHospital: NearbyFacility | null = null;
   let closestPharmacy: NearbyFacility | null = null;
   let closestToilet: NearbyFacility | null = null;
 
+  let minDistMetro = Infinity;
   let minDistPetrol = Infinity;
   let minDistAtm = Infinity;
   let minDistHospital = Infinity;
   let minDistPharmacy = Infinity;
   let minDistToilet = Infinity;
 
+  // 1. Search metros.json for closest Kolkata Metro station
+  for (const item of rawMetros as any[]) {
+    if (!item || !item.location || typeof item.location.lat !== 'number' || typeof item.location.lng !== 'number') {
+      continue;
+    }
+    const fLat = item.location.lat;
+    const fLng = item.location.lng;
+    const dist = getDistanceMeters(lat, lon, fLat, fLng);
+    if (dist < minDistMetro) {
+      minDistMetro = dist;
+      closestMetro = {
+        title: item.title,
+        subTitle: item.subTitle || 'Metro Station',
+        categoryName: '🚇 Metro Station',
+        address: item.address,
+        lat: fLat,
+        lng: fLng,
+        distanceMeters: dist,
+        url: `https://www.google.com/maps/search/?api=1&query=${fLat},${fLng}`
+      };
+    }
+  }
+
+  // 2. Search general facilities dataset
   const dataset = rawFacilities as any[];
 
   for (const item of dataset) {
@@ -69,19 +97,25 @@ export function getNearestFacilities(lat: number, lon: number): NearestFacilitie
       url: `https://www.google.com/maps/search/?api=1&query=${fLat},${fLng}`
     };
 
-    // 1. Petrol Pump
+    // Metro check
+    if (dist < minDistMetro && (cat.includes('subway') || cat.includes('metro station') || searchBlob.includes('metro station') || searchBlob.includes('মেট্রো'))) {
+      minDistMetro = dist;
+      closestMetro = facility;
+    }
+
+    // Petrol Pump
     if (dist < minDistPetrol && (cat.includes('gas station') || searchBlob.includes('petrol') || searchBlob.includes('fuel'))) {
       minDistPetrol = dist;
       closestPetrol = facility;
     }
 
-    // 2. ATM
+    // ATM
     if (dist < minDistAtm && (cat.includes('atm') || cat.includes('bank') || searchBlob.includes('atm'))) {
       minDistAtm = dist;
       closestAtm = facility;
     }
 
-    // 3. Hospital / Nursing Home
+    // Hospital / Nursing Home
     if (dist < minDistHospital && (
       cat.includes('hospital') || cat.includes('nursing home') || cat.includes('emergency room') ||
       cat.includes('medical center') || searchBlob.includes('hospital') || searchBlob.includes('nursing home')
@@ -90,7 +124,7 @@ export function getNearestFacilities(lat: number, lon: number): NearestFacilitie
       closestHospital = facility;
     }
 
-    // 4. Pharmacy
+    // Pharmacy
     if (dist < minDistPharmacy && (
       cat.includes('pharmacy') || cat.includes('chemist') || searchBlob.includes('pharmacy') || searchBlob.includes('medicine')
     )) {
@@ -98,7 +132,7 @@ export function getNearestFacilities(lat: number, lon: number): NearestFacilitie
       closestPharmacy = facility;
     }
 
-    // 5. Public Toilet
+    // Public Toilet
     if (dist < minDistToilet && (
       cat.includes('bathroom') || cat.includes('toilet') || searchBlob.includes('toilet') || searchBlob.includes('washroom') || searchBlob.includes('sauchalay')
     )) {
@@ -108,6 +142,7 @@ export function getNearestFacilities(lat: number, lon: number): NearestFacilitie
   }
 
   return {
+    metro: closestMetro,
     petrolPump: closestPetrol,
     atm: closestAtm,
     hospital: closestHospital,

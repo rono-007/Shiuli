@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, Utensils, Fuel, CreditCard, Hospital, Bath, Star, AlertCircle, X, Navigation, Pill } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, Utensils, Fuel, CreditCard, Hospital, Bath, Star, AlertCircle, X, Navigation, Pill, Train } from 'lucide-react';
 import PandalMap from './PandalMap';
 import fallbackData from '../data/north_cords.json';
 import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
@@ -201,6 +201,24 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
                 জরুরি সুবিধাসমূহ (Real Nearby Facilities)
               </h4>
               <div className="grid grid-cols-2 gap-2">
+                {/* Metro Station */}
+                <a
+                  href={facilities.metro?.url || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-bengali-red/5 p-2.5 rounded-xl border border-bengali-red/20 hover:border-bengali-red/50 text-[11px] text-ink/80 transition-all group col-span-2"
+                >
+                  <Train className="w-4 h-4 text-bengali-red flex-shrink-0" />
+                  <div className="truncate flex-1">
+                    <div className="font-serif font-bold text-bengali-red group-hover:underline truncate flex items-center justify-between">
+                      <span>🚇 {facilities.metro?.title || 'নিকটবর্তী মেট্রো স্টেশন'}</span>
+                    </div>
+                    <div className="text-[9px] font-mono text-ink/60 mt-0.5 truncate">
+                      {facilities.metro ? `${facilities.metro.distanceMeters}m দূরে • ${facilities.metro.address || ''}` : 'মেট্রো নেটওয়ার্ক'}
+                    </div>
+                  </div>
+                </a>
+
                 {/* Petrol Pump */}
                 <a
                   href={facilities.petrolPump?.url || '#'}

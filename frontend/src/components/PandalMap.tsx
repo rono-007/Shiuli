@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { getNearestEateries } from '../utils/nearbyEateries';
+import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
+import { MapPin, Navigation, Utensils, Star, AlertCircle, Fuel, CreditCard, Hospital, Bath, X, Layers, ExternalLink } from 'lucide-react';
 
 interface Pandal {
   name: string;
@@ -22,7 +23,7 @@ interface PandalMapProps {
 const KOLKATA_CENTER: [number, number] = [88.37, 22.60];
 const DEFAULT_ZOOM = 12.5;
 
-// Free CARTO Voyager raster basemap specification (reliable across all domains & Vercel)
+// Free CARTO Voyager raster basemap specification
 const MAP_STYLE: maplibregl.StyleSpecification = {
   version: 8,
   sources: {
@@ -53,9 +54,9 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<maplibregl.Map | null>(null);
   const markersRef = useRef<maplibregl.Marker[]>([]);
-  const popupRef = useRef<maplibregl.Popup | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const [activePandal, setActivePandal] = useState<{ pandal: Pandal; idx: number } | null>(null);
 
   // Initialize the map
   useEffect(() => {
@@ -74,15 +75,15 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
     map.current.addControl(
       new maplibregl.AttributionControl({ compact: true }),
-      'bottom-right'
+      'bottom-left'
     );
 
     map.current.addControl(
       new maplibregl.NavigationControl({ showCompass: true }),
-      'top-right'
+      'top-left'
     );
 
-    // Add geolocation control & watch position
+    // Geolocation control
     const geolocate = new maplibregl.GeolocateControl({
       positionOptions: { enableHighAccuracy: true },
       trackUserLocation: true,
@@ -94,13 +95,12 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
       setUserLocation([longitude, latitude]);
     });
 
-    map.current.addControl(geolocate, 'top-right');
+    map.current.addControl(geolocate, 'top-left');
 
     const handleLoad = () => {
       setIsMapLoaded(true);
       map.current?.resize();
 
-      // Trigger geolocation automatically if available
       navigator.geolocation?.getCurrentPosition(
         (pos) => {
           setUserLocation([pos.coords.longitude, pos.coords.latitude]);
@@ -116,13 +116,11 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
       setIsMapLoaded(true);
     });
 
-    // Safety timeout: ensure map loading overlay disappears even if style load event is delayed
     const safetyTimer = setTimeout(() => {
       setIsMapLoaded(true);
       map.current?.resize();
     }, 1500);
 
-    // ResizeObserver to handle container size changes on Vercel/responsive layout
     const resizeObserver = new ResizeObserver(() => {
       map.current?.resize();
     });
@@ -138,7 +136,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     };
   }, []);
 
-  // Add user location marker layer when userLocation changes
+  // User location marker
   useEffect(() => {
     if (!map.current || !isMapLoaded || !userLocation) return;
 
@@ -189,11 +187,9 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
   useEffect(() => {
     if (!map.current || !isMapLoaded) return;
 
-    // Clear existing markers
     markersRef.current.forEach(marker => marker.remove());
     markersRef.current = [];
 
-    // Filter pandals based on search query
     const q = searchQuery.toLowerCase().trim();
     const filteredPandals = q
       ? pandals.filter(p =>
@@ -203,20 +199,20 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
         )
       : pandals;
 
-    // Create markers for each pandal
     filteredPandals.forEach((pandal, idx) => {
-      // Custom marker element
+      const isSelected = activePandal?.pandal.name === pandal.name;
+
       const el = document.createElement('div');
       el.className = 'pandal-marker';
       el.innerHTML = `
         <div style="
-          width: 28px;
-          height: 28px;
-          background: #8B1E2D;
-          border: 2.5px solid #FAF6ED;
+          width: ${isSelected ? '34px' : '28px'};
+          height: ${isSelected ? '34px' : '28px'};
+          background: ${isSelected ? '#8B1E2D' : '#8B1E2D'};
+          border: ${isSelected ? '3px solid #E5B05C' : '2.5px solid #FAF6ED'};
           border-radius: 50% 50% 50% 0;
           transform: rotate(-45deg);
-          box-shadow: 0 2px 8px rgba(139, 30, 45, 0.4);
+          box-shadow: ${isSelected ? '0 4px 14px rgba(139, 30, 45, 0.7)' : '0 2px 8px rgba(139, 30, 45, 0.4)'};
           display: flex;
           align-items: center;
           justify-content: center;
@@ -226,7 +222,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
           <span style="
             transform: rotate(45deg);
             color: #FAF6ED;
-            font-size: 10px;
+            font-size: ${isSelected ? '11px' : '10px'};
             font-weight: 700;
             font-family: monospace;
             line-height: 1;
@@ -234,171 +230,52 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
         </div>
       `;
 
-      // Hover effect
       el.addEventListener('mouseenter', () => {
         const inner = el.querySelector('div') as HTMLElement;
         if (inner) {
           inner.style.transform = 'rotate(-45deg) scale(1.2)';
-          inner.style.boxShadow = '0 4px 16px rgba(139, 30, 45, 0.6)';
         }
       });
       el.addEventListener('mouseleave', () => {
         const inner = el.querySelector('div') as HTMLElement;
         if (inner) {
           inner.style.transform = 'rotate(-45deg) scale(1)';
-          inner.style.boxShadow = '0 2px 8px rgba(139, 30, 45, 0.4)';
         }
       });
 
-      // Create popup content
-      const popupContent = `
-        <div style="font-family: 'Tiro Bangla', 'Noto Serif Bengali', Georgia, serif; width: 250px; padding: 2px;">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-            <span style="
-              background: rgba(139, 30, 45, 0.1);
-              color: #8B1E2D;
-              font-size: 10px;
-              font-weight: 700;
-              font-family: monospace;
-              padding: 2px 7px;
-              border-radius: 10px;
-              letter-spacing: 0.05em;
-              border: 1px solid rgba(139, 30, 45, 0.2);
-            ">
-              মণ্ডপ #${String(idx + 1).padStart(2, '0')}
-            </span>
-            <span style="
-              font-size: 10px;
-              color: #8B1E2D;
-              font-weight: 600;
-              opacity: 0.8;
-            ">
-              দুর্গাপুজো ২০২৬
-            </span>
-          </div>
+      // Click event: Select pandal and open right side card panel
+      el.addEventListener('click', (e) => {
+        e.stopPropagation();
+        setActivePandal({ pandal, idx });
 
-          <h3 style="
-            font-size: 15px;
-            font-weight: 700;
-            color: #1a1a1a;
-            line-height: 1.35;
-            margin: 0 0 6px 0;
-          ">
-            ${pandal.name}
-          </h3>
-
-          <div style="
-            display: flex;
-            align-items: flex-start;
-            gap: 5px;
-            font-size: 11px;
-            color: #555;
-            line-height: 1.45;
-            margin-bottom: 10px;
-            padding-bottom: 8px;
-            border-bottom: 1px dashed rgba(139, 30, 45, 0.2);
-          ">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#8B1E2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;">
-              <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
-              <circle cx="12" cy="10" r="3"/>
-            </svg>
-            <span>${pandal.address}</span>
-          </div>
-
-          ${(() => {
-            const eateries = getNearestEateries(pandal.lat, pandal.lon, 3);
-            if (!eateries || eateries.length === 0) return '';
-            return `
-              <div style="margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 30, 45, 0.2);">
-                <div style="font-size: 10px; font-weight: 700; color: #8B1E2D; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
-                  🍽️ কাছাকাছি রেস্তোরাঁ ও ক্যাফে:
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                  ${eateries.map(e => `
-                    <div style="background: rgba(139, 30, 45, 0.04); border: 1px solid rgba(139, 30, 45, 0.1); padding: 5px 7px; border-radius: 6px; font-size: 10px;">
-                      <div style="display: flex; align-items: center; justify-content: space-between; gap: 4px; margin-bottom: 2px;">
-                        <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 170px;">
-                          <span style="font-weight: 700; color: #1a1a1a;">${e.title}</span>
-                          ${e.subTitle ? `<span style="color: #8B1E2D; font-size: 9px; margin-left: 3px;">(${e.subTitle})</span>` : ''}
-                        </div>
-                        <span style="background: rgba(217, 119, 6, 0.15); color: #b45309; padding: 1px 4px; border-radius: 4px; font-weight: 700; font-family: monospace; font-size: 9px; flex-shrink: 0;">
-                          ${e.distanceMeters < 1000 ? `${e.distanceMeters}m` : `${(e.distanceMeters/1000).toFixed(1)}km`} (${e.walkMinutes} min)
-                        </span>
-                      </div>
-                      <div style="display: flex; align-items: center; justify-content: space-between; font-size: 9px; color: #666;">
-                        <span style="font-style: italic; color: #8B1E2D;">${e.categoryName || 'Restaurant'}</span>
-                        <a href="https://www.google.com/maps/search/?api=1&query=${e.lat},${e.lng}" target="_blank" rel="noopener noreferrer" style="color: #8B1E2D; font-weight: bold; text-decoration: underline;" title="GPS স্থানাঙ্ক দেখুন">
-                          Google Maps GPS (${e.lat.toFixed(4)}, ${e.lng.toFixed(4)}) ↗
-                        </a>
-                      </div>
-                    </div>
-                  `).join('')}
-                </div>
-              </div>
-            `;
-          })()}
-
-          <a
-            href="https://www.google.com/maps/search/?api=1&query=${pandal.lat},${pandal.lon}"
-            target="_blank"
-            rel="noopener noreferrer"
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              gap: 6px;
-              background: #8B1E2D;
-              color: #FAF6ED;
-              padding: 7px 12px;
-              border-radius: 8px;
-              font-size: 11px;
-              font-weight: 600;
-              text-decoration: none;
-              box-shadow: 0 2px 8px rgba(139, 30, 45, 0.3);
-            "
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-              <polyline points="15 3 21 3 21 9"/>
-              <line x1="10" y1="14" x2="21" y2="3"/>
-            </svg>
-            <span>Google Maps এ মণ্ডপটি দেখুন</span>
-          </a>
-        </div>
-      `;
-
-      // Click handler to center and zoom on marker click
-      el.addEventListener('click', () => {
         if (map.current) {
+          const isMobile = window.innerWidth < 768;
           map.current.flyTo({
             center: [pandal.lon, pandal.lat],
             zoom: 15.5,
-            duration: 1200,
+            duration: 1000,
+            padding: {
+              right: isMobile ? 0 : 380,
+              top: isMobile ? 200 : 20,
+              bottom: 20,
+              left: 20,
+            },
             essential: true,
           });
         }
       });
-
-      const popup = new maplibregl.Popup({
-        offset: 20,
-        closeButton: true,
-        closeOnClick: false,
-        maxWidth: '310px',
-      }).setHTML(popupContent);
 
       const marker = new maplibregl.Marker({
         element: el,
         anchor: 'bottom',
       })
         .setLngLat([pandal.lon, pandal.lat])
-        .setPopup(popup)
         .addTo(map.current!);
 
       markersRef.current.push(marker);
     });
 
-    // Fit bounds to show all markers if we have any and no specific pandal is selected
-    if (filteredPandals.length > 0 && !selectedPandalName) {
+    if (filteredPandals.length > 0 && !selectedPandalName && !activePandal) {
       const bounds = new maplibregl.LngLatBounds();
       filteredPandals.forEach(p => bounds.extend([p.lon, p.lat]));
       map.current.fitBounds(bounds, {
@@ -407,56 +284,51 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
         duration: 1000,
       });
     }
-  }, [pandals, isMapLoaded, searchQuery]);
+  }, [pandals, isMapLoaded, searchQuery, activePandal?.pandal.name]);
 
-  // Fly to selected pandal when it changes
+  // Fly to selected pandal from external selection
   useEffect(() => {
     if (!map.current || !isMapLoaded || !selectedPandalName) return;
 
-    const pandal = pandals.find(p => p.name === selectedPandalName);
-    if (!pandal) return;
+    const idx = pandals.findIndex(p => p.name === selectedPandalName);
+    if (idx < 0) return;
 
-    // Close any existing popup
-    if (popupRef.current) {
-      popupRef.current.remove();
-      popupRef.current = null;
-    }
+    const pandal = pandals[idx];
+    setActivePandal({ pandal, idx });
 
+    const isMobile = window.innerWidth < 768;
     map.current.flyTo({
       center: [pandal.lon, pandal.lat],
-      zoom: 16,
-      duration: 1500,
+      zoom: 15.5,
+      duration: 1200,
+      padding: {
+        right: isMobile ? 0 : 380,
+        top: isMobile ? 200 : 20,
+        bottom: 20,
+        left: 20,
+      },
       essential: true,
     });
-
-    // Open the marker's popup after flying
-    setTimeout(() => {
-      const q = searchQuery.toLowerCase().trim();
-      const filteredPandals = q
-        ? pandals.filter(p =>
-            p.name.toLowerCase().includes(q) ||
-            p.address.toLowerCase().includes(q) ||
-            (p.api_name && p.api_name.toLowerCase().includes(q))
-          )
-        : pandals;
-
-      const filteredIdx = filteredPandals.findIndex(p => p.name === selectedPandalName);
-      if (filteredIdx >= 0 && markersRef.current[filteredIdx]) {
-        markersRef.current[filteredIdx].togglePopup();
-      }
-    }, 1600);
   }, [selectedPandalName, isMapLoaded]);
 
+  // Eateries data calculation for active pandal
+  const eateryData = activePandal
+    ? getNearestEateriesWithFallback(activePandal.pandal.lat, activePandal.pandal.lon, 6)
+    : { within1km: [], relativelyFar: [] };
+
+  const hasEateries = eateryData.within1km.length > 0;
+  const eateriesToShow = hasEateries ? eateryData.within1km : eateryData.relativelyFar;
+
   return (
-    <div className="relative w-full h-full rounded-2xl md:rounded-3xl overflow-hidden">
-      {/* Map container */}
+    <div className="relative w-full h-full rounded-2xl md:rounded-3xl overflow-hidden flex">
+      {/* Map Container */}
       <div
         ref={mapContainer}
         className="w-full h-full"
         style={{ minHeight: '500px' }}
       />
 
-      {/* Loading overlay */}
+      {/* Loading Overlay */}
       {!isMapLoaded && (
         <div className="absolute inset-0 bg-[#FAF6ED] flex flex-col items-center justify-center gap-4 z-10">
           <div className="w-10 h-10 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin" />
@@ -464,7 +336,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
         </div>
       )}
 
-      {/* Map legend */}
+      {/* Map Legend */}
       <div className="absolute bottom-4 left-4 bg-[#FAF6ED]/95 backdrop-blur-sm border border-ink/10 rounded-xl px-4 py-3 z-10 shadow-md space-y-2">
         <div className="flex items-center gap-2">
           <div style={{
@@ -489,6 +361,152 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
           </div>
         )}
       </div>
+
+      {/* RIGHT SIDE PANEL: Perfectly Fitted Details Card */}
+      {activePandal && (
+        <div className="absolute top-0 right-0 bottom-0 w-full sm:w-[360px] md:w-[400px] bg-[#FAF6ED] border-l border-ink/15 shadow-2xl z-30 flex flex-col justify-between overflow-hidden animate-slide-in-right">
+          
+          {/* Header Bar */}
+          <div className="bg-gradient-to-r from-bengali-red to-[#a02535] px-5 py-4 text-white flex items-center justify-between shadow-md flex-shrink-0">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <span className="text-xs font-mono font-bold bg-white/20 px-2 py-0.5 rounded text-white tracking-widest flex-shrink-0">
+                NC{String(activePandal.idx + 1).padStart(2, '0')}
+              </span>
+              <h3 className="text-base font-serif font-bold text-white truncate">
+                {activePandal.pandal.name}
+              </h3>
+            </div>
+            <button
+              onClick={() => setActivePandal(null)}
+              className="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white transition-colors flex-shrink-0"
+              title="বন্ধ করুন"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+
+          {/* Scrollable Body */}
+          <div className="p-5 overflow-y-auto flex-1 space-y-4 font-sans text-xs custom-scrollbar">
+            
+            {/* Address & Navigation */}
+            <div className="bg-paper p-4 rounded-2xl border border-ink/10 space-y-3">
+              <div className="flex items-start gap-2.5 text-ink/80">
+                <MapPin className="w-4 h-4 text-bengali-red flex-shrink-0 mt-0.5" />
+                <span className="leading-relaxed">{activePandal.pandal.address}</span>
+              </div>
+
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${activePandal.pandal.lat},${activePandal.pandal.lon}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 bg-bengali-red text-white py-2.5 px-4 rounded-xl font-bold hover:bg-bengali-red/90 transition-colors shadow-sm text-xs"
+              >
+                <Navigation className="w-3.5 h-3.5" />
+                <span>Google Maps এ মণ্ডপটি দেখুন ↗</span>
+              </a>
+            </div>
+
+            {/* Facility Placeholders */}
+            <div className="space-y-2">
+              <h4 className="text-[10px] font-serif font-bold text-ink/50 uppercase tracking-wider flex items-center gap-1">
+                <Layers className="w-3 h-3" />
+                অন্যান্য জরুরি সুবিধা
+              </h4>
+              <div className="grid grid-cols-2 gap-2 text-[10px]">
+                <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70">
+                  <Fuel className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
+                  <div>
+                    <div className="font-serif font-bold">পেট্রোল পাম্প</div>
+                    <div className="text-[9px] font-mono text-ink/40">~৪৫০m</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70">
+                  <CreditCard className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                  <div>
+                    <div className="font-serif font-bold">এটিএম বুথ</div>
+                    <div className="text-[9px] font-mono text-ink/40">~২০০m</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70">
+                  <Hospital className="w-3.5 h-3.5 text-bengali-red flex-shrink-0" />
+                  <div>
+                    <div className="font-serif font-bold">প্রাথমিক চিকিৎসা</div>
+                    <div className="text-[9px] font-mono text-ink/40">~৩০০m</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70">
+                  <Bath className="w-3.5 h-3.5 text-sky-600 flex-shrink-0" />
+                  <div>
+                    <div className="font-serif font-bold">পাবলিক শৌচালয়</div>
+                    <div className="text-[9px] font-mono text-ink/40">~১৫০m</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Nearby Eateries & Cafes */}
+            <div className="space-y-3 pt-1 border-t border-ink/10">
+              <div className="flex items-center justify-between">
+                <h4 className="text-xs font-serif font-bold text-bengali-red flex items-center gap-1.5">
+                  <Utensils className="w-3.5 h-3.5" />
+                  <span>কাছাকাছি রেস্তোরাঁ ও ক্যাফে</span>
+                </h4>
+                <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold ${
+                  hasEateries ? 'bg-emerald-500/10 text-emerald-800' : 'bg-amber-500/10 text-amber-800'
+                }`}>
+                  {hasEateries ? `${eateryData.within1km.length} টি (≤১km)` : `দূরবর্তী ${eateryData.relativelyFar.length} টি`}
+                </span>
+              </div>
+
+              {!hasEateries && (
+                <div className="flex items-start gap-1.5 p-2 bg-red-500/5 border border-red-500/15 rounded-xl text-red-900 text-[11px] font-serif">
+                  <AlertCircle className="w-3.5 h-3.5 text-bengali-red flex-shrink-0 mt-0.5" />
+                  <span>১ কিলোমিটারের মধ্যে কোনো ক্যাফে বা রেস্তোরাঁ পাওয়া যায়নি। কিছুটা দূরের তালিকা:</span>
+                </div>
+              )}
+
+              <div className="space-y-2">
+                {eateriesToShow.map((eatery, eIdx) => (
+                  <div
+                    key={eIdx}
+                    className="bg-paper p-3 rounded-xl border border-ink/8 hover:border-bengali-red/30 transition-all space-y-1.5"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <h5 className="font-serif font-bold text-ink text-xs truncate">
+                        {eatery.title}
+                      </h5>
+                      <span className="bg-amber-500/10 text-amber-900 border border-amber-500/20 px-1.5 py-0.5 rounded text-[9px] font-mono font-bold flex-shrink-0">
+                        {hasEateries ? `${eatery.distanceMeters}m` : `${(eatery.distanceMeters / 1000).toFixed(1)}km`}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between text-[10px] text-ink/50 font-sans">
+                      <span>{eatery.categoryName || 'Restaurant'}</span>
+                      {eatery.totalScore && (
+                        <span className="flex items-center gap-0.5 text-amber-700 font-mono font-bold">
+                          <Star className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
+                          {eatery.totalScore.toFixed(1)}
+                        </span>
+                      )}
+                    </div>
+
+                    <a
+                      href={eatery.url || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1 text-[10px] text-bengali-red font-bold hover:underline pt-0.5"
+                    >
+                      <ExternalLink className="w-2.5 h-2.5" />
+                      Google Maps GPS ({eatery.lat.toFixed(4)}, {eatery.lng.toFixed(4)}) ↗
+                    </a>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
     </div>
   );
 };

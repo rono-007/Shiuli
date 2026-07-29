@@ -128,12 +128,21 @@
   }
 
   /* MapLibre Custom Popup Styling */
+  .maplibregl-popup {
+    max-width: 320px !important;
+    z-index: 30 !important;
+  }
+
   .maplibregl-popup-content {
     background: #FAF6ED !important;
     border: 1.5px solid rgba(139, 30, 45, 0.25) !important;
     border-radius: 16px !important;
     box-shadow: 0 12px 32px rgba(16, 24, 39, 0.25), 0 2px 6px rgba(139, 30, 45, 0.15) !important;
-    padding: 16px 18px !important;
+    padding: 14px 16px !important;
+    max-height: 380px !important;
+    overflow-y: auto !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(139, 30, 45, 0.3) transparent;
   }
 
   .maplibregl-popup-tip {
@@ -144,12 +153,13 @@
   .maplibregl-popup-close-button {
     font-size: 18px !important;
     color: #8B1E2D !important;
-    padding: 6px 10px !important;
+    padding: 4px 8px !important;
     border-radius: 50% !important;
     transition: all 0.2s ease !important;
-    top: 8px !important;
-    right: 8px !important;
+    top: 6px !important;
+    right: 6px !important;
     outline: none !important;
+    z-index: 10 !important;
   }
 
   .maplibregl-popup-close-button:hover {

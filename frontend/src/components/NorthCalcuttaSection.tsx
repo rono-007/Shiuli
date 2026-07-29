@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, ArrowUp, Utensils, Fuel, CreditCard, Hospital, Bath, Star, AlertCircle, X, Navigation } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, ArrowUp, Utensils, Fuel, CreditCard, Hospital, Bath, Star, AlertCircle, X, Navigation, Pill } from 'lucide-react';
 import PandalMap from './PandalMap';
 import fallbackData from '../data/north_cords.json';
 import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
@@ -216,11 +216,18 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
                 <div className="flex items-center gap-2 bg-paper p-2.5 rounded-xl border border-ink/5 text-[11px] text-ink/70">
                   <Hospital className="w-4 h-4 text-bengali-red" />
                   <div>
-                    <div className="font-serif font-bold">প্রাথমিক চিকিৎসা</div>
+                    <div className="font-serif font-bold">হাসপাতাল / নার্সিং হোম</div>
                     <div className="text-[9px] font-mono text-ink/40">~৩০০m</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 bg-paper p-2.5 rounded-xl border border-ink/5 text-[11px] text-ink/70">
+                  <Pill className="w-4 h-4 text-purple-600" />
+                  <div>
+                    <div className="font-serif font-bold">ফার্মেসি / ওষুধের দোকান</div>
+                    <div className="text-[9px] font-mono text-ink/40">~২৫০m</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-paper p-2.5 rounded-xl border border-ink/5 text-[11px] text-ink/70 col-span-2 sm:col-span-1">
                   <Bath className="w-4 h-4 text-sky-600" />
                   <div>
                     <div className="font-serif font-bold">পাবলিক শৌচালয়</div>

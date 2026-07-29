@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
-import { MapPin, Navigation, Utensils, Star, AlertCircle, Fuel, CreditCard, Hospital, Bath, X, Layers, ExternalLink } from 'lucide-react';
+import { MapPin, Navigation, Utensils, Star, AlertCircle, Fuel, CreditCard, Hospital, Bath, X, Layers, ExternalLink, Pill } from 'lucide-react';
 
 interface Pandal {
   name: string;
@@ -430,11 +430,18 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
                 <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70">
                   <Hospital className="w-3.5 h-3.5 text-bengali-red flex-shrink-0" />
                   <div>
-                    <div className="font-serif font-bold">প্রাথমিক চিকিৎসা</div>
+                    <div className="font-serif font-bold">হাসপাতাল / নার্সিং হোম</div>
                     <div className="text-[9px] font-mono text-ink/40">~৩০০m</div>
                   </div>
                 </div>
                 <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70">
+                  <Pill className="w-3.5 h-3.5 text-purple-600 flex-shrink-0" />
+                  <div>
+                    <div className="font-serif font-bold">ফার্মেসি / ওষুধের দোকান</div>
+                    <div className="text-[9px] font-mono text-ink/40">~২৫০m</div>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70 col-span-2">
                   <Bath className="w-3.5 h-3.5 text-sky-600 flex-shrink-0" />
                   <div>
                     <div className="font-serif font-bold">পাবলিক শৌচালয়</div>

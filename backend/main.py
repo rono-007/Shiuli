@@ -102,6 +102,12 @@ async def log_requests(request: Request, call_next):
         "accept_language": request.headers.get("accept-language", "")[:60],
         "host": request.headers.get("host", ""),
         "origin": request.headers.get("origin", ""),
+        "country": (
+            request.headers.get("cf-ipcountry") or
+            request.headers.get("x-country") or
+            request.headers.get("x-appengine-country") or
+            "Unknown"
+        ),
         "response_size": int(response.headers.get("content-length", 0)),
     }
     request_logs.appendleft(log_entry)
@@ -208,7 +214,11 @@ def get_admin_stats(request: Request, _ = Depends(verify_admin)):
             "uptime_seconds": uptime_seconds,
             "status_breakdown": {}, "top_endpoints": [],
             "slowest_endpoints": [], "browser_breakdown": {},
-            "total_response_bytes": 0,
+            "device_breakdown": {"Desktop": 0, "Mobile": 0, "Tablet": 0, "Bot": 0},
+            "ip_breakdown": [], "referer_breakdown": [],
+            "country_breakdown": {}, "latency_buckets": {},
+            "method_breakdown": {}, "time_series": [],
+            "recent_errors": [], "total_response_bytes": 0,
         })
 
     errors = sum(1 for l in logs if l["status"] >= 400)
@@ -225,7 +235,13 @@ def get_admin_stats(request: Request, _ = Depends(verify_admin)):
         bucket = f"{l['status'] // 100}xx"
         status_breakdown[bucket] = status_breakdown.get(bucket, 0) + 1
 
-    # Endpoint frequency
+    # Method breakdown
+    method_breakdown = {}
+    for l in logs:
+        m = l["method"]
+        method_breakdown[m] = method_breakdown.get(m, 0) + 1
+
+    # Endpoint frequency & durations
     endpoint_counts: dict = {}
     endpoint_durations: dict = {}
     for l in logs:
@@ -242,10 +258,75 @@ def get_admin_stats(request: Request, _ = Depends(verify_admin)):
         endpoint_avg_dur[ep] = round(sum(durs) / len(durs), 2)
     slowest_endpoints = sorted(endpoint_avg_dur.items(), key=lambda x: x[1], reverse=True)[:5]
 
-    unique_ips = len(set(l["ip"] for l in logs))
+    # IP breakdown & locations
+    ip_counts: dict = {}
+    ip_last_seen: dict = {}
+    ip_country: dict = {}
+    for l in logs:
+        ip = l["ip"]
+        ip_counts[ip] = ip_counts.get(ip, 0) + 1
+        if ip not in ip_last_seen:
+            ip_last_seen[ip] = l["timestamp"]
+            ip_country[ip] = l.get("country", "Unknown")
+    
+    unique_ips = len(ip_counts)
+    top_ips = sorted(ip_counts.items(), key=lambda x: x[1], reverse=True)[:10]
+    ip_breakdown = [
+        {
+            "ip": ip,
+            "count": count,
+            "pct": round(count / total * 100, 1),
+            "last_seen": ip_last_seen[ip],
+            "country": ip_country.get(ip, "Unknown")
+        }
+        for ip, count in top_ips
+    ]
+
+    # Referer domain breakdown
+    referer_counts: dict = {}
+    for l in logs:
+        ref = l.get("referer", "")
+        if not ref:
+            domain = "Direct / Bookmark / App"
+        else:
+            try:
+                domain = ref.split("//")[-1].split("/")[0]
+            except Exception:
+                domain = ref[:30]
+        referer_counts[domain] = referer_counts.get(domain, 0) + 1
+    top_referers = sorted(referer_counts.items(), key=lambda x: x[1], reverse=True)[:8]
+    referer_breakdown = [{"domain": d, "count": c, "pct": round(c / total * 100, 1)} for d, c in top_referers]
+
+    # Country breakdown
+    country_breakdown: dict = {}
+    for l in logs:
+        c = l.get("country", "Unknown")
+        country_breakdown[c] = country_breakdown.get(c, 0) + 1
+
+    # Device type breakdown (Desktop vs Mobile vs Tablet vs Bot)
+    device_breakdown = {"Desktop": 0, "Mobile": 0, "Tablet": 0, "Bot": 0}
+    for l in logs:
+        ua = l.get("user_agent", "").lower()
+        if "bot" in ua or "crawler" in ua or "spider" in ua or "python" in ua:
+            device_breakdown["Bot"] += 1
+        elif "ipad" in ua or "tablet" in ua or ("android" in ua and "mobile" not in ua):
+            device_breakdown["Tablet"] += 1
+        elif "mobile" in ua or "iphone" in ua or "ipod" in ua or "android" in ua:
+            device_breakdown["Mobile"] += 1
+        else:
+            device_breakdown["Desktop"] += 1
+
+    # Latency distribution buckets
+    latency_buckets = {
+        "<50ms": sum(1 for d in durations if d < 50),
+        "50-150ms": sum(1 for d in durations if 50 <= d < 150),
+        "150-300ms": sum(1 for d in durations if 150 <= d < 300),
+        "300-500ms": sum(1 for d in durations if 300 <= d < 500),
+        ">500ms": sum(1 for d in durations if d >= 500),
+    }
 
     # Requests per minute (over last 5 minutes)
-    five_min_ago = (now - __import__('datetime').timedelta(minutes=5)).isoformat()
+    five_min_ago = (now - datetime.timedelta(minutes=5)).isoformat()
     recent_logs = [l for l in logs if l["timestamp"] >= five_min_ago]
     req_per_min = round(len(recent_logs) / 5, 1) if recent_logs else 0
 
@@ -263,11 +344,56 @@ def get_admin_stats(request: Request, _ = Depends(verify_admin)):
             browser = "Edge"
         elif "opr" in ua or "opera" in ua:
             browser = "Opera"
-        elif "python" in ua:
-            browser = "Python/Bot"
+        elif "python" in ua or "bot" in ua:
+            browser = "Python / Bot"
         else:
             browser = "Other"
         browser_breakdown[browser] = browser_breakdown.get(browser, 0) + 1
+
+    # Time-series (last 12 5-minute windows or 10-minute windows)
+    time_series = []
+    if logs:
+        # Sort logs by timestamp ascending for time-series grouping
+        chronological_logs = list(reversed(logs))
+        # Group into 5-minute buckets
+        bucket_map: dict = {}
+        for l in chronological_logs:
+            try:
+                dt = datetime.fromisoformat(l["timestamp"])
+                # Round dt to 5 min bucket
+                minute_bucket = (dt.minute // 5) * 5
+                bucket_key = dt.strftime(f"%H:{minute_bucket:02d}")
+                if bucket_key not in bucket_map:
+                    bucket_map[bucket_key] = {"count": 0, "errors": 0, "durations": []}
+                bucket_map[bucket_key]["count"] += 1
+                if l["status"] >= 400:
+                    bucket_map[bucket_key]["errors"] += 1
+                bucket_map[bucket_key]["durations"].append(l["duration_ms"])
+            except Exception:
+                pass
+        
+        for time_key, bdata in list(bucket_map.items())[-12:]:
+            avg_dur = round(sum(bdata["durations"]) / len(bdata["durations"]), 1) if bdata["durations"] else 0
+            time_series.append({
+                "time": time_key,
+                "requests": bdata["count"],
+                "errors": bdata["errors"],
+                "avg_ms": avg_dur
+            })
+
+    # Recent errors (last 10)
+    recent_errors = [
+        {
+            "id": l["id"],
+            "timestamp": l["timestamp"],
+            "method": l["method"],
+            "path": l["path"],
+            "status": l["status"],
+            "duration_ms": l["duration_ms"],
+            "ip": l["ip"]
+        }
+        for l in logs if l["status"] >= 400
+    ][:10]
 
     # Total response bytes
     total_response_bytes = sum(l.get("response_size", 0) for l in logs)
@@ -284,10 +410,60 @@ def get_admin_stats(request: Request, _ = Depends(verify_admin)):
         "req_per_min": req_per_min,
         "uptime_seconds": uptime_seconds,
         "status_breakdown": status_breakdown,
+        "method_breakdown": method_breakdown,
+        "device_breakdown": device_breakdown,
+        "ip_breakdown": ip_breakdown,
+        "referer_breakdown": referer_breakdown,
+        "country_breakdown": country_breakdown,
+        "latency_buckets": latency_buckets,
+        "time_series": time_series,
         "top_endpoints": [{"endpoint": e, "count": c} for e, c in top_endpoints],
         "slowest_endpoints": [{"endpoint": e, "avg_ms": d} for e, d in slowest_endpoints],
         "browser_breakdown": browser_breakdown,
+        "recent_errors": recent_errors,
         "total_response_bytes": total_response_bytes,
+    })
+
+@app.get("/admin/data-overview")
+def get_data_overview(request: Request, _ = Depends(verify_admin)):
+    """Return counts and metadata for all data collections (admin only)."""
+    collections = []
+    data_loaders = [
+        ("North Pandals", "north_cords.json", "/api/pandals/north", load_pandals_data),
+        ("South Pandals", "south_kolkata.json", "/api/pandals/south", load_south_pandals_data),
+        ("Central Pandals", "central_kolkata.json", "/api/pandals/central", load_central_pandals_data),
+        ("Bonedi Pandals", "bonedi_kolkata.json", "/api/pandals/bonedi", load_bonedi_pandals_data),
+        ("North Eateries", "north_eateries.json", "/api/eateries/north", load_north_eateries_data),
+        ("North Facilities", "north_other_facilities.json", "/api/facilities/north", load_north_facilities_data),
+        ("Metro Stations", "metros.json", "/api/metros", load_metros_data),
+    ]
+    for label, filename, endpoint, loader in data_loaders:
+        file_path = os.path.join(os.path.dirname(__file__), "data", filename)
+        try:
+            data = loader()
+            file_size = os.path.getsize(file_path) if os.path.exists(file_path) else 0
+            collections.append({
+                "name": label,
+                "file": filename,
+                "endpoint": endpoint,
+                "count": len(data) if isinstance(data, list) else 0,
+                "file_size_bytes": file_size,
+            })
+        except Exception:
+            collections.append({
+                "name": label,
+                "file": filename,
+                "endpoint": endpoint,
+                "count": 0,
+                "file_size_bytes": 0,
+                "error": "Failed to load",
+            })
+
+    return JSONResponse(content={
+        "collections": collections,
+        "total_items": sum(c["count"] for c in collections),
+        "total_size_bytes": sum(c["file_size_bytes"] for c in collections),
+        "server_start": server_start_time.isoformat(),
     })
 
 @lru_cache(maxsize=1)
@@ -420,6 +596,24 @@ def get_north_facilities():
         "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
     }
     return ORJSONResponse(content=load_north_facilities_data(), headers=headers)
+
+@lru_cache(maxsize=1)
+def load_metros_data() -> List[dict]:
+    file_path = os.path.join(os.path.dirname(__file__), "data", "metros.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Metros data file not found")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error loading metros data: {str(e)}")
+
+@app.get("/api/metros")
+def get_metros():
+    headers = {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    }
+    return ORJSONResponse(content=load_metros_data(), headers=headers)
 
 @lru_cache(maxsize=128)
 def generate_map_html(q: str, selected: str = "") -> str:

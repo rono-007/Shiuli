@@ -1,6 +1,6 @@
 import rawFacilities from '../data/north_other_facilities.json';
 
-export interface NearbyFacility {
+interface NearbyFacility {
   title: string;
   subTitle?: string | null;
   categoryName?: string | null;

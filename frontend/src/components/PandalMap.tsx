@@ -235,10 +235,10 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     const q = searchQuery.toLowerCase().trim();
     const filteredPandals = q
       ? pandals.filter(p =>
-          p.name.toLowerCase().includes(q) ||
-          p.address.toLowerCase().includes(q) ||
-          (p.api_name && p.api_name.toLowerCase().includes(q))
-        )
+        p.name.toLowerCase().includes(q) ||
+        p.address.toLowerCase().includes(q) ||
+        (p.api_name && p.api_name.toLowerCase().includes(q))
+      )
       : pandals;
 
     filteredPandals.forEach((pandal, idx) => {
@@ -598,7 +598,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
           {/* Scrollable Body */}
           <div className="p-4 sm:p-5 overflow-y-auto flex-1 space-y-4 font-sans text-xs custom-scrollbar">
-            
+
             {/* Address & Navigation */}
             <div className="bg-paper p-3.5 sm:p-4 rounded-2xl border border-ink/10 space-y-2.5">
               <div className="flex items-start gap-2.5 text-ink/80">
@@ -624,16 +624,15 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
                 জরুরি সুবিধাসমূহ (ক্লিক করে মানচিত্রে দেখুন)
               </h4>
               <div className="grid grid-cols-2 gap-2 text-[10px]">
-                
+
                 {/* Petrol Pump */}
                 <button
                   type="button"
                   onClick={() => highlightSingleItemOnMap(activeFacilities?.petrolPump, '⛽', '#D97706')}
-                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${
-                    selectedFacilityTitle === activeFacilities?.petrolPump?.title
+                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${selectedFacilityTitle === activeFacilities?.petrolPump?.title
                       ? 'border-amber-600 ring-2 ring-amber-500/30 bg-amber-500/10 shadow-sm'
                       : 'border-ink/5 hover:border-amber-600/30 text-ink/70'
-                  }`}
+                    }`}
                 >
                   <Fuel className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
                   <div className="truncate">
@@ -651,11 +650,10 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
                 <button
                   type="button"
                   onClick={() => highlightSingleItemOnMap(activeFacilities?.atm, '💳', '#059669')}
-                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${
-                    selectedFacilityTitle === activeFacilities?.atm?.title
+                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${selectedFacilityTitle === activeFacilities?.atm?.title
                       ? 'border-emerald-600 ring-2 ring-emerald-500/30 bg-emerald-500/10 shadow-sm'
                       : 'border-ink/5 hover:border-emerald-600/30 text-ink/70'
-                  }`}
+                    }`}
                 >
                   <CreditCard className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
                   <div className="truncate">
@@ -673,11 +671,10 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
                 <button
                   type="button"
                   onClick={() => highlightSingleItemOnMap(activeFacilities?.hospital, '🏥', '#8B1E2D')}
-                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${
-                    selectedFacilityTitle === activeFacilities?.hospital?.title
+                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${selectedFacilityTitle === activeFacilities?.hospital?.title
                       ? 'border-bengali-red ring-2 ring-bengali-red/30 bg-bengali-red/10 shadow-sm'
                       : 'border-ink/5 hover:border-bengali-red/30 text-ink/70'
-                  }`}
+                    }`}
                 >
                   <Hospital className="w-3.5 h-3.5 text-bengali-red flex-shrink-0" />
                   <div className="truncate">
@@ -695,11 +692,10 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
                 <button
                   type="button"
                   onClick={() => highlightSingleItemOnMap(activeFacilities?.pharmacy, '💊', '#7C3AED')}
-                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${
-                    selectedFacilityTitle === activeFacilities?.pharmacy?.title
+                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${selectedFacilityTitle === activeFacilities?.pharmacy?.title
                       ? 'border-purple-600 ring-2 ring-purple-500/30 bg-purple-500/10 shadow-sm'
                       : 'border-ink/5 hover:border-purple-600/30 text-ink/70'
-                  }`}
+                    }`}
                 >
                   <Pill className="w-3.5 h-3.5 text-purple-600 flex-shrink-0" />
                   <div className="truncate">
@@ -717,11 +713,10 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
                 <button
                   type="button"
                   onClick={() => highlightSingleItemOnMap(activeFacilities?.toilet, '🚻', '#0284C7')}
-                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group col-span-2 ${
-                    selectedFacilityTitle === activeFacilities?.toilet?.title
+                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group col-span-2 ${selectedFacilityTitle === activeFacilities?.toilet?.title
                       ? 'border-sky-600 ring-2 ring-sky-500/30 bg-sky-500/10 shadow-sm'
                       : 'border-ink/5 hover:border-sky-600/30 text-ink/70'
-                  }`}
+                    }`}
                 >
                   <Bath className="w-3.5 h-3.5 text-sky-600 flex-shrink-0" />
                   <div className="truncate">
@@ -744,9 +739,8 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
                   <Utensils className="w-3.5 h-3.5" />
                   <span>কাছাকাছি রেস্তোরাঁ ও ক্যাফে</span>
                 </h4>
-                <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold ${
-                  hasEateries ? 'bg-emerald-500/10 text-emerald-800' : 'bg-amber-500/10 text-amber-800'
-                }`}>
+                <span className={`px-2 py-0.5 rounded text-[9px] font-mono font-bold ${hasEateries ? 'bg-emerald-500/10 text-emerald-800' : 'bg-amber-500/10 text-amber-800'
+                  }`}>
                   {hasEateries ? `${eateryData.within1km.length} টি (≤১km)` : `দূরবর্তী ${eateryData.relativelyFar.length} টি`}
                 </span>
               </div>
@@ -766,11 +760,10 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
                     <div
                       key={eIdx}
                       onClick={() => highlightSingleItemOnMap(eatery, '🍽️', '#B45309')}
-                      className={`bg-paper p-3 rounded-xl border transition-all cursor-pointer space-y-1.5 group ${
-                        isSelectedEatery
+                      className={`bg-paper p-3 rounded-xl border transition-all cursor-pointer space-y-1.5 group ${isSelectedEatery
                           ? 'border-amber-600 ring-2 ring-amber-500/30 bg-amber-500/10 shadow-sm'
                           : 'border-ink/8 hover:border-bengali-red/30'
-                      }`}
+                        }`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <h5 className="font-serif font-bold text-ink text-xs truncate group-hover:text-bengali-red transition-colors">

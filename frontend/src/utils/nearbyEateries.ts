@@ -1,6 +1,6 @@
 import northEateries from '../data/north_eateries.json';
 
-export interface NearbyEatery {
+interface NearbyEatery {
   title: string;
   subTitle?: string | null;
   categoryName?: string | null;
@@ -21,7 +21,7 @@ export interface EateryResult {
   relativelyFar: NearbyEatery[];
 }
 
-export function getHaversineDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
+function getHaversineDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371000;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
@@ -48,10 +48,7 @@ function isProperRestaurantOrCafe(item: any): boolean {
   return true;
 }
 
-export function getNearestEateries(lat: number, lon: number, limit = 5): NearbyEatery[] {
-  const res = getNearestEateriesWithFallback(lat, lon, limit);
-  return res.within1km;
-}
+
 
 export function getNearestEateriesWithFallback(lat: number, lon: number, limit = 5): EateryResult {
   const dataset = northEateries as any[];

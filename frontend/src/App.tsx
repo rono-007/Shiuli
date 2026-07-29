@@ -8,11 +8,15 @@ import SouthCalcuttaSection from './components/SouthCalcuttaSection';
 import CentralCalcuttaSection from './components/CentralCalcuttaSection';
 import BonediCalcuttaSection from './components/BonediCalcuttaSection';
 import FacilitiesSection from './components/FacilitiesSection';
+import AdminPanel from './components/AdminPanel';
 import { Heart } from 'lucide-react';
 
 
 function App() {
-  const [view, setView] = useState<'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities'>('home');
+  const [view, setView] = useState<'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities' | 'admin'>(() => {
+    const params = new URLSearchParams(window.location.search);
+    return params.has('admin') ? 'admin' : 'home';
+  });
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isMuted, setIsMuted] = useState(true);
@@ -171,50 +175,56 @@ function App() {
 
   return (
     <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink">
-      
-      {/* Heavy Noise Overlay for Vintage Print Feel */}
-      <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.05] mix-blend-multiply bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
-      
-      {/* Global Subtle Navigation Overlay */}
-      <nav className="fixed top-0 left-0 right-0 p-8 md:p-10 z-50 flex justify-between items-start pointer-events-none text-paper mix-blend-difference">
-        
-        {/* Left: Brand */}
-        <div className="flex items-center gap-3 pointer-events-auto">
-          <div className="w-1.5 h-1.5 rounded-full bg-[#E5B05C]"></div>
-          <span className="text-[9px] font-mono tracking-[0.3em] uppercase opacity-80">Shiuli</span>
-        </div>
-
-        {/* Center: Year & City */}
-        <div className="hidden md:block pointer-events-auto">
-          <span className="text-[10px] font-mono tracking-[0.4em] uppercase opacity-60">শারদীয়া ১৪৩৩ - কলকাতা</span>
-        </div>
-
-        {/* Right: Menu & Audio controls */}
-        <div className="flex flex-col items-end gap-6 pointer-events-auto">
-          <div className="flex items-center gap-6">
-            <button 
-              onClick={handleAudioToggle}
-              className="text-[10px] font-mono uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity focus:outline-none"
-            >
-              {isMuted ? 'ধ্বনি সচল' : 'ধ্বনি বন্ধ'}
-            </button>
-            {view !== 'home' && (
-              <button 
-                onClick={() => setView('home')}
-                className="text-[10px] font-mono uppercase tracking-widest hover:opacity-100 transition-opacity focus:outline-none font-bold text-[#E5B05C]"
-              >
-                হোম (Home) &rarr;
-              </button>
-            )}
-          </div>
+      {view !== 'admin' && (
+        <>
+          {/* Heavy Noise Overlay for Vintage Print Feel */}
+          <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.05] mix-blend-multiply bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
           
-          <div className="text-right space-y-1 opacity-50 hidden md:block">
-            <div className="text-[9px] font-mono tracking-widest uppercase">কলকাতা</div>
-            <div className="text-[9px] font-mono tracking-widest uppercase">শারদীয়া ১৪৩৩</div>
-          </div>
-        </div>
-      </nav>
+          {/* Global Subtle Navigation Overlay */}
+          <nav className="fixed top-0 left-0 right-0 p-8 md:p-10 z-50 flex justify-between items-start pointer-events-none text-paper mix-blend-difference">
+            
+            {/* Left: Brand */}
+            <div className="flex items-center gap-3 pointer-events-auto">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#E5B05C]"></div>
+              <span className="text-[9px] font-mono tracking-[0.3em] uppercase opacity-80">Shiuli</span>
+            </div>
 
+            {/* Center: Year & City */}
+            <div className="hidden md:block pointer-events-auto">
+              <span className="text-[10px] font-mono tracking-[0.4em] uppercase opacity-60">শারদীয়া ১৪৩৩ - কলকাতা</span>
+            </div>
+
+            {/* Right: Menu & Audio controls */}
+            <div className="flex flex-col items-end gap-6 pointer-events-auto">
+              <div className="flex items-center gap-6">
+                <button 
+                  onClick={handleAudioToggle}
+                  className="text-[10px] font-mono uppercase tracking-widest opacity-60 hover:opacity-100 transition-opacity focus:outline-none"
+                >
+                  {isMuted ? 'ধ্বনি সচল' : 'ধ্বনি বন্ধ'}
+                </button>
+                {view !== 'home' && (
+                  <button 
+                    onClick={() => setView('home')}
+                    className="text-[10px] font-mono uppercase tracking-widest hover:opacity-100 transition-opacity focus:outline-none font-bold text-[#E5B05C]"
+                  >
+                    হোম (Home) &rarr;
+                  </button>
+                )}
+              </div>
+              
+              <div className="text-right space-y-1 opacity-50 hidden md:block">
+                <div className="text-[9px] font-mono tracking-widest uppercase">কলকাতা</div>
+                <div className="text-[9px] font-mono tracking-widest uppercase">শারদীয়া ১৪৩৩</div>
+              </div>
+            </div>
+          </nav>
+        </>
+      )}
+
+      {view === 'admin' ? (
+        <AdminPanel onBack={() => { setView('home'); window.history.replaceState({}, '', window.location.pathname); }} />
+      ) : (
       <main className="w-full relative z-20">
         {view === 'north' ? (
           <NorthCalcuttaSection onBack={() => setView('home')} />
@@ -277,6 +287,7 @@ function App() {
         </footer>
 
       </main>
+      )}
     </div>
   );
 }

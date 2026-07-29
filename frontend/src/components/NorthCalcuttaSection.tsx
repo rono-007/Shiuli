@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, ArrowUp, Utensils, Fuel, CreditCard, Hospital, Bath, Star, AlertCircle, X, Navigation, Pill } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, Utensils, Fuel, CreditCard, Hospital, Bath, Star, AlertCircle, X, Navigation, Pill } from 'lucide-react';
 import PandalMap from './PandalMap';
 import fallbackData from '../data/north_cords.json';
 import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
@@ -501,20 +501,12 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
           </div>
         ) : viewMode === 'map' ? (
           /* Interactive MapLibre GL Map View */
-          <div className="w-full h-[85vh] md:h-[calc(100vh-280px)] min-h-[600px] bg-[#FAF6ED] border border-ink/10 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg relative animate-fade-in-slow">
+          <div className="w-full h-auto sm:h-[80vh] md:h-[calc(100vh-280px)] min-h-[450px] sm:min-h-[550px] md:min-h-[600px] bg-transparent sm:bg-[#FAF6ED] sm:border border-ink/10 rounded-2xl md:rounded-3xl overflow-visible sm:overflow-hidden sm:shadow-lg relative animate-fade-in-slow">
             <PandalMap
               pandals={filteredPandals}
               selectedPandalName={selectedPandalName}
               searchQuery={debouncedQuery}
             />
-            <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="absolute bottom-6 right-6 md:hidden bg-[#8B1E2D] hover:bg-[#8B1E2D]/90 text-[#FAF6ED] px-4 py-2.5 rounded-full shadow-xl border border-[#D4A24C]/35 flex items-center gap-1.5 active:scale-95 transition-all z-20 font-sans text-xs font-bold"
-              title="Go to Top"
-            >
-              <ArrowUp className="w-4 h-4" />
-              <span>উপরে যান (Top)</span>
-            </button>
           </div>
         ) : filteredPandals.length > 0 ? (
           /* Pandal Cards Grid with Expandable Detail Panel */

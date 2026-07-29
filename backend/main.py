@@ -173,6 +173,8 @@ def read_root():
             "south": "/api/pandals/south",
             "central": "/api/pandals/central",
             "bonedi": "/api/pandals/bonedi",
+            "north_eateries": "/api/eateries/north",
+            "north_facilities": "/api/facilities/north",
             "map": "/api/map"
         }
     }
@@ -400,6 +402,24 @@ def get_north_eateries():
         "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
     }
     return ORJSONResponse(content=load_north_eateries_data(), headers=headers)
+
+@lru_cache(maxsize=1)
+def load_north_facilities_data() -> List[dict]:
+    file_path = os.path.join(os.path.dirname(__file__), "data", "north_other_facilities.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="North other facilities data file not found")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to read facilities data: {str(e)}")
+
+@app.get("/api/facilities/north")
+def get_north_facilities():
+    headers = {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    }
+    return ORJSONResponse(content=load_north_facilities_data(), headers=headers)
 
 @lru_cache(maxsize=128)
 def generate_map_html(q: str, selected: str = "") -> str:

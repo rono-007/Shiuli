@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
+import { getNearestFacilities } from '../utils/nearbyFacilities';
 import { MapPin, Navigation, Utensils, Star, AlertCircle, Fuel, CreditCard, Hospital, Bath, X, Layers, ExternalLink, Pill } from 'lucide-react';
 
 interface Pandal {
@@ -311,7 +312,10 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     });
   }, [selectedPandalName, isMapLoaded]);
 
-  // Eateries data calculation for active pandal
+  const activeFacilities = activePandal
+    ? getNearestFacilities(activePandal.pandal.lat, activePandal.pandal.lon)
+    : null;
+
   const eateryData = activePandal
     ? getNearestEateriesWithFallback(activePandal.pandal.lat, activePandal.pandal.lon, 6)
     : { within1km: [], relativelyFar: [] };
@@ -406,48 +410,102 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
               </a>
             </div>
 
-            {/* Facility Placeholders */}
+            {/* Facility Cards */}
             <div className="space-y-2">
               <h4 className="text-[10px] font-serif font-bold text-ink/50 uppercase tracking-wider flex items-center gap-1">
                 <Layers className="w-3 h-3" />
-                অন্যান্য জরুরি সুবিধা
+                জরুরি সুবিধাসমূহ (Real Nearby Facilities)
               </h4>
               <div className="grid grid-cols-2 gap-2 text-[10px]">
-                <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70">
+                {/* Petrol Pump */}
+                <a
+                  href={activeFacilities?.petrolPump?.url || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 hover:border-amber-600/30 text-ink/70 transition-all group"
+                >
                   <Fuel className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
-                  <div>
-                    <div className="font-serif font-bold">পেট্রোল পাম্প</div>
-                    <div className="text-[9px] font-mono text-ink/40">~৪৫০m</div>
+                  <div className="truncate">
+                    <div className="font-serif font-bold group-hover:text-amber-700 truncate">
+                      {activeFacilities?.petrolPump?.title || 'পেট্রোল পাম্প'}
+                    </div>
+                    <div className="text-[9px] font-mono text-ink/40">
+                      {activeFacilities?.petrolPump ? `${activeFacilities.petrolPump.distanceMeters}m` : '~৪৫০m'}
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70">
+                </a>
+
+                {/* ATM */}
+                <a
+                  href={activeFacilities?.atm?.url || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 hover:border-emerald-600/30 text-ink/70 transition-all group"
+                >
                   <CreditCard className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                  <div>
-                    <div className="font-serif font-bold">এটিএম বুথ</div>
-                    <div className="text-[9px] font-mono text-ink/40">~২০০m</div>
+                  <div className="truncate">
+                    <div className="font-serif font-bold group-hover:text-emerald-700 truncate">
+                      {activeFacilities?.atm?.title || 'এটিএম বুথ'}
+                    </div>
+                    <div className="text-[9px] font-mono text-ink/40">
+                      {activeFacilities?.atm ? `${activeFacilities.atm.distanceMeters}m` : '~২০০m'}
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70">
+                </a>
+
+                {/* Hospital */}
+                <a
+                  href={activeFacilities?.hospital?.url || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 hover:border-bengali-red/30 text-ink/70 transition-all group"
+                >
                   <Hospital className="w-3.5 h-3.5 text-bengali-red flex-shrink-0" />
-                  <div>
-                    <div className="font-serif font-bold">হাসপাতাল / নার্সিং হোম</div>
-                    <div className="text-[9px] font-mono text-ink/40">~৩০০m</div>
+                  <div className="truncate">
+                    <div className="font-serif font-bold group-hover:text-bengali-red truncate">
+                      {activeFacilities?.hospital?.title || 'হাসপাতাল / নার্সিং হোম'}
+                    </div>
+                    <div className="text-[9px] font-mono text-ink/40">
+                      {activeFacilities?.hospital ? `${activeFacilities.hospital.distanceMeters}m` : '~৩০০m'}
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70">
+                </a>
+
+                {/* Pharmacy */}
+                <a
+                  href={activeFacilities?.pharmacy?.url || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 hover:border-purple-600/30 text-ink/70 transition-all group"
+                >
                   <Pill className="w-3.5 h-3.5 text-purple-600 flex-shrink-0" />
-                  <div>
-                    <div className="font-serif font-bold">ফার্মেসি / ওষুধের দোকান</div>
-                    <div className="text-[9px] font-mono text-ink/40">~২৫০m</div>
+                  <div className="truncate">
+                    <div className="font-serif font-bold group-hover:text-purple-700 truncate">
+                      {activeFacilities?.pharmacy?.title || 'ফার্মেসি / ওষুধের দোকান'}
+                    </div>
+                    <div className="text-[9px] font-mono text-ink/40">
+                      {activeFacilities?.pharmacy ? `${activeFacilities.pharmacy.distanceMeters}m` : '~২৫০m'}
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 text-ink/70 col-span-2">
+                </a>
+
+                {/* Public Toilet */}
+                <a
+                  href={activeFacilities?.toilet?.url || '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-paper p-2 rounded-xl border border-ink/5 hover:border-sky-600/30 text-ink/70 transition-all group col-span-2"
+                >
                   <Bath className="w-3.5 h-3.5 text-sky-600 flex-shrink-0" />
-                  <div>
-                    <div className="font-serif font-bold">পাবলিক শৌচালয়</div>
-                    <div className="text-[9px] font-mono text-ink/40">~১৫০m</div>
+                  <div className="truncate">
+                    <div className="font-serif font-bold group-hover:text-sky-700 truncate">
+                      {activeFacilities?.toilet?.title || 'পাবলিক শৌচালয়'}
+                    </div>
+                    <div className="text-[9px] font-mono text-ink/40">
+                      {activeFacilities?.toilet ? `${activeFacilities.toilet.distanceMeters}m` : '~১৫০m'}
+                    </div>
                   </div>
-                </div>
+                </a>
               </div>
             </div>
 

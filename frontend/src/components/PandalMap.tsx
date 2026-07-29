@@ -305,14 +305,13 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
             <span>${pandal.address}</span>
           </div>
 
-          {/* NEARBY EATERIES SECTION (Exact Coordinates & Proper Restaurants/Cafes Only) */}
           ${(() => {
             const eateries = getNearestEateries(pandal.lat, pandal.lon, 3);
             if (!eateries || eateries.length === 0) return '';
             return `
               <div style="margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px dashed rgba(139, 30, 45, 0.2);">
-                <div style="font-size: 10px; font-weight: 700; color: #8B1E2D; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; items-center: center; gap: 4px;">
-                  🍽️ কাছাকাছি রেস্তোরাঁ ও ক্যাফে (Nearby Restaurants & Cafes):
+                <div style="font-size: 10px; font-weight: 700; color: #8B1E2D; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
+                  🍽️ কাছাকাছি রেস্তোরাঁ ও ক্যাফে:
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                   ${eateries.map(e => `
@@ -367,6 +366,18 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
           </a>
         </div>
       `;
+
+      // Click handler to center and zoom on marker click
+      el.addEventListener('click', () => {
+        if (map.current) {
+          map.current.flyTo({
+            center: [pandal.lon, pandal.lat],
+            zoom: 15.5,
+            duration: 1200,
+            essential: true,
+          });
+        }
+      });
 
       const popup = new maplibregl.Popup({
         offset: 20,

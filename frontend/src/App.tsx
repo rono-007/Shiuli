@@ -1,15 +1,25 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, lazy, Suspense } from 'react';
 import HeroSection from './components/HeroSection';
 import JourneySection from './components/JourneySection';
 import EditorialSection from './components/EditorialSection';
 import EssentialsSection from './components/EssentialsSection';
-import NorthCalcuttaSection from './components/NorthCalcuttaSection';
-import SouthCalcuttaSection from './components/SouthCalcuttaSection';
-import CentralCalcuttaSection from './components/CentralCalcuttaSection';
-import BonediCalcuttaSection from './components/BonediCalcuttaSection';
-import FacilitiesSection from './components/FacilitiesSection';
-import AdminPanel from './components/AdminPanel';
 import { Heart } from 'lucide-react';
+
+const NorthCalcuttaSection = lazy(() => import('./components/NorthCalcuttaSection'));
+const SouthCalcuttaSection = lazy(() => import('./components/SouthCalcuttaSection'));
+const CentralCalcuttaSection = lazy(() => import('./components/CentralCalcuttaSection'));
+const BonediCalcuttaSection = lazy(() => import('./components/BonediCalcuttaSection'));
+const FacilitiesSection = lazy(() => import('./components/FacilitiesSection'));
+const AdminPanel = lazy(() => import('./components/AdminPanel'));
+
+function SectionLoader() {
+  return (
+    <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center bg-[#FAF6ED] font-serif">
+      <div className="w-10 h-10 border-3 border-bengali-red/30 border-t-bengali-red rounded-full animate-spin mb-4" />
+      <p className="text-sm font-bold text-ink/70 tracking-wide">লোড হচ্ছে...</p>
+    </div>
+  );
+}
 
 
 function App() {
@@ -222,21 +232,22 @@ function App() {
         </>
       )}
 
-      {view === 'admin' ? (
-        <AdminPanel onBack={() => { setView('home'); window.history.replaceState({}, '', window.location.pathname); }} />
-      ) : (
-      <main className="w-full relative z-20">
-        {view === 'north' ? (
-          <NorthCalcuttaSection onBack={() => setView('home')} />
-        ) : view === 'south' ? (
-          <SouthCalcuttaSection onBack={() => setView('home')} />
-        ) : view === 'central' ? (
-          <CentralCalcuttaSection onBack={() => setView('home')} />
-        ) : view === 'bonedi' ? (
-          <BonediCalcuttaSection onBack={() => setView('home')} />
-        ) : view === 'facilities' ? (
-          <FacilitiesSection onBack={() => setView('home')} />
+      <Suspense fallback={<SectionLoader />}>
+        {view === 'admin' ? (
+          <AdminPanel onBack={() => { setView('home'); window.history.replaceState({}, '', window.location.pathname); }} />
         ) : (
+        <main className="w-full relative z-20">
+          {view === 'north' ? (
+            <NorthCalcuttaSection onBack={() => setView('home')} />
+          ) : view === 'south' ? (
+            <SouthCalcuttaSection onBack={() => setView('home')} />
+          ) : view === 'central' ? (
+            <CentralCalcuttaSection onBack={() => setView('home')} />
+          ) : view === 'bonedi' ? (
+            <BonediCalcuttaSection onBack={() => setView('home')} />
+          ) : view === 'facilities' ? (
+            <FacilitiesSection onBack={() => setView('home')} />
+          ) : (
           <>
             <HeroSection 
               onSearch={setSearchQuery} 
@@ -288,6 +299,7 @@ function App() {
 
       </main>
       )}
+      </Suspense>
     </div>
   );
 }

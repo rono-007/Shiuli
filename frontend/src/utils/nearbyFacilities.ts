@@ -1,5 +1,23 @@
-import rawFacilities from '../data/north_other_facilities.json';
-import rawMetros from '../data/metros.json';
+let facilitiesCache: any[] | null = null;
+let metrosCache: any[] | null = null;
+let loadPromise: Promise<[any[], any[]]> | null = null;
+
+export async function preloadFacilitiesData(): Promise<[any[], any[]]> {
+  if (facilitiesCache && metrosCache) return [facilitiesCache, metrosCache];
+  if (!loadPromise) {
+    loadPromise = Promise.all([
+      import('../data/north_other_facilities.json').then(m => m.default || m),
+      import('../data/metros.json').then(m => m.default || m)
+    ]);
+  }
+  const [fData, mData] = await loadPromise;
+  facilitiesCache = fData;
+  metrosCache = mData;
+  return [fData, mData];
+}
+
+// Trigger background preload
+preloadFacilitiesData().catch(() => {});
 
 interface NearbyFacility {
   title: string;
@@ -33,6 +51,13 @@ function getDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: numbe
 }
 
 export function getNearestFacilities(lat: number, lon: number): NearestFacilitiesGroup {
+  const rawFacilities = (facilitiesCache || []) as any[];
+  const rawMetros = (metrosCache || []) as any[];
+
+  if (rawFacilities.length === 0 || rawMetros.length === 0) {
+    preloadFacilitiesData();
+  }
+
   let closestMetro: NearbyFacility | null = null;
   let closestPetrol: NearbyFacility | null = null;
   let closestAtm: NearbyFacility | null = null;
@@ -48,7 +73,7 @@ export function getNearestFacilities(lat: number, lon: number): NearestFacilitie
   let minDistToilet = Infinity;
 
   // 1. Search metros.json for closest Kolkata Metro station
-  for (const item of rawMetros as any[]) {
+  for (const item of rawMetros) {
     if (!item || !item.location || typeof item.location.lat !== 'number' || typeof item.location.lng !== 'number') {
       continue;
     }
@@ -71,9 +96,7 @@ export function getNearestFacilities(lat: number, lon: number): NearestFacilitie
   }
 
   // 2. Search general facilities dataset
-  const dataset = rawFacilities as any[];
-
-  for (const item of dataset) {
+  for (const item of rawFacilities) {
     if (!item || !item.location || typeof item.location.lat !== 'number' || typeof item.location.lng !== 'number') {
       continue;
     }

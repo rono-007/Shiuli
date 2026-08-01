@@ -1,4 +1,17 @@
-import northEateries from '../data/north_eateries.json';
+let eateriesCache: any[] | null = null;
+let eateriesPromise: Promise<any[]> | null = null;
+
+export async function getEateriesData(): Promise<any[]> {
+  if (eateriesCache) return eateriesCache;
+  if (!eateriesPromise) {
+    eateriesPromise = import('../data/north_eateries.json').then(m => m.default || m);
+  }
+  eateriesCache = await eateriesPromise;
+  return eateriesCache || [];
+}
+
+// Pre-trigger background load
+getEateriesData().catch(() => {});
 
 interface NearbyEatery {
   title: string;
@@ -48,10 +61,12 @@ function isProperRestaurantOrCafe(item: any): boolean {
   return true;
 }
 
-
-
 export function getNearestEateriesWithFallback(lat: number, lon: number, limit = 5): EateryResult {
-  const dataset = northEateries as any[];
+  const dataset = (eateriesCache || []) as any[];
+  if (dataset.length === 0) {
+    getEateriesData(); // Trigger load if not ready
+  }
+
   const mapped = dataset
     .filter(item => 
       item && 

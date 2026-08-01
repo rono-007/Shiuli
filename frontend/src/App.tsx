@@ -3,7 +3,7 @@ import HeroSection from './components/HeroSection';
 import JourneySection from './components/JourneySection';
 import EditorialSection from './components/EditorialSection';
 import EssentialsSection from './components/EssentialsSection';
-import { Heart } from 'lucide-react';
+import { Heart, WifiOff } from 'lucide-react';
 
 const NorthCalcuttaSection = lazy(() => import('./components/NorthCalcuttaSection'));
 const SouthCalcuttaSection = lazy(() => import('./components/SouthCalcuttaSection'));
@@ -30,6 +30,18 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isMuted, setIsMuted] = useState(true);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
 
   
   const audioCtxRef = useRef<AudioContext | null>(null);
@@ -185,6 +197,12 @@ function App() {
 
   return (
     <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink">
+      {isOffline && (
+        <div className="bg-[#8B1E2D] text-[#FAF6ED] text-xs font-serif font-bold py-2.5 px-4 text-center sticky top-0 z-50 flex items-center justify-center gap-2 shadow-md border-b border-[#E5B05C]/30">
+          <WifiOff className="w-4 h-4 text-[#E5B05C] flex-shrink-0 animate-pulse" />
+          <span>আপনি অফলাইনে আছেন — ক্যাশ করা লোকাল ডাটা ও অফলাইন মোড সক্রিয় রয়েছে</span>
+        </div>
+      )}
       {view !== 'admin' && (
         <>
           {/* Heavy Noise Overlay for Vintage Print Feel */}

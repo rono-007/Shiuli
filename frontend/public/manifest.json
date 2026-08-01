@@ -1,0 +1,23 @@
+{
+  "short_name": "PujoPoth",
+  "name": "PujoPoth - শিউলি (Kolkata Durga Puja Guide)",
+  "description": "Kolkata Durga Puja Pandal Directory, Navigation & Emergency Facilities",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon1.png",
+      "type": "image/png",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#0A0E17",
+  "theme_color": "#0A0E17",
+  "display": "standalone",
+  "orientation": "portrait"
+}

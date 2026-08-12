@@ -6,7 +6,7 @@
   html {
     scrollbar-width: thin;
     scrollbar-color: rgba(247, 241, 231, 0.15) #101827;
-    font-family: 'Tiro Bangla', 'Noto Serif Bengali', serif;
+    font-family: 'Noto Serif Bengali', 'Tiro Bangla', serif;
   }
 
   /* Custom scrollbar for the entire web app */
@@ -33,7 +33,7 @@
   }
 
   body {
-    font-family: 'Tiro Bangla', 'Noto Serif Bengali', serif;
+    font-family: 'Noto Serif Bengali', 'Tiro Bangla', serif;
     @apply bg-night text-paper antialiased;
   }
 
@@ -43,7 +43,7 @@
   h4,
   h5,
   h6 {
-    font-family: 'Tiro Bangla', 'Noto Serif Bengali', serif;
+    font-family: 'Noto Serif Bengali', 'Tiro Bangla', serif;
     @apply text-lamp font-normal;
   }
 }

@@ -166,8 +166,7 @@ const EditorialSection: React.FC = () => {
                 ))}
               </div>
 
-              <div className="pt-10 border-t border-ink/10 flex justify-between items-center text-[10px] font-mono text-ink/40 select-none tracking-widest uppercase">
-                <span>শারদীয়া ১৪৩৩</span>
+              <div className="pt-10 border-t border-ink/10 flex justify-end items-center text-[10px] font-mono text-ink/40 select-none tracking-widest uppercase">
                 <span>পথিক ডায়েরি</span>
               </div>
             </div>

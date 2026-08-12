@@ -1,0 +1,270 @@
+import React from 'react';
+import { 
+  Landmark, 
+  Utensils, 
+  BriefcaseMedical, 
+  TrainFront, 
+  CalendarDays, 
+  MapPin, 
+  ArrowRight, 
+  Ambulance,
+  Bus,
+  Megaphone,
+  Building2,
+  Soup
+} from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+
+export const PujaGuideSection: React.FC = () => {
+  const { t, language } = useLanguage();
+
+  const isBn = language === 'bn';
+
+  const cards = [
+    {
+      id: 'heritage',
+      title: isBn ? 'ইতিহাস ও ঐতিহ্য' : 'History & Heritage',
+      subtitle: isBn ? 'কলকাতার পুজোর গল্প ও ঐতিহ্য' : 'Stories & heritage of Kolkata Pujas',
+      items: isBn ? [
+        'পুজোর ইতিহাস ও বিবর্তন',
+        'প্রসিদ্ধ পুজোর পুরস্কার',
+        'ঐতিহ্যের পথেই কলকাতা'
+      ] : [
+        'History & Evolution of Puja',
+        'Famous Puja Awards & Honors',
+        'Historic Heritage Walks'
+      ],
+      icon: <Landmark className="w-5 h-5 text-[#A0353A]" />,
+      badgeBg: 'bg-[#F9EAEA]',
+      badgeBorder: 'border-[#F0C8C9]',
+      btnBg: 'bg-[#F8E8E8] hover:bg-[#F3D5D5] text-[#A0353A]',
+      watermark: <Building2 className="w-24 h-24 text-[#A0353A]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
+      accentColor: '#A0353A'
+    },
+    {
+      id: 'food',
+      title: isBn ? 'খাবারের সন্ধান' : 'Food Directory',
+      subtitle: isBn ? 'পুজো পরিক্রমায় সেরা খাবার' : 'Best dining during Puja hopping',
+      items: isBn ? [
+        'সেরা রেস্টুরেন্ট ও ক্যাফে',
+        'পাড়া ঘুরে সেরা স্ট্রিট ফুড',
+        'ভোজনের ঠিকানাই'
+      ] : [
+        'Top Restaurants & Cafes',
+        'Neighborhood Street Food',
+        'Iconic Dining Spots'
+      ],
+      icon: <Utensils className="w-5 h-5 text-[#C68628]" />,
+      badgeBg: 'bg-[#FDF4E5]',
+      badgeBorder: 'border-[#F6DCB6]',
+      btnBg: 'bg-[#FAF0DA] hover:bg-[#F5E2BD] text-[#B0721B]',
+      watermark: <Soup className="w-24 h-24 text-[#C68628]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
+      accentColor: '#C68628'
+    },
+    {
+      id: 'safety',
+      title: isBn ? 'সহায়তার গাইড' : 'Help & Safety Guide',
+      subtitle: isBn ? 'জরুরি তথ্য, নিরাপদ থাকুন' : 'Emergency info, stay safe',
+      items: isBn ? [
+        'হাসপাতাল ও স্বাস্থ্যকেন্দ্র',
+        'পুলিশ ও জরুরি হেল্পলাইন',
+        'অ্যাম্বুলেন্স ও সেবা সহায়তা'
+      ] : [
+        'Hospitals & Health Centers',
+        'Police & Emergency Lines',
+        'Ambulance & Care Support'
+      ],
+      icon: <BriefcaseMedical className="w-5 h-5 text-[#4D8357]" />,
+      badgeBg: 'bg-[#EEF5ED]',
+      badgeBorder: 'border-[#CCE2CB]',
+      btnBg: 'bg-[#E5F0E4] hover:bg-[#D5E6D3] text-[#45774F]',
+      watermark: <Ambulance className="w-24 h-24 text-[#4D8357]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
+      accentColor: '#4D8357'
+    },
+    {
+      id: 'transit',
+      title: isBn ? 'যাতায়াত গাইডলাইন' : 'Transit Guidelines',
+      subtitle: isBn ? 'কীভাবে পৌঁছবেন, কোথায় যাবেন' : 'How to reach, where to go',
+      items: isBn ? [
+        'মেট্রো ও ট্রাম/বাস রুট ম্যাপ',
+        'পার্কিং ও ট্রাফিক আপডেট',
+        'সেরা সময়ে পুজো পরিক্রমা'
+      ] : [
+        'Metro & Bus Route Maps',
+        'Parking & Traffic Updates',
+        'Best Timing Recommendations'
+      ],
+      icon: <TrainFront className="w-5 h-5 text-[#7C579B]" />,
+      badgeBg: 'bg-[#F3EFF9]',
+      badgeBorder: 'border-[#DCD0EC]',
+      btnBg: 'bg-[#ECE6F5] hover:bg-[#DDD3ED] text-[#6F4B8E]',
+      watermark: <Bus className="w-24 h-24 text-[#7C579B]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
+      accentColor: '#7C579B'
+    },
+    {
+      id: 'emergency',
+      title: isBn ? 'জরুরি তথ্য' : 'Essential Info',
+      subtitle: isBn ? 'প্রয়োজনীয় সবকিছু একসাথে' : 'Everything essential together',
+      items: isBn ? [
+        'পুজোর সময়সূচি ও তারিখ',
+        'আবহাওয়ার পূর্বাভাস',
+        'ঘোষণা ও গুরুত্বপূর্ণ আপডেট'
+      ] : [
+        'Puja Timings & Dates',
+        'Weather Forecasts',
+        'Alerts & Key Updates'
+      ],
+      icon: <CalendarDays className="w-5 h-5 text-[#B84358]" />,
+      badgeBg: 'bg-[#FAECEE]',
+      badgeBorder: 'border-[#F2C5CC]',
+      btnBg: 'bg-[#F7E4E7] hover:bg-[#F0CFD5] text-[#A83A4E]',
+      watermark: <Megaphone className="w-24 h-24 text-[#B84358]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
+      accentColor: '#B84358'
+    }
+  ];
+
+  return (
+    <section className="w-full bg-[#FAF5EC] bg-[url('/guidline.png')] bg-[length:100%_auto] md:bg-cover bg-top -mt-[2px] pt-14 sm:pt-20 pb-20 px-4 sm:px-8 relative overflow-hidden flex flex-col items-center border-none">
+      {/* Top Gradient Feathering Overlay */}
+      <div className="absolute top-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-b from-[#FAF5EC] via-[#FAF5EC]/85 to-transparent pointer-events-none z-[1]" />
+      
+      <div className="w-full max-w-[1340px] mx-auto flex flex-col items-center relative z-10">
+        
+        {/* Top Mini Pill Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FAF0E4]/95 backdrop-blur-md text-[#7A1F26] border border-[#E8D5C4] text-xs font-serif shadow-xs mb-3 sm:mb-4">
+          <span className="text-[#C68628]">❁</span>
+          <span className="font-semibold tracking-wide">{t.guideSectionTag}</span>
+          <span className="text-[#C68628]">❁</span>
+        </div>
+
+        {/* Main Heading */}
+        <h2 
+          className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl text-[#5B1015] mb-2 sm:mb-3 text-center tracking-tight font-serif font-bold drop-shadow-xs px-2"
+        >
+          {t.guideSectionTitle}
+        </h2>
+
+        {/* Ornamental Dot & Line Divider */}
+        <div className="flex items-center justify-center mb-4 opacity-80 gap-2">
+          <div className="w-10 sm:w-12 h-[1px] bg-[#A0353A]/40"></div>
+          <span className="text-[#A0353A] text-xs">❁</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-[#A0353A]"></div>
+          <span className="text-[#A0353A] text-xs">❁</span>
+          <div className="w-10 sm:w-12 h-[1px] bg-[#A0353A]/40"></div>
+        </div>
+
+        {/* Subtitle */}
+        <p className="text-xs sm:text-sm md:text-base text-[#5C4235] text-center max-w-2xl mb-8 sm:mb-12 font-serif px-2">
+          {t.guideSectionSubtitle}
+        </p>
+
+        {/* 5 Feature Cards Grid */}
+        <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 justify-center mb-10">
+          {cards.map((card) => (
+            <div 
+              key={card.id} 
+              className="bg-[#FFFDF9] rounded-3xl border border-[#EADECF] shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 px-5 py-6 flex flex-col items-center relative overflow-hidden group min-h-[380px]"
+            >
+              {/* Background Watermark Icon */}
+              {card.watermark}
+
+              {/* Scalloped Icon Container */}
+              <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-transform group-hover:scale-110 duration-300 ${card.badgeBg} border ${card.badgeBorder} shadow-xs relative`}>
+                {/* Decorative Scalloped Flower Trim */}
+                <div className="absolute inset-0 rounded-full border border-dashed border-current opacity-30 -m-1" style={{ color: card.accentColor }} />
+                {card.icon}
+              </div>
+
+              {/* Card Title */}
+              <h3 className="text-lg text-[#3D1418] mb-1 text-center font-serif font-bold leading-tight">
+                {card.title}
+              </h3>
+
+              {/* Subtitle */}
+              <p className="text-[11px] text-[#7A6458] mb-4 text-center font-serif leading-snug">
+                {card.subtitle}
+              </p>
+
+              {/* Ornamental Divider Line */}
+              <div className="w-full flex items-center justify-center gap-1.5 mb-5 opacity-60">
+                <div className="w-6 h-[0.75px] bg-[#C6A48D]" />
+                <span className="text-[9px]" style={{ color: card.accentColor }}>❁</span>
+                <div className="w-6 h-[0.75px] bg-[#C6A48D]" />
+              </div>
+
+              {/* Bullets List with Floral Bullets */}
+              <ul className="w-full space-y-3 mb-6 flex-1">
+                {card.items.map((item, i) => (
+                  <li key={i} className="flex items-start gap-2 group/item text-left">
+                    <span 
+                      className="text-xs flex-shrink-0 mt-0.5" 
+                      style={{ color: card.accentColor }}
+                    >
+                      ❁
+                    </span>
+                    <span className="text-[12px] text-[#4A3930] leading-snug font-serif group-hover/item:text-[#2A1D16] transition-colors">
+                      {item}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+
+              {/* Action Pill Button */}
+              <div className="w-full pt-2 mt-auto">
+                <button 
+                  className={`w-full py-2.5 px-4 rounded-xl flex items-center justify-between text-xs font-serif font-bold transition-all duration-300 ${card.btnBg} cursor-pointer shadow-2xs group/btn`}
+                >
+                  <span>{isBn ? 'বিস্তারিত দেখুন' : 'View Details'}</span> 
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+                </button>
+              </div>
+
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom Banner Card: Route Planner Banner */}
+        <div className="w-full max-w-[1300px] bg-[#F5EBE1] border border-[#E5D2C2] rounded-2xl p-5 md:p-6 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm relative overflow-hidden text-center sm:text-left">
+          
+          {/* Dashed Route Path Decorative Overlay */}
+          <div className="absolute right-36 bottom-2 w-64 h-12 opacity-20 pointer-events-none text-[#921925] hidden md:block">
+            <svg viewBox="0 0 200 40" fill="none" stroke="currentColor" strokeWidth="2" strokeDasharray="4 4">
+              <path d="M 10 30 Q 60 5 110 30 T 190 10" />
+              <circle cx="10" cy="30" r="3" fill="currentColor" />
+              <circle cx="190" cy="10" r="3" fill="currentColor" />
+            </svg>
+          </div>
+
+          <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
+            <div className="w-12 h-12 rounded-full bg-[#F0DCD0] flex items-center justify-center flex-shrink-0 text-[#921925]">
+              <MapPin className="w-6 h-6 fill-[#921925] text-[#F0DCD0]" />
+            </div>
+            <div>
+              <h4 className="text-lg md:text-xl font-serif font-bold text-[#5B1015] mb-0.5">
+                {t.routePlannerTitle}
+              </h4>
+              <p className="text-xs md:text-sm text-[#7A5B4C] font-serif max-w-lg">
+                {t.routePlannerSubtitle}
+              </p>
+            </div>
+          </div>
+
+          <button className="w-full sm:w-auto justify-center bg-[#921925] hover:bg-[#78141D] text-white font-serif font-semibold text-xs md:text-sm px-6 py-3 rounded-xl flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer whitespace-nowrap">
+            <span>{t.routePlannerBtn}</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+        </div>
+
+        {/* Footer Tagline */}
+        <div className="mt-8 text-center text-xs font-serif text-[#7A5B4C] flex items-center justify-center gap-2">
+          <span className="text-[#C68628]">❁</span>
+          <span>{t.footerTagline}</span>
+          <span className="text-[#C68628]">❁</span>
+        </div>
+
+      </div>
+    </section>
+  );
+};
+
+export default PujaGuideSection;

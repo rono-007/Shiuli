@@ -15,17 +15,19 @@ export default {
         ink: '#2A2A2A',
       },
       fontFamily: {
-        serif: ['"Tiro Bangla"', '"Noto Serif Bengali"', 'serif'],
-        sans: ['"Anek Bangla"', '"Hind Siliguri"', 'sans-serif'],
+        serif: ['"Noto Serif Bengali"', '"Tiro Bangla"', 'serif'],
+        sans: ['"Noto Sans Bengali"', '"Anek Bangla"', '"Hind Siliguri"', 'sans-serif'],
       },
       animation: {
-        'fade-in-slow': 'fadeInSlow 3s ease-in-out forwards',
+        'fade-in-slow': 'fadeInSlow 1.5s ease-out forwards',
         'fade-in-fast': 'fadeInFast 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards',
         'float-slow': 'floatSlow 6s ease-in-out infinite',
+        'bg-pan': 'bgPan 25s ease-in-out infinite alternate',
+        'shimmer-pulse': 'shimmerPulse 3s ease-in-out infinite',
       },
       keyframes: {
         fadeInSlow: {
-          '0%': { opacity: '0', transform: 'translateY(10px)' },
+          '0%': { opacity: '0', transform: 'translateY(15px)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
         fadeInFast: {
@@ -34,7 +36,15 @@ export default {
         },
         floatSlow: {
           '0%, 100%': { transform: 'translateY(0)' },
-          '55%': { transform: 'translateY(-10px)' },
+          '50%': { transform: 'translateY(-8px)' },
+        },
+        bgPan: {
+          '0%': { transform: 'scale(1.05) translate(0, 0)' },
+          '100%': { transform: 'scale(1.12) translate(-1.5%, -1%)' },
+        },
+        shimmerPulse: {
+          '0%, 100%': { opacity: '0.4' },
+          '50%': { opacity: '0.8' },
         }
       }
     },

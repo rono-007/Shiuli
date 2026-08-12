@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { X, Utensils } from 'lucide-react';
-import KashParticles from './KashParticles';
+import { X } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface HeroSectionProps {
   onSearch: (query: string) => void;
@@ -12,215 +12,157 @@ interface HeroSectionProps {
 
 const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone, onSelectFacilities }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { t, language } = useLanguage();
 
   const zones = [
-    { id: 'north', serial: 'NO-1433-A', name: 'উত্তর কলকাতা', subtitle: 'North Calcutta Tour', desc: 'বাগবাজার সর্বজনীন, কলেজ স্কোয়ার, শোভাবাজার রাজবাড়ি', active: true, stampColor: 'bg-[#8B1E2D]' },
-    { id: 'central', serial: 'CE-1433-B', name: 'মধ্য কলকাতা', subtitle: 'Central Calcutta Tour', desc: 'সন্তোষ মিত্র স্কোয়ার, লেবুতলা পার্ক', active: true, stampColor: 'bg-[#8B1E2D]' },
-    { id: 'south', serial: 'SO-1433-C', name: 'দক্ষিণ কলকাতা', subtitle: 'South Calcutta Tour', desc: 'ম্যাডক্স স্কোয়ার, সুরুচি সঙ্ঘ, ত্রিধারা', active: true, stampColor: 'bg-[#8B1E2D]' },
-    { id: 'bonedi', serial: 'BN-1433-D', name: 'বনেদি কলকাতা', subtitle: 'Bonedi (Heritage) Tour', desc: 'শোভাবাজার রাজবাড়ি, ঠাকুরবাড়ি, দত্তবাড়ি', active: true, stampColor: 'bg-[#8B1E2D]' }
+    { id: 'north', serial: 'NO-A', name: t.zoneNorthName, subtitle: t.zoneNorthSubtitle, desc: t.zoneNorthDesc, active: true, stampColor: 'bg-[#983335]' },
+    { id: 'central', serial: 'CE-B', name: t.zoneCentralName, subtitle: t.zoneCentralSubtitle, desc: t.zoneCentralDesc, active: true, stampColor: 'bg-[#983335]' },
+    { id: 'south', serial: 'SO-C', name: t.zoneSouthName, subtitle: t.zoneSouthSubtitle, desc: t.zoneSouthDesc, active: true, stampColor: 'bg-[#983335]' },
+    { id: 'bonedi', serial: 'BN-D', name: t.zoneBonediName, subtitle: t.zoneBonediSubtitle, desc: t.zoneBonediDesc, active: true, stampColor: 'bg-[#983335]' }
   ];
 
-
   return (
-    <div className="relative w-full h-[100svh] bg-night overflow-hidden font-serif">
+    <section className="relative w-full min-h-fit lg:h-[100svh] lg:min-h-[700px] bg-[#F7F2E7] flex flex-col justify-center items-center overflow-hidden pt-20 pb-[12vw] sm:pt-16 lg:pb-0 px-4 sm:px-8 lg:px-12 selection:bg-[#983335] selection:text-white">
 
-      {/* Full Bleed Background Image */}
-      <div className="absolute inset-0 z-0">
-        <div
-          className="absolute inset-0 bg-cover bg-center animate-fade-in-slow"
-          style={{
-            backgroundImage: `url('/kolkata-twilight.png')`,
-            animationDelay: '0.2s'
-          }}
+      {/* Full Bleed Full-Screen Background Image Layer */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <img
+          src="/her-banner.png"
+          alt="Durga Puja Hero Banner"
+          className="w-full h-full object-cover object-[80%_center] sm:object-[75%_center] lg:object-fill lg:object-top"
         />
-        {/* Dark overlay to ensure text readability */}
-        <div className="absolute inset-0 bg-night/50 mix-blend-multiply pointer-events-none"></div>
 
-        {/* Atmospheric Kash Phool Floating Micro-Animations */}
-        <KashParticles />
+        {/* Mobile dark scrim overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#2A0E10]/80 via-[#3B1417]/50 to-transparent lg:hidden pointer-events-none z-0" />
       </div>
 
-      {/* 3-Column Editorial Layout */}
-      <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 w-full px-8 md:px-16 lg:px-24 z-20 flex flex-col lg:flex-row items-center justify-between gap-12 max-w-[1600px] mx-auto pointer-events-none">
+      {/* Hero Content Container */}
+      <div className="relative z-10 w-full max-w-[1920px] mx-auto flex flex-col lg:flex-row items-center justify-between my-auto">
 
-        {/* LEFT COLUMN: Title & CTA */}
-        <div className="w-full lg:max-w-xl pointer-events-auto flex flex-col items-start text-left animate-fade-in-slow" style={{ animationDelay: '0.4s' }}>
-          {/* Small top label */}
-          <div className="flex items-center gap-4 mb-8">
-            <span className="text-[10px] font-mono tracking-widest text-paper/70">সংখ্যা ০৬</span>
-            <div className="w-16 h-px bg-[#E5B05C]/50"></div>
-            <span className="text-[10px] font-mono tracking-widest text-paper/70">শহরের পুজোর ডায়েরি</span>
-          </div>
+        {/* LEFT COMPOSITION: Headline, Subtitle & Pill-shaped CTA Buttons */}
+        <div className="w-full lg:w-[55%] xl:w-[50%] flex flex-col items-center lg:items-start text-center lg:text-left animate-fade-in-slow px-4 sm:px-8 lg:px-12 py-8 relative z-10">
 
-          {/* Massive Title */}
-          <h1 className="text-7xl md:text-[8rem] lg:text-[10rem] leading-none font-normal text-paper tracking-tighter mb-8 drop-shadow-2xl">
-            শিউ<span className="text-[#E5B05C]">লি</span>
+          {/* Main Editorial Headline */}
+          <h1
+            className="text-[2.15rem] xs:text-[2.65rem] sm:text-[3.5rem] md:text-[4.25rem] lg:text-[4.75rem] xl:text-[5.5rem] leading-[1.18] text-[#FAF6ED] font-bold tracking-tight mb-4 sm:mb-6 cursor-default drop-shadow-xl"
+            style={{ fontFamily: language === 'bn' ? "'Noto Serif Bengali', serif" : 'serif', fontWeight: 700 }}
+          >
+            {t.heroTitleLine1}<br />
+            {t.heroTitleLine2}
           </h1>
 
-          {/* Poetic Subtitle */}
-          <div className="mb-8 border-l border-[#E5B05C]/30 pl-6">
-            <p className="text-xl md:text-2xl text-paper/90 leading-relaxed font-light drop-shadow-md">
-              শহর যখন আলোয় সেজে ওঠে,<br />
-              প্রতিটি গলিই হয়ে ওঠে<br />
-              এক একটি নতুন গল্প।
+          {/* Supporting Paragraph */}
+          <div className="max-w-xl mb-6 sm:mb-10 px-2 sm:px-0">
+            <p
+              className="text-sm xs:text-base sm:text-lg md:text-xl text-[#F7F2E7] leading-relaxed font-medium drop-shadow-md whitespace-pre-line"
+              style={{ fontFamily: language === 'bn' ? "'Noto Sans Bengali', sans-serif" : 'sans-serif' }}
+            >
+              {t.heroSubtitle1}<br />
+              {t.heroSubtitle2}<br />
+              {t.heroSubtitle3}
             </p>
           </div>
 
-          {/* CTA Area & Live Stats Bar */}
-          <div className="flex flex-col gap-6">
-            <div className="flex items-center gap-4 flex-wrap">
-              <button 
-                onClick={() => setIsModalOpen(true)}
-                className="bg-[#E5B05C] hover:bg-[#d4a050] text-night px-8 py-4 text-sm font-sans tracking-widest uppercase transition-all shadow-lg pointer-events-auto rounded-xl font-bold flex items-center gap-2 group"
-              >
-                <span>পথচলা শুরু করুন</span>
-                <span className="group-hover:translate-x-1 transition-transform">&rarr;</span>
-              </button>
-              {onSelectFacilities && (
-                <button
-                  onClick={onSelectFacilities}
-                  className="bg-paper/15 hover:bg-paper/25 text-paper border border-paper/30 hover:border-[#E5B05C] px-6 py-4 text-sm font-serif tracking-wide transition-all shadow-lg pointer-events-auto rounded-xl font-bold flex items-center gap-2"
-                >
-                  <Utensils className="w-4 h-4 text-[#E5B05C]" />
-                  <span>সুযোগ-সুবিধা (Facilities)</span>
-                </button>
-              )}
-            </div>
+          {/* Pill-shaped CTA Buttons */}
+          <div className="w-full sm:w-auto flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 sm:gap-5 px-2 sm:px-0">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="group relative w-full sm:w-auto px-7 py-3.5 sm:px-9 sm:py-4 rounded-full bg-[#FAF6ED] hover:bg-[#FFFDFA] text-[#7A1F26] text-sm sm:text-base md:text-lg font-bold shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 overflow-hidden text-center flex items-center justify-center cursor-pointer"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                {t.heroCtaPrimary}
+                <span className="inline-block transition-transform duration-300 group-hover:translate-x-1">→</span>
+              </span>
+            </button>
 
-            {/* LIVE STATS BAR */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-night/60 backdrop-blur-md border border-[#E5B05C]/20 p-4 rounded-2xl max-w-xl pointer-events-auto">
-              <div className="text-left space-y-0.5 border-r border-paper/10 pr-2">
-                <div className="text-xl font-mono font-bold text-[#E5B05C]">১০০+</div>
-                <div className="text-[10px] font-serif text-paper/70">বিখ্যাত মণ্ডপ</div>
-              </div>
-              <div className="text-left space-y-0.5 border-r border-paper/10 pr-2">
-                <div className="text-xl font-mono font-bold text-amber-400">১,০০০+</div>
-                <div className="text-[10px] font-serif text-paper/70">ক্যাফে ও রেস্তোরাঁ</div>
-              </div>
-              <div className="text-left space-y-0.5 border-r border-paper/10 pr-2">
-                <div className="text-xl font-mono font-bold text-[#E5B05C]">১৫+</div>
-                <div className="text-[10px] font-serif text-paper/70">মেট্রো রুট সংযুক্ত</div>
-              </div>
-              <div className="text-left space-y-0.5">
-                <div className="text-xl font-mono font-bold text-amber-400">১২+</div>
-                <div className="text-[10px] font-serif text-paper/70">ঐতিহ্যবাহী রাজবাড়ি</div>
-              </div>
-            </div>
+            <button
+              onClick={() => {
+                if (onSelectFacilities) {
+                  onSelectFacilities();
+                } else {
+                  setIsModalOpen(true);
+                }
+              }}
+              className="group relative w-full sm:w-auto px-7 py-3.5 sm:px-9 sm:py-4 rounded-full border-2 border-[#FAF6ED] text-[#FAF6ED] bg-[#7A1F26]/70 lg:bg-transparent hover:bg-[#FAF6ED]/20 text-sm sm:text-base md:text-lg font-semibold transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 overflow-hidden text-center flex items-center justify-center backdrop-blur-md shadow-md cursor-pointer"
+            >
+              <span className="relative z-10 flex items-center justify-center gap-2">
+                {t.heroCtaSecondary}
+                <span className="inline-block transition-transform duration-300 group-hover:rotate-12">✦</span>
+              </span>
+            </button>
           </div>
+
         </div>
 
-        {/* CENTER COLUMN: Decorative Spacer */}
-        <div className="hidden lg:flex flex-col items-center animate-fade-in-slow" style={{ animationDelay: '0.6s' }}>
-          <div className="w-[1px] h-24 bg-gradient-to-b from-[#E5B05C]/30 to-transparent"></div>
-        </div>
+        {/* RIGHT AREA: Desktop-only artwork positioning spacer */}
+        <div className="hidden lg:block relative z-0 w-full lg:w-[45%] xl:w-[50%] h-full pointer-events-none animate-float-slow" />
 
-        {/* RIGHT COLUMN: Description */}
-        <div className="w-full lg:max-w-md pointer-events-auto flex flex-col items-end animate-fade-in-slow hidden lg:block" style={{ animationDelay: '0.8s' }}>
-          <div className="bg-night/40 backdrop-blur-md border border-paper/10 p-8 rounded-3xl space-y-6 shadow-2xl w-full">
-            <div className="flex items-center gap-3">
-              <span className="text-[#E5B05C] text-[10px] font-mono tracking-widest uppercase">সহযাত্রী</span>
-              <div className="h-px flex-grow bg-paper/20"></div>
-            </div>
-
-            <div className="space-y-4">
-              <p className="text-paper/90 text-sm leading-relaxed font-light text-justify">
-                <strong className="text-[#E5B05C] font-normal">শিউলি</strong> একটি আধুনিক ওয়েব মাধ্যম, যা কলকাতার দুর্গাপূজা ভ্রমণের অভিজ্ঞতাকে আরও সহজ ও আনন্দময় করে তোলে। দর্শনার্থীরা সহজেই বিখ্যাত সব প্যান্ডেল ও সেখানে পৌঁছানোর সেরা পথ খুঁজে নেওয়ার পাশাপাশি কাছাকাছি মেট্রো স্টেশন, রেস্তোরাঁ, ক্যাফে, হাসপাতাল, ফার্মেসি এবং পুলিশ স্টেশনের অবস্থান এক ছাদের তলায় পেয়ে যাবেন।
-              </p>
-              <p className="text-paper/80 text-sm leading-relaxed font-light text-justify">
-                হরেক রকমের অ্যাপে খোঁজাখুঁজির ঝক্কি এড়িয়ে, শিউলি হয়ে উঠবে প্যান্ডেল হপিংয়ের একমাত্র বিশ্বস্ত সহযাত্রী। এটি উৎসবের দিনগুলিতে আপনার পথ চলাকে আরও সুরক্ষিত, সুপরিকল্পিত ও স্বাচ্ছন্দ্যময় করতে সাহায্য করবে।
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
-      {/* Modal Popup for Zone Selection */}
+
+      {/* Zone Selector Modal matching editorial theme */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-night/85 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in-fast pointer-events-auto">
-          <div className="bg-[#FAF6ED] text-ink w-full max-w-md p-8 border-4 border-double border-[#8B1E2D]/40 shadow-2xl relative rounded-3xl overflow-hidden">
-            {/* Vintage Paper texture overlay */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-white/20 via-transparent to-transparent pointer-events-none"></div>
+        <div className="fixed inset-0 bg-[#3D2C22]/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 animate-fade-in-fast">
+          <div className="bg-[#F7F2E7] text-[#3D2C22] w-full max-w-md p-8 border-2 border-[#A0353A]/30 shadow-2xl relative rounded-2xl overflow-hidden">
 
             {/* Close Button */}
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full border border-ink/10 flex items-center justify-center text-ink/40 hover:text-bengali-red hover:border-[#8B1E2D]/30 transition-all duration-300 z-20"
+              className="absolute top-5 right-5 w-9 h-9 rounded-full border border-[#3D2C22]/10 flex items-center justify-center text-[#3D2C22]/60 hover:text-[#7A1F26] hover:border-[#7A1F26]/30 transition-all duration-300"
             >
-              <X className="w-4 h-4" />
+              <X className="w-5 h-5" />
             </button>
 
             <div className="space-y-6 relative z-10">
-              <div className="text-center pb-4 border-b border-ink/10 space-y-1">
-                <span className="text-[9px] font-mono uppercase tracking-[0.3em] text-[#8B1E2D]/80 font-bold block">শারদীয়া ভ্রমণপত্র (Zone Selector)</span>
-                <h3 className="text-3xl font-serif font-bold text-ink tracking-wide">পথচলা শুরু করুন</h3>
-                <div className="flex justify-center items-center gap-1.5 mt-2 opacity-40 select-none">
-                  <div className="w-10 h-[1px] bg-[#D4A24C]"></div>
-                  <div className="w-1.5 h-1.5 rotate-45 bg-[#D4A24C]"></div>
-                  <div className="w-10 h-[1px] bg-[#D4A24C]"></div>
-                </div>
+              <div className="text-center pb-4 border-b border-[#3D2C22]/10 space-y-1">
+                <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#7A1F26] font-semibold block">{t.modalGuideTag}</span>
+                <h3 className="text-2xl sm:text-3xl text-[#7A1F26] font-bold tracking-tight">
+                  {t.modalTitle}
+                </h3>
               </div>
 
-              <div className="space-y-5">
+              <div className="space-y-3.5">
                 {zones.map((zone) => (
                   <button
                     key={zone.id}
                     disabled={!zone.active}
                     onClick={() => {
                       if (zone.active) {
-                        onSelectZone(zone.id as 'north' | 'central' | 'south');
+                        onSelectZone(zone.id as 'north' | 'central' | 'south' | 'bonedi');
                         setIsModalOpen(false);
                       }
                     }}
-                    className={`w-full text-left relative overflow-hidden flex items-stretch border rounded-2xl transition-all duration-500 group/ticket ${zone.active
-                        ? 'border-ink/10 bg-white hover:border-[#D4A24C] hover:shadow-xl hover:-rotate-1 hover:scale-[1.02] cursor-pointer'
-                        : 'border-ink/5 bg-ink/5 opacity-55 cursor-not-allowed'
+                    className={`w-full text-left relative overflow-hidden flex items-center border rounded-xl p-4 transition-all duration-300 ${zone.active
+                      ? 'border-[#7A1F26]/20 bg-white hover:border-[#7A1F26] hover:shadow-md cursor-pointer'
+                      : 'border-[#3D2C22]/10 bg-[#3D2C22]/5 opacity-60 cursor-not-allowed'
                       }`}
                   >
-                    {/* Ticket Punch Circles */}
-                    <div className="absolute top-1/2 -translate-y-1/2 -left-2.5 w-5 h-5 rounded-full bg-[#FAF6ED] border-r border-ink/15 z-10"></div>
-                    <div className="absolute top-1/2 -translate-y-1/2 -right-2.5 w-5 h-5 rounded-full bg-[#FAF6ED] border-l border-ink/15 z-10"></div>
-
-                    {/* Stamp Indicator Column */}
-                    <div className={`w-3.5 ${zone.stampColor} transition-colors duration-500 relative flex-shrink-0`}>
-                      <div className="absolute inset-y-0 right-0 w-[0.5px] bg-white/25"></div>
-                    </div>
-
-                    {/* Ticket Main Area */}
-                    <div className="flex-1 p-5 pl-7 pr-7 flex flex-col justify-between space-y-2">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <div className="flex items-baseline gap-2">
-                            <span className="font-serif text-lg font-bold text-ink group-hover/ticket:text-[#8B1E2D] transition-colors">{zone.name}</span>
-                          </div>
-                          <span className="text-[9px] font-mono text-ink/30 tracking-widest uppercase block mt-0.5">{zone.subtitle}</span>
-                        </div>
-
-                        {zone.active ? (
-                          <span className="text-[9px] font-mono text-[#8B1E2D] bg-[#8B1E2D]/10 border border-[#8B1E2D]/20 px-2.5 py-0.5 rounded-full font-bold uppercase tracking-wider animate-pulse">ACTIVE</span>
-                        ) : (
-                          <span className="text-[9px] font-mono text-zinc-500 bg-zinc-200/50 border border-zinc-300 px-2.5 py-0.5 rounded-full uppercase tracking-wider font-semibold">SOON</span>
-                        )}
-                      </div>
-
-                      <div className="border-t border-dashed border-ink/10 pt-2 flex justify-between items-end gap-4">
-                        <p className="text-[11px] font-sans text-ink/60 leading-normal line-clamp-2">{zone.desc}</p>
-                        <span className="text-[8px] font-mono text-[#D4A24C] font-semibold tracking-wider flex-shrink-0 bg-gold-glow/10 px-1.5 py-0.5 border border-[#D4A24C]/10 select-none">
+                    <div className="flex-1 space-y-1">
+                      <div className="flex justify-between items-center">
+                        <span className="text-lg font-bold text-[#7A1F26]">
+                          {zone.name}
+                        </span>
+                        <span className="text-[10px] font-mono text-[#7A1F26] bg-[#7A1F26]/10 px-2 py-0.5 rounded-md font-semibold">
                           {zone.serial}
                         </span>
                       </div>
+                      <p className="text-xs text-[#3D2C22]/70 leading-normal">
+                        {zone.desc}
+                      </p>
                     </div>
                   </button>
                 ))}
               </div>
 
-              {/* Decorative bottom element */}
               <div className="text-center pt-2">
-                <span className="text-[8px] font-mono text-ink/30 tracking-[0.4em] uppercase select-none">শিউলি দুর্গাপূজা ভ্রমণ সহায়িকা</span>
+                <span className="text-[10px] font-mono text-[#3D2C22]/40 tracking-[0.2em] uppercase">
+                  {t.modalFooterTag}
+                </span>
               </div>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 };
 

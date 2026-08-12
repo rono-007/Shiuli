@@ -5,7 +5,7 @@ import html
 import time
 import uuid
 from collections import deque
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -181,8 +181,18 @@ def read_root():
             "bonedi": "/api/pandals/bonedi",
             "north_eateries": "/api/eateries/north",
             "north_facilities": "/api/facilities/north",
-            "map": "/api/map"
+            "map": "/api/map",
+            "launch_date": "/api/launch-date"
         }
+    }
+
+@app.get("/api/launch-date")
+def get_launch_date():
+    """Return the official launch date for Shiuli."""
+    return {
+        "launch_date": "2026-09-15T00:00:00+05:30",
+        "target_timestamp": 1789410600000,
+        "formatted": "September 15, 2026 00:00:00 IST"
     }
 
 @app.get("/health")
@@ -326,7 +336,7 @@ def get_admin_stats(request: Request, _ = Depends(verify_admin)):
     }
 
     # Requests per minute (over last 5 minutes)
-    five_min_ago = (now - datetime.timedelta(minutes=5)).isoformat()
+    five_min_ago = (now - timedelta(minutes=5)).isoformat()
     recent_logs = [l for l in logs if l["timestamp"] >= five_min_ago]
     req_per_min = round(len(recent_logs) / 5, 1) if recent_logs else 0
 

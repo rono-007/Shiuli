@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Coffee, Utensils, ShieldAlert, Cross, TrainFront } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface EssentialDetail {
   name: string;
@@ -76,6 +77,7 @@ const essentialsData: EssentialCategory[] = [
 
 const EssentialsSection: React.FC = () => {
   const [activeTab, setActiveTab] = useState<string>('cafe');
+  const { t, language } = useLanguage();
 
   const currentCategory = essentialsData.find(cat => cat.id === activeTab) || essentialsData[0];
 
@@ -89,10 +91,10 @@ const EssentialsSection: React.FC = () => {
         
         {/* Header Section */}
         <div className="text-center mb-16 space-y-3">
-          <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-ink/40">V • নির্দেশিকা</span>
-          <h2 className="text-4xl md:text-5xl font-serif text-ink italic font-normal">পথের সঙ্গী</h2>
+          <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-ink/40">{t.essentialsTag}</span>
+          <h2 className="text-4xl md:text-5xl font-serif text-ink italic font-normal">{t.essentialsTitle}</h2>
           <p className="text-xs font-sans text-ink/50 italic max-w-sm mx-auto">
-            পুজো পরিক্রমার অতি প্রয়োজনীয় তথ্য ও জরুরি হেল্পলাইন।
+            {language === 'bn' ? 'পুজো পরিক্রমার অতি প্রয়োজনীয় তথ্য ও জরুরি হেল্পলাইন।' : 'Essential directory & 24x7 emergency contacts for Puja visitors.'}
           </p>
         </div>
 

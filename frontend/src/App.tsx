@@ -3,11 +3,11 @@ import HeroSection from './components/HeroSection';
 import PujaGuideSection from './components/PujaGuideSection';
 import SectionDivider from './components/SectionDivider';
 
-import EssentialsSection from './components/EssentialsSection';
 import { Heart, WifiOff, Mail, Phone, MapPin } from 'lucide-react';
 import { LanguageProvider } from './context/LanguageContext';
 import { InitialLanguageModal } from './components/InitialLanguageModal';
 import { LanguageToggle } from './components/LanguageToggle';
+import BetaModal from './components/BetaModal';
 
 const NorthCalcuttaSection = lazy(() => import('./components/NorthCalcuttaSection'));
 const SouthCalcuttaSection = lazy(() => import('./components/SouthCalcuttaSection'));
@@ -16,6 +16,7 @@ const BonediCalcuttaSection = lazy(() => import('./components/BonediCalcuttaSect
 const FacilitiesSection = lazy(() => import('./components/FacilitiesSection'));
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
 const StorySection = lazy(() => import('./components/StorySection'));
+const RoutePlanner = lazy(() => import('./components/RoutePlanner'));
 
 function SectionLoader() {
   return (
@@ -81,7 +82,7 @@ function InitialLogoLoader({ onComplete }: { onComplete: () => void }) {
 
 function AppContent() {
   const [showLoader, setShowLoader] = useState(true);
-  const [view, setView] = useState<'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities' | 'admin'>(() => {
+  const [view, setView] = useState<'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities' | 'route-planner' | 'admin'>(() => {
     const params = new URLSearchParams(window.location.search);
     return params.has('admin') ? 'admin' : 'home';
   });
@@ -104,6 +105,17 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink">
       <InitialLanguageModal />
+      <BetaModal />
+      
+      {/* Sticky Floating Beta Badge */}
+      <div className="fixed bottom-4 right-4 z-40 bg-[#7A1F26]/95 text-[#FAF6ED] border border-[#D4A24C]/40 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold shadow-xl flex items-center gap-2 backdrop-blur-md select-none pointer-events-auto">
+        <span className="flex h-2 w-2 relative">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4A24C] opacity-75"></span>
+          <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4A24C]"></span>
+        </span>
+        <span>BETA VERSION</span>
+      </div>
+
       {showLoader && <InitialLogoLoader onComplete={() => setShowLoader(false)} />}
       {isOffline && (
         <div className="bg-[#8B1E2D] text-[#FAF6ED] text-xs font-serif font-bold py-2.5 px-4 text-center sticky top-0 z-50 flex items-center justify-center gap-2 shadow-md border-b border-[#E5B05C]/30">
@@ -122,13 +134,16 @@ function AppContent() {
             {/* Left: Brand Logo (Transparent background, only logo shown) */}
             <div 
               onClick={() => setView('home')}
-              className="pointer-events-auto cursor-pointer group flex items-center"
+              className="pointer-events-auto cursor-pointer group flex items-center gap-2"
             >
               <img 
                 src="/logo-shiuli.png" 
                 alt="Shiuli Logo" 
                 className="h-12 sm:h-16 md:h-20 w-auto object-contain transition-transform group-hover:scale-105 drop-shadow-md" 
               />
+              <span className="px-2 py-0.5 rounded-md bg-[#941F28] text-white text-[10px] font-mono font-bold tracking-widest uppercase border border-[#DFB86C]/40 shadow-xs">
+                BETA
+              </span>
             </div>
 
             {/* Center: Year & City */}
@@ -167,6 +182,8 @@ function AppContent() {
               <BonediCalcuttaSection onBack={() => setView('home')} />
             ) : view === 'facilities' ? (
               <FacilitiesSection onBack={() => setView('home')} />
+            ) : view === 'route-planner' ? (
+              <RoutePlanner onBack={() => setView('home')} />
             ) : (
               <>
                 <HeroSection
@@ -191,11 +208,9 @@ function AppContent() {
 
                 {/* CONTENT SECTION */}
                 <div className="w-full">
-                  <PujaGuideSection />
+                  <PujaGuideSection onSelectRoutePlanner={() => setView('route-planner')} />
 
                   <StorySection />
-
-                  <EssentialsSection />
                 </div>
               </>
             )}

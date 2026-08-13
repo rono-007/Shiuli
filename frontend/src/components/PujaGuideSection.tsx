@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Landmark, 
   Utensils, 
@@ -14,9 +14,15 @@ import {
   Soup
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { EssentialInfoModal } from './EssentialInfoModal';
 
-export const PujaGuideSection: React.FC = () => {
+interface PujaGuideSectionProps {
+  onSelectRoutePlanner?: () => void;
+}
+
+export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRoutePlanner }) => {
   const { t, language } = useLanguage();
+  const [isEssentialModalOpen, setIsEssentialModalOpen] = useState(false);
 
   const isBn = language === 'bn';
 
@@ -119,7 +125,8 @@ export const PujaGuideSection: React.FC = () => {
       badgeBorder: 'border-[#F2C5CC]',
       btnBg: 'bg-[#F7E4E7] hover:bg-[#F0CFD5] text-[#A83A4E]',
       watermark: <Megaphone className="w-24 h-24 text-[#B84358]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
-      accentColor: '#B84358'
+      accentColor: '#B84358',
+      bgImage: '/essential-card.png'
     }
   ];
 
@@ -163,7 +170,8 @@ export const PujaGuideSection: React.FC = () => {
           {cards.map((card) => (
             <div 
               key={card.id} 
-              className="bg-[#FFFDF9] rounded-3xl border border-[#EADECF] shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 px-5 py-6 flex flex-col items-center relative overflow-hidden group min-h-[380px]"
+              className={`rounded-3xl border border-[#EADECF] shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 px-5 py-6 flex flex-col items-center relative overflow-hidden group min-h-[380px] ${card.bgImage ? 'bg-cover bg-center' : 'bg-[#FFFDF9]'}`}
+              style={card.bgImage ? { backgroundImage: `url('${card.bgImage}')` } : undefined}
             >
               {/* Background Watermark Icon */}
               {card.watermark}
@@ -212,6 +220,7 @@ export const PujaGuideSection: React.FC = () => {
               {/* Action Pill Button */}
               <div className="w-full pt-2 mt-auto">
                 <button 
+                  onClick={() => setIsEssentialModalOpen(true)}
                   className={`w-full py-2.5 px-4 rounded-xl flex items-center justify-between text-xs font-serif font-bold transition-all duration-300 ${card.btnBg} cursor-pointer shadow-2xs group/btn`}
                 >
                   <span>{isBn ? 'বিস্তারিত দেখুন' : 'View Details'}</span> 
@@ -249,7 +258,10 @@ export const PujaGuideSection: React.FC = () => {
             </div>
           </div>
 
-          <button className="w-full sm:w-auto justify-center bg-[#921925] hover:bg-[#78141D] text-white font-serif font-semibold text-xs md:text-sm px-6 py-3 rounded-xl flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer whitespace-nowrap">
+          <button 
+            onClick={onSelectRoutePlanner}
+            className="w-full sm:w-auto justify-center bg-[#921925] hover:bg-[#78141D] text-white font-serif font-semibold text-xs md:text-sm px-6 py-3 rounded-xl flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer whitespace-nowrap"
+          >
             <span>{t.routePlannerBtn}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
@@ -263,6 +275,12 @@ export const PujaGuideSection: React.FC = () => {
         </div>
 
       </div>
+
+      {/* Essential Info Modal */}
+      <EssentialInfoModal 
+        isOpen={isEssentialModalOpen} 
+        onClose={() => setIsEssentialModalOpen(false)} 
+      />
     </section>
   );
 };

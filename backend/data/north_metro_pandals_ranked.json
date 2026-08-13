@@ -1,0 +1,3243 @@
+[
+  {
+    "metro_station": "Dakshineswar",
+    "lat": 22.6538276,
+    "lon": 88.36369770000002,
+    "ranked_pandals": [
+      {
+        "title": "Manasbag Sarbojanin",
+        "address": "sporting club & library, Manasbag, Belgharia, Landmark B.T Rd, near 11 no. bus stand, Manasbag, Belghoria, Kolkata, West Bengal 700056, India",
+        "lat": 22.6663891,
+        "lon": 88.3783907,
+        "distance_meters": 2055,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Netaji Colony Lowland",
+        "address": "106, Netaji Colony, Joyshree, Baranagar, West Bengal 700090, India",
+        "lat": 22.636647,
+        "lon": 88.379064,
+        "distance_meters": 2477,
+        "estimated_walk_time_min": 44
+      },
+      {
+        "title": "Naopara Dadabhai Sangha",
+        "address": "79, AK Mukherjee Rd, Noapara, Palpara, Baranagar, West Bengal 700090, India",
+        "lat": 22.6416696,
+        "lon": 88.3886567,
+        "distance_meters": 2896,
+        "estimated_walk_time_min": 51
+      }
+    ]
+  },
+  {
+    "metro_station": "Baranagar",
+    "lat": 22.653226,
+    "lon": 88.380472,
+    "ranked_pandals": [
+      {
+        "title": "Manasbag Sarbojanin",
+        "address": "sporting club & library, Manasbag, Belgharia, Landmark B.T Rd, near 11 no. bus stand, Manasbag, Belghoria, Kolkata, West Bengal 700056, India",
+        "lat": 22.6663891,
+        "lon": 88.3783907,
+        "distance_meters": 1479,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Naopara Dadabhai Sangha",
+        "address": "79, AK Mukherjee Rd, Noapara, Palpara, Baranagar, West Bengal 700090, India",
+        "lat": 22.6416696,
+        "lon": 88.3886567,
+        "distance_meters": 1535,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Netaji Colony Lowland",
+        "address": "106, Netaji Colony, Joyshree, Baranagar, West Bengal 700090, India",
+        "lat": 22.636647,
+        "lon": 88.379064,
+        "distance_meters": 1849,
+        "estimated_walk_time_min": 33
+      }
+    ]
+  },
+  {
+    "metro_station": "Noapara",
+    "lat": 22.63985,
+    "lon": 88.39409400000001,
+    "ranked_pandals": [
+      {
+        "title": "Naopara Dadabhai Sangha",
+        "address": "79, AK Mukherjee Rd, Noapara, Palpara, Baranagar, West Bengal 700090, India",
+        "lat": 22.6416696,
+        "lon": 88.3886567,
+        "distance_meters": 593,
+        "estimated_walk_time_min": 12
+      },
+      {
+        "title": "Netaji Colony Lowland",
+        "address": "106, Netaji Colony, Joyshree, Baranagar, West Bengal 700090, India",
+        "lat": 22.636647,
+        "lon": 88.379064,
+        "distance_meters": 1583,
+        "estimated_walk_time_min": 29
+      }
+    ]
+  },
+  {
+    "metro_station": "Dum Dum",
+    "lat": 22.621461399999998,
+    "lon": 88.3928043,
+    "ranked_pandals": [
+      {
+        "title": "Patipukur Adi Sarbojanin",
+        "address": "145, 1, Swamiji Sarani Rd, Kalindi Housing Estate, Goalabagan, South Dumdum, West Bengal 700048, India",
+        "lat": 22.6110099,
+        "lon": 88.3978877,
+        "distance_meters": 1273,
+        "estimated_walk_time_min": 24
+      },
+      {
+        "title": "Tala Ponero Pally",
+        "address": "J96M+XWR, Gangulipara, Paikpara, Kolkata, West Bengal 700037, India",
+        "lat": 22.612476299999997,
+        "lon": 88.3847732,
+        "distance_meters": 1295,
+        "estimated_walk_time_min": 24
+      },
+      {
+        "title": "Laketown Netaji Sporting Club",
+        "address": "Block A, Lake Town, South Dumdum, West Bengal 700089, India",
+        "lat": 22.6083271,
+        "lon": 88.4003968,
+        "distance_meters": 1655,
+        "estimated_walk_time_min": 30
+      },
+      {
+        "title": "Tala Park Prattay",
+        "address": "J95M+G26, Tala Park Rd, Tala, Kolkata, West Bengal 700037, India",
+        "lat": 22.608791099999998,
+        "lon": 88.382502,
+        "distance_meters": 1761,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Belgachia Sadharan Durgatsab",
+        "address": "J95M+33X, Tala, Belgachia, Kolkata, West Bengal 700037, India",
+        "lat": 22.607731899999997,
+        "lon": 88.3827393,
+        "distance_meters": 1843,
+        "estimated_walk_time_min": 33
+      },
+      {
+        "title": "Netaji Colony Lowland",
+        "address": "106, Netaji Colony, Joyshree, Baranagar, West Bengal 700090, India",
+        "lat": 22.636647,
+        "lon": 88.379064,
+        "distance_meters": 2199,
+        "estimated_walk_time_min": 39
+      },
+      {
+        "title": "Laketown Adhibasi Brinda",
+        "address": "Children's Park, Lake Town Rd, Block A, Lake Town, South Dumdum, West Bengal 700089, India",
+        "lat": 22.6044508,
+        "lon": 88.4039701,
+        "distance_meters": 2211,
+        "estimated_walk_time_min": 39
+      },
+      {
+        "title": "Naopara Dadabhai Sangha",
+        "address": "79, AK Mukherjee Rd, Noapara, Palpara, Baranagar, West Bengal 700090, India",
+        "lat": 22.6416696,
+        "lon": 88.3886567,
+        "distance_meters": 2287,
+        "estimated_walk_time_min": 41
+      },
+      {
+        "title": "Dum Dum Park Tarun Sangha",
+        "address": "496, Dum Dum Park, Kolkata, West Bengal 700055, India",
+        "lat": 22.610051,
+        "lon": 88.41148799999999,
+        "distance_meters": 2299,
+        "estimated_walk_time_min": 41
+      },
+      {
+        "title": "Sarkar Bagan Sammilita Sangha",
+        "address": "3/2, Nilmoni Mitra Row, Tala, Bidhan Sarani, Kolkata, West Bengal 700002, India",
+        "lat": 22.6062589,
+        "lon": 88.37729569999999,
+        "distance_meters": 2322,
+        "estimated_walk_time_min": 41
+      },
+      {
+        "title": "Tala Barowari",
+        "address": "6-1, NG Chatterjee Ln, Tala, Bidhan Sarani, Paikpara, Kolkata, West Bengal 700002, India",
+        "lat": 22.6067969,
+        "lon": 88.3762168,
+        "distance_meters": 2357,
+        "estimated_walk_time_min": 42
+      },
+      {
+        "title": "Dum Dum Park Bharat Chakra",
+        "address": "Tank No. 2, Dum Dum Park, South Dumdum, West Bengal 700055, India",
+        "lat": 22.610821299999998,
+        "lon": 88.4146001,
+        "distance_meters": 2530,
+        "estimated_walk_time_min": 45
+      },
+      {
+        "title": "Sree Bhumi Sporting Club",
+        "address": "HCX3+H53, Canal St, near P.S, Sreebhumi, Lake Town, South Dumdum, West Bengal 700048, India",
+        "lat": 22.5988987,
+        "lon": 88.4029328,
+        "distance_meters": 2715,
+        "estimated_walk_time_min": 48
+      },
+      {
+        "title": "Golaghata Sammilani",
+        "address": "2, Golaghata Rd, Sreebhumi, Lake Town, South Dumdum, West Bengal 700048, India",
+        "lat": 22.597338999999998,
+        "lon": 88.3991458,
+        "distance_meters": 2760,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Dum Dum Park Sarbojanin",
+        "address": "225/1, Dum Dum Park, South Dumdum, West Bengal 700055, India",
+        "lat": 22.6094363,
+        "lon": 88.4164052,
+        "distance_meters": 2767,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Dum Dum Tarun Dal",
+        "address": "225/1, Dum Dum Park, South Dumdum, West Bengal 700055, India",
+        "lat": 22.6094363,
+        "lon": 88.4164052,
+        "distance_meters": 2767,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Telengabagan",
+        "address": "35, Adhar Chandra Das Ln, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5962942,
+        "lon": 88.3869813,
+        "distance_meters": 2861,
+        "estimated_walk_time_min": 50
+      },
+      {
+        "title": "Ultadanga Pallysree",
+        "address": "1/1P, Jaharlal Dutta Ln, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5957731,
+        "lon": 88.38468820000001,
+        "distance_meters": 2975,
+        "estimated_walk_time_min": 52
+      }
+    ]
+  },
+  {
+    "metro_station": "Belgachia",
+    "lat": 22.605973,
+    "lon": 88.386353,
+    "ranked_pandals": [
+      {
+        "title": "Belgachia Sadharan Durgatsab",
+        "address": "J95M+33X, Tala, Belgachia, Kolkata, West Bengal 700037, India",
+        "lat": 22.607731899999997,
+        "lon": 88.3827393,
+        "distance_meters": 419,
+        "estimated_walk_time_min": 9
+      },
+      {
+        "title": "Tala Park Prattay",
+        "address": "J95M+G26, Tala Park Rd, Tala, Kolkata, West Bengal 700037, India",
+        "lat": 22.608791099999998,
+        "lon": 88.382502,
+        "distance_meters": 504,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Tala Ponero Pally",
+        "address": "J96M+XWR, Gangulipara, Paikpara, Kolkata, West Bengal 700037, India",
+        "lat": 22.612476299999997,
+        "lon": 88.3847732,
+        "distance_meters": 741,
+        "estimated_walk_time_min": 15
+      },
+      {
+        "title": "Sarkar Bagan Sammilita Sangha",
+        "address": "3/2, Nilmoni Mitra Row, Tala, Bidhan Sarani, Kolkata, West Bengal 700002, India",
+        "lat": 22.6062589,
+        "lon": 88.37729569999999,
+        "distance_meters": 930,
+        "estimated_walk_time_min": 18
+      },
+      {
+        "title": "Tala Barowari",
+        "address": "6-1, NG Chatterjee Ln, Tala, Bidhan Sarani, Paikpara, Kolkata, West Bengal 700002, India",
+        "lat": 22.6067969,
+        "lon": 88.3762168,
+        "distance_meters": 1044,
+        "estimated_walk_time_min": 20
+      },
+      {
+        "title": "Telengabagan",
+        "address": "35, Adhar Chandra Das Ln, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5962942,
+        "lon": 88.3869813,
+        "distance_meters": 1078,
+        "estimated_walk_time_min": 20
+      },
+      {
+        "title": "Ultadanga Pallysree",
+        "address": "1/1P, Jaharlal Dutta Ln, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5957731,
+        "lon": 88.38468820000001,
+        "distance_meters": 1146,
+        "estimated_walk_time_min": 22
+      },
+      {
+        "title": "Ultadanga Yuba Brinda",
+        "address": "H9WJ+9W8, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595916,
+        "lon": 88.3823154,
+        "distance_meters": 1192,
+        "estimated_walk_time_min": 22
+      },
+      {
+        "title": "Karbagan Sarbojanin",
+        "address": "17/1/H/25, Karbagan Durga puja, Ultadanga Main Rd, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595240999999998,
+        "lon": 88.3842775,
+        "distance_meters": 1212,
+        "estimated_walk_time_min": 23
+      },
+      {
+        "title": "Patipukur Adi Sarbojanin",
+        "address": "145, 1, Swamiji Sarani Rd, Kalindi Housing Estate, Goalabagan, South Dumdum, West Bengal 700048, India",
+        "lat": 22.6110099,
+        "lon": 88.3978877,
+        "distance_meters": 1309,
+        "estimated_walk_time_min": 24
+      },
+      {
+        "title": "Ultadanga Bidhan Sangha",
+        "address": "National Academy of Customs Indirect Taxes & Narcotics (NACIN, H9VM+FW9, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5936517,
+        "lon": 88.38486449999999,
+        "distance_meters": 1378,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Aurobinda Setu Sarbojanin",
+        "address": "9/1/5, Canal E Rd, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.594482499999998,
+        "lon": 88.3805509,
+        "distance_meters": 1409,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Ultadanga Jagarani Sangha",
+        "address": "16/1, Biplabi Barin Ghosh Sarani, Murari Pukur, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5932927,
+        "lon": 88.3849094,
+        "distance_meters": 1417,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Laketown Netaji Sporting Club",
+        "address": "Block A, Lake Town, South Dumdum, West Bengal 700089, India",
+        "lat": 22.6083271,
+        "lon": 88.4003968,
+        "distance_meters": 1465,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Gouriberia",
+        "address": "700067, 4, Gouri Bari Ln, Manicktala, Gouri Bari, Kolkata, West Bengal 700004, India",
+        "lat": 22.594448099999997,
+        "lon": 88.37908569999999,
+        "distance_meters": 1482,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Bidhan Sarani Atlas Club",
+        "address": "101, Bidhan Sarani Rd, Fariapukur, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.599686,
+        "lon": 88.37291809999999,
+        "distance_meters": 1546,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Golaghata Sammilani",
+        "address": "2, Golaghata Rd, Sreebhumi, Lake Town, South Dumdum, West Bengal 700048, India",
+        "lat": 22.597338999999998,
+        "lon": 88.3991458,
+        "distance_meters": 1626,
+        "estimated_walk_time_min": 30
+      },
+      {
+        "title": "North Tridhara Sarbojanin",
+        "address": "H9WF+9QF, 158N, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.5958155,
+        "lon": 88.3745568,
+        "distance_meters": 1655,
+        "estimated_walk_time_min": 30
+      },
+      {
+        "title": "Nabinpally Hatibagan",
+        "address": "9/1, Nalin Sarkar Street Sovabazar, 16, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.595902799999998,
+        "lon": 88.3734176,
+        "distance_meters": 1736,
+        "estimated_walk_time_min": 31
+      },
+      {
+        "title": "Nalin Sarkar Street Sarbojanin Durgotsab",
+        "address": "H9WF+577, Nalin Sarkar St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.59542,
+        "lon": 88.37318069999999,
+        "distance_meters": 1790,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Sikdar Bagan",
+        "address": "H9WC+MR3, Sikdar Bagan St, Shyambazar, 27, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.596625,
+        "lon": 88.3721388,
+        "distance_meters": 1791,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Laketown Adhibasi Brinda",
+        "address": "Children's Park, Lake Town Rd, Block A, Lake Town, South Dumdum, West Bengal 700089, India",
+        "lat": 22.6044508,
+        "lon": 88.4039701,
+        "distance_meters": 1816,
+        "estimated_walk_time_min": 33
+      },
+      {
+        "title": "Shyambazar Pally Sangha",
+        "address": "48, Shyam Bazar St, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.6000564,
+        "lon": 88.3693864,
+        "distance_meters": 1861,
+        "estimated_walk_time_min": 34
+      },
+      {
+        "title": "Sree Bhumi Sporting Club",
+        "address": "HCX3+H53, Canal St, near P.S, Sreebhumi, Lake Town, South Dumdum, West Bengal 700048, India",
+        "lat": 22.5988987,
+        "lon": 88.4029328,
+        "distance_meters": 1874,
+        "estimated_walk_time_min": 34
+      },
+      {
+        "title": "Hatibagan Sarbojanin",
+        "address": "134, Sri Aurobinda Sarani, Principal Khudiram Bose Rd, Sovabazar, Hati Bagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.5943863,
+        "lon": 88.3720004,
+        "distance_meters": 1957,
+        "estimated_walk_time_min": 35
+      },
+      {
+        "title": "Baghbazar Sarbojanin Durgotsav & Exhibition",
+        "address": "78, Bagbazar St, Baghbazar, Kolkata, West Bengal 700003, India",
+        "lat": 22.6044897,
+        "lon": 88.36561499999999,
+        "distance_meters": 2135,
+        "estimated_walk_time_min": 38
+      },
+      {
+        "title": "Lalabagan Nabankur",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 2190,
+        "estimated_walk_time_min": 39
+      },
+      {
+        "title": "Sammilita Lalabagan Sarbojanin",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 2190,
+        "estimated_walk_time_min": 39
+      },
+      {
+        "title": "Jagat Mukherjee Park",
+        "address": "1, Jatindra Mohan Ave, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5994903,
+        "lon": 88.3660388,
+        "distance_meters": 2206,
+        "estimated_walk_time_min": 39
+      },
+      {
+        "title": "Sovabazar Rajbari",
+        "address": "Raja Nabakrishna St, Raja Nabakrishna Street, Sovabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5962644,
+        "lon": 88.3673797,
+        "distance_meters": 2226,
+        "estimated_walk_time_min": 40
+      },
+      {
+        "title": "Kashi Bose Lane",
+        "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.590897899999998,
+        "lon": 88.36891740000002,
+        "distance_meters": 2452,
+        "estimated_walk_time_min": 43
+      },
+      {
+        "title": "Dum Dum Park Tarun Sangha",
+        "address": "496, Dum Dum Park, Kolkata, West Bengal 700055, India",
+        "lat": 22.610051,
+        "lon": 88.41148799999999,
+        "distance_meters": 2619,
+        "estimated_walk_time_min": 46
+      },
+      {
+        "title": "Kumartuli Park",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 2670,
+        "estimated_walk_time_min": 47
+      },
+      {
+        "title": "Kumartuli Sarbojanin",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 2670,
+        "estimated_walk_time_min": 47
+      },
+      {
+        "title": "Beadon Street Sarbojanin",
+        "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.5892707,
+        "lon": 88.3676133,
+        "distance_meters": 2673,
+        "estimated_walk_time_min": 47
+      },
+      {
+        "title": "Manicktala Chaltabagan Lohapatty",
+        "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.5848905,
+        "lon": 88.3721509,
+        "distance_meters": 2760,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Sovabazar Beniatola",
+        "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5958452,
+        "lon": 88.3611126,
+        "distance_meters": 2825,
+        "estimated_walk_time_min": 50
+      },
+      {
+        "title": "Brindaban Matri Mandir",
+        "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.582717199999998,
+        "lon": 88.3729053,
+        "distance_meters": 2931,
+        "estimated_walk_time_min": 51
+      },
+      {
+        "title": "Ahiritola Jubak Brinda",
+        "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5945774,
+        "lon": 88.3605889,
+        "distance_meters": 2932,
+        "estimated_walk_time_min": 51
+      },
+      {
+        "title": "Dum Dum Park Bharat Chakra",
+        "address": "Tank No. 2, Dum Dum Park, South Dumdum, West Bengal 700055, India",
+        "lat": 22.610821299999998,
+        "lon": 88.4146001,
+        "distance_meters": 2949,
+        "estimated_walk_time_min": 52
+      },
+      {
+        "title": "Kankurgachi Jubak Brinda",
+        "address": "H9HQ+P6X, Phoolbagan, Kankurgachi, Kolkata, West Bengal 700054, India",
+        "lat": 22.579356800000003,
+        "lon": 88.3881073,
+        "distance_meters": 2965,
+        "estimated_walk_time_min": 52
+      }
+    ]
+  },
+  {
+    "metro_station": "Shyambazar",
+    "lat": 22.6006027,
+    "lon": 88.3702928,
+    "ranked_pandals": [
+      {
+        "title": "Shyambazar Pally Sangha",
+        "address": "48, Shyam Bazar St, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.6000564,
+        "lon": 88.3693864,
+        "distance_meters": 111,
+        "estimated_walk_time_min": 4
+      },
+      {
+        "title": "Bidhan Sarani Atlas Club",
+        "address": "101, Bidhan Sarani Rd, Fariapukur, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.599686,
+        "lon": 88.37291809999999,
+        "distance_meters": 288,
+        "estimated_walk_time_min": 7
+      },
+      {
+        "title": "Jagat Mukherjee Park",
+        "address": "1, Jatindra Mohan Ave, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5994903,
+        "lon": 88.3660388,
+        "distance_meters": 453,
+        "estimated_walk_time_min": 10
+      },
+      {
+        "title": "Sikdar Bagan",
+        "address": "H9WC+MR3, Sikdar Bagan St, Shyambazar, 27, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.596625,
+        "lon": 88.3721388,
+        "distance_meters": 481,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Sovabazar Rajbari",
+        "address": "Raja Nabakrishna St, Raja Nabakrishna Street, Sovabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5962644,
+        "lon": 88.3673797,
+        "distance_meters": 567,
+        "estimated_walk_time_min": 12
+      },
+      {
+        "title": "Nabinpally Hatibagan",
+        "address": "9/1, Nalin Sarkar Street Sovabazar, 16, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.595902799999998,
+        "lon": 88.3734176,
+        "distance_meters": 613,
+        "estimated_walk_time_min": 13
+      },
+      {
+        "title": "Baghbazar Sarbojanin Durgotsav & Exhibition",
+        "address": "78, Bagbazar St, Baghbazar, Kolkata, West Bengal 700003, India",
+        "lat": 22.6044897,
+        "lon": 88.36561499999999,
+        "distance_meters": 646,
+        "estimated_walk_time_min": 13
+      },
+      {
+        "title": "Nalin Sarkar Street Sarbojanin Durgotsab",
+        "address": "H9WF+577, Nalin Sarkar St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.59542,
+        "lon": 88.37318069999999,
+        "distance_meters": 648,
+        "estimated_walk_time_min": 13
+      },
+      {
+        "title": "North Tridhara Sarbojanin",
+        "address": "H9WF+9QF, 158N, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.5958155,
+        "lon": 88.3745568,
+        "distance_meters": 689,
+        "estimated_walk_time_min": 14
+      },
+      {
+        "title": "Hatibagan Sarbojanin",
+        "address": "134, Sri Aurobinda Sarani, Principal Khudiram Bose Rd, Sovabazar, Hati Bagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.5943863,
+        "lon": 88.3720004,
+        "distance_meters": 713,
+        "estimated_walk_time_min": 14
+      },
+      {
+        "title": "Tala Barowari",
+        "address": "6-1, NG Chatterjee Ln, Tala, Bidhan Sarani, Paikpara, Kolkata, West Bengal 700002, India",
+        "lat": 22.6067969,
+        "lon": 88.3762168,
+        "distance_meters": 918,
+        "estimated_walk_time_min": 18
+      },
+      {
+        "title": "Kumartuli Park",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 923,
+        "estimated_walk_time_min": 18
+      },
+      {
+        "title": "Kumartuli Sarbojanin",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 923,
+        "estimated_walk_time_min": 18
+      },
+      {
+        "title": "Sarkar Bagan Sammilita Sangha",
+        "address": "3/2, Nilmoni Mitra Row, Tala, Bidhan Sarani, Kolkata, West Bengal 700002, India",
+        "lat": 22.6062589,
+        "lon": 88.37729569999999,
+        "distance_meters": 955,
+        "estimated_walk_time_min": 18
+      },
+      {
+        "title": "Sovabazar Beniatola",
+        "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5958452,
+        "lon": 88.3611126,
+        "distance_meters": 1080,
+        "estimated_walk_time_min": 21
+      },
+      {
+        "title": "Kashi Bose Lane",
+        "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.590897899999998,
+        "lon": 88.36891740000002,
+        "distance_meters": 1088,
+        "estimated_walk_time_min": 21
+      },
+      {
+        "title": "Gouriberia",
+        "address": "700067, 4, Gouri Bari Ln, Manicktala, Gouri Bari, Kolkata, West Bengal 700004, India",
+        "lat": 22.594448099999997,
+        "lon": 88.37908569999999,
+        "distance_meters": 1132,
+        "estimated_walk_time_min": 21
+      },
+      {
+        "title": "Ahiritola Jubak Brinda",
+        "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5945774,
+        "lon": 88.3605889,
+        "distance_meters": 1200,
+        "estimated_walk_time_min": 23
+      },
+      {
+        "title": "Aurobinda Setu Sarbojanin",
+        "address": "9/1/5, Canal E Rd, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.594482499999998,
+        "lon": 88.3805509,
+        "distance_meters": 1253,
+        "estimated_walk_time_min": 23
+      },
+      {
+        "title": "Beadon Street Sarbojanin",
+        "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.5892707,
+        "lon": 88.3676133,
+        "distance_meters": 1289,
+        "estimated_walk_time_min": 24
+      },
+      {
+        "title": "Ultadanga Yuba Brinda",
+        "address": "H9WJ+9W8, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595916,
+        "lon": 88.3823154,
+        "distance_meters": 1339,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Ahiritola Sarbojanin",
+        "address": "haro dhol lean, 22, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5948383,
+        "lon": 88.3571698,
+        "distance_meters": 1491,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Belgachia Sadharan Durgatsab",
+        "address": "J95M+33X, Tala, Belgachia, Kolkata, West Bengal 700037, India",
+        "lat": 22.607731899999997,
+        "lon": 88.3827393,
+        "distance_meters": 1503,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Lalabagan Nabankur",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1513,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Sammilita Lalabagan Sarbojanin",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1513,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Tala Park Prattay",
+        "address": "J95M+G26, Tala Park Rd, Tala, Kolkata, West Bengal 700037, India",
+        "lat": 22.608791099999998,
+        "lon": 88.382502,
+        "distance_meters": 1549,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Karbagan Sarbojanin",
+        "address": "17/1/H/25, Karbagan Durga puja, Ultadanga Main Rd, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595240999999998,
+        "lon": 88.3842775,
+        "distance_meters": 1554,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Ultadanga Pallysree",
+        "address": "1/1P, Jaharlal Dutta Ln, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5957731,
+        "lon": 88.38468820000001,
+        "distance_meters": 1572,
+        "estimated_walk_time_min": 29
+      },
+      {
+        "title": "Ultadanga Bidhan Sangha",
+        "address": "National Academy of Customs Indirect Taxes & Narcotics (NACIN, H9VM+FW9, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5936517,
+        "lon": 88.38486449999999,
+        "distance_meters": 1683,
+        "estimated_walk_time_min": 31
+      },
+      {
+        "title": "Ultadanga Jagarani Sangha",
+        "address": "16/1, Biplabi Barin Ghosh Sarani, Murari Pukur, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5932927,
+        "lon": 88.3849094,
+        "distance_meters": 1706,
+        "estimated_walk_time_min": 31
+      },
+      {
+        "title": "Manicktala Chaltabagan Lohapatty",
+        "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.5848905,
+        "lon": 88.3721509,
+        "distance_meters": 1757,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Telengabagan",
+        "address": "35, Adhar Chandra Das Ln, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5962942,
+        "lon": 88.3869813,
+        "distance_meters": 1778,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Simla Byayam Samity",
+        "address": "9B, Singhee Lane, P O, Abhedananda Rd, Simla, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.5851371,
+        "lon": 88.3645461,
+        "distance_meters": 1818,
+        "estimated_walk_time_min": 33
+      },
+      {
+        "title": "Pathuriaghata Pancher Pally",
+        "address": "H9Q5+C3R, Malapara, Santoshpur, Jorabagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.588606799999997,
+        "lon": 88.35763170000001,
+        "distance_meters": 1862,
+        "estimated_walk_time_min": 34
+      },
+      {
+        "title": "Vivekananda Sporting Club",
+        "address": "77/1, Simla St, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.584103799999998,
+        "lon": 88.3664881,
+        "distance_meters": 1875,
+        "estimated_walk_time_min": 34
+      },
+      {
+        "title": "Tala Ponero Pally",
+        "address": "J96M+XWR, Gangulipara, Paikpara, Kolkata, West Bengal 700037, India",
+        "lat": 22.612476299999997,
+        "lon": 88.3847732,
+        "distance_meters": 1988,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Brindaban Matri Mandir",
+        "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.582717199999998,
+        "lon": 88.3729053,
+        "distance_meters": 2006,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Chorebagan Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 2029,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Girish Park Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 2029,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Golaghata Sammilani",
+        "address": "2, Golaghata Rd, Sreebhumi, Lake Town, South Dumdum, West Bengal 700048, India",
+        "lat": 22.597338999999998,
+        "lon": 88.3991458,
+        "distance_meters": 2984,
+        "estimated_walk_time_min": 52
+      },
+      {
+        "title": "Kankurgachi Jubak Brinda",
+        "address": "H9HQ+P6X, Phoolbagan, Kankurgachi, Kolkata, West Bengal 700054, India",
+        "lat": 22.579356800000003,
+        "lon": 88.3881073,
+        "distance_meters": 2987,
+        "estimated_walk_time_min": 52
+      }
+    ]
+  },
+  {
+    "metro_station": "Shobhabazar Sutanuti",
+    "lat": 22.5960254,
+    "lon": 88.3652848,
+    "ranked_pandals": [
+      {
+        "title": "Sovabazar Rajbari",
+        "address": "Raja Nabakrishna St, Raja Nabakrishna Street, Sovabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5962644,
+        "lon": 88.3673797,
+        "distance_meters": 216,
+        "estimated_walk_time_min": 6
+      },
+      {
+        "title": "Jagat Mukherjee Park",
+        "address": "1, Jatindra Mohan Ave, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5994903,
+        "lon": 88.3660388,
+        "distance_meters": 392,
+        "estimated_walk_time_min": 9
+      },
+      {
+        "title": "Sovabazar Beniatola",
+        "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5958452,
+        "lon": 88.3611126,
+        "distance_meters": 428,
+        "estimated_walk_time_min": 10
+      },
+      {
+        "title": "Ahiritola Jubak Brinda",
+        "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5945774,
+        "lon": 88.3605889,
+        "distance_meters": 508,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Kumartuli Park",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 511,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Kumartuli Sarbojanin",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 511,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Shyambazar Pally Sangha",
+        "address": "48, Shyam Bazar St, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.6000564,
+        "lon": 88.3693864,
+        "distance_meters": 614,
+        "estimated_walk_time_min": 13
+      },
+      {
+        "title": "Kashi Bose Lane",
+        "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.590897899999998,
+        "lon": 88.36891740000002,
+        "distance_meters": 681,
+        "estimated_walk_time_min": 14
+      },
+      {
+        "title": "Sikdar Bagan",
+        "address": "H9WC+MR3, Sikdar Bagan St, Shyambazar, 27, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.596625,
+        "lon": 88.3721388,
+        "distance_meters": 706,
+        "estimated_walk_time_min": 14
+      },
+      {
+        "title": "Hatibagan Sarbojanin",
+        "address": "134, Sri Aurobinda Sarani, Principal Khudiram Bose Rd, Sovabazar, Hati Bagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.5943863,
+        "lon": 88.3720004,
+        "distance_meters": 713,
+        "estimated_walk_time_min": 14
+      },
+      {
+        "title": "Beadon Street Sarbojanin",
+        "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.5892707,
+        "lon": 88.3676133,
+        "distance_meters": 788,
+        "estimated_walk_time_min": 16
+      },
+      {
+        "title": "Nalin Sarkar Street Sarbojanin Durgotsab",
+        "address": "H9WF+577, Nalin Sarkar St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.59542,
+        "lon": 88.37318069999999,
+        "distance_meters": 813,
+        "estimated_walk_time_min": 16
+      },
+      {
+        "title": "Nabinpally Hatibagan",
+        "address": "9/1, Nalin Sarkar Street Sovabazar, 16, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.595902799999998,
+        "lon": 88.3734176,
+        "distance_meters": 835,
+        "estimated_walk_time_min": 16
+      },
+      {
+        "title": "Ahiritola Sarbojanin",
+        "address": "haro dhol lean, 22, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5948383,
+        "lon": 88.3571698,
+        "distance_meters": 843,
+        "estimated_walk_time_min": 17
+      },
+      {
+        "title": "Bidhan Sarani Atlas Club",
+        "address": "101, Bidhan Sarani Rd, Fariapukur, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.599686,
+        "lon": 88.37291809999999,
+        "distance_meters": 883,
+        "estimated_walk_time_min": 17
+      },
+      {
+        "title": "Baghbazar Sarbojanin Durgotsav & Exhibition",
+        "address": "78, Bagbazar St, Baghbazar, Kolkata, West Bengal 700003, India",
+        "lat": 22.6044897,
+        "lon": 88.36561499999999,
+        "distance_meters": 941,
+        "estimated_walk_time_min": 18
+      },
+      {
+        "title": "North Tridhara Sarbojanin",
+        "address": "H9WF+9QF, 158N, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.5958155,
+        "lon": 88.3745568,
+        "distance_meters": 952,
+        "estimated_walk_time_min": 18
+      },
+      {
+        "title": "Pathuriaghata Pancher Pally",
+        "address": "H9Q5+C3R, Malapara, Santoshpur, Jorabagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.588606799999997,
+        "lon": 88.35763170000001,
+        "distance_meters": 1139,
+        "estimated_walk_time_min": 21
+      },
+      {
+        "title": "Simla Byayam Samity",
+        "address": "9B, Singhee Lane, P O, Abhedananda Rd, Simla, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.5851371,
+        "lon": 88.3645461,
+        "distance_meters": 1213,
+        "estimated_walk_time_min": 23
+      },
+      {
+        "title": "Vivekananda Sporting Club",
+        "address": "77/1, Simla St, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.584103799999998,
+        "lon": 88.3664881,
+        "distance_meters": 1331,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Chorebagan Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1411,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Girish Park Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1411,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Manicktala Chaltabagan Lohapatty",
+        "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.5848905,
+        "lon": 88.3721509,
+        "distance_meters": 1424,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Gouriberia",
+        "address": "700067, 4, Gouri Bari Ln, Manicktala, Gouri Bari, Kolkata, West Bengal 700004, India",
+        "lat": 22.594448099999997,
+        "lon": 88.37908569999999,
+        "distance_meters": 1427,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Lalabagan Nabankur",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1452,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Sammilita Lalabagan Sarbojanin",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1452,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Aurobinda Setu Sarbojanin",
+        "address": "9/1/5, Canal E Rd, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.594482499999998,
+        "lon": 88.3805509,
+        "distance_meters": 1576,
+        "estimated_walk_time_min": 29
+      },
+      {
+        "title": "Tala Barowari",
+        "address": "6-1, NG Chatterjee Ln, Tala, Bidhan Sarani, Paikpara, Kolkata, West Bengal 700002, India",
+        "lat": 22.6067969,
+        "lon": 88.3762168,
+        "distance_meters": 1641,
+        "estimated_walk_time_min": 30
+      },
+      {
+        "title": "Brindaban Matri Mandir",
+        "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.582717199999998,
+        "lon": 88.3729053,
+        "distance_meters": 1673,
+        "estimated_walk_time_min": 30
+      },
+      {
+        "title": "Sarkar Bagan Sammilita Sangha",
+        "address": "3/2, Nilmoni Mitra Row, Tala, Bidhan Sarani, Kolkata, West Bengal 700002, India",
+        "lat": 22.6062589,
+        "lon": 88.37729569999999,
+        "distance_meters": 1677,
+        "estimated_walk_time_min": 30
+      },
+      {
+        "title": "Ultadanga Yuba Brinda",
+        "address": "H9WJ+9W8, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595916,
+        "lon": 88.3823154,
+        "distance_meters": 1748,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Karbagan Sarbojanin",
+        "address": "17/1/H/25, Karbagan Durga puja, Ultadanga Main Rd, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595240999999998,
+        "lon": 88.3842775,
+        "distance_meters": 1951,
+        "estimated_walk_time_min": 35
+      },
+      {
+        "title": "Ultadanga Pallysree",
+        "address": "1/1P, Jaharlal Dutta Ln, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5957731,
+        "lon": 88.38468820000001,
+        "distance_meters": 1992,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Ultadanga Bidhan Sangha",
+        "address": "National Academy of Customs Indirect Taxes & Narcotics (NACIN, H9VM+FW9, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5936517,
+        "lon": 88.38486449999999,
+        "distance_meters": 2027,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Ultadanga Jagarani Sangha",
+        "address": "16/1, Biplabi Barin Ghosh Sarani, Murari Pukur, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5932927,
+        "lon": 88.3849094,
+        "distance_meters": 2037,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Belgachia Sadharan Durgatsab",
+        "address": "J95M+33X, Tala, Belgachia, Kolkata, West Bengal 700037, India",
+        "lat": 22.607731899999997,
+        "lon": 88.3827393,
+        "distance_meters": 2214,
+        "estimated_walk_time_min": 39
+      },
+      {
+        "title": "Telengabagan",
+        "address": "35, Adhar Chandra Das Ln, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5962942,
+        "lon": 88.3869813,
+        "distance_meters": 2227,
+        "estimated_walk_time_min": 40
+      },
+      {
+        "title": "Tala Park Prattay",
+        "address": "J95M+G26, Tala Park Rd, Tala, Kolkata, West Bengal 700037, India",
+        "lat": 22.608791099999998,
+        "lon": 88.382502,
+        "distance_meters": 2266,
+        "estimated_walk_time_min": 40
+      },
+      {
+        "title": "Tala Ponero Pally",
+        "address": "J96M+XWR, Gangulipara, Paikpara, Kolkata, West Bengal 700037, India",
+        "lat": 22.612476299999997,
+        "lon": 88.3847732,
+        "distance_meters": 2710,
+        "estimated_walk_time_min": 48
+      },
+      {
+        "title": "Kankurgachi Jubak Brinda",
+        "address": "H9HQ+P6X, Phoolbagan, Kankurgachi, Kolkata, West Bengal 700054, India",
+        "lat": 22.579356800000003,
+        "lon": 88.3881073,
+        "distance_meters": 2987,
+        "estimated_walk_time_min": 52
+      }
+    ]
+  },
+  {
+    "metro_station": "Girish Park",
+    "lat": 22.587141499999998,
+    "lon": 88.3630842,
+    "ranked_pandals": [
+      {
+        "title": "Simla Byayam Samity",
+        "address": "9B, Singhee Lane, P O, Abhedananda Rd, Simla, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.5851371,
+        "lon": 88.3645461,
+        "distance_meters": 268,
+        "estimated_walk_time_min": 7
+      },
+      {
+        "title": "Chorebagan Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 416,
+        "estimated_walk_time_min": 9
+      },
+      {
+        "title": "Girish Park Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 416,
+        "estimated_walk_time_min": 9
+      },
+      {
+        "title": "Vivekananda Sporting Club",
+        "address": "77/1, Simla St, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.584103799999998,
+        "lon": 88.3664881,
+        "distance_meters": 486,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Beadon Street Sarbojanin",
+        "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.5892707,
+        "lon": 88.3676133,
+        "distance_meters": 521,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Pathuriaghata Pancher Pally",
+        "address": "H9Q5+C3R, Malapara, Santoshpur, Jorabagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.588606799999997,
+        "lon": 88.35763170000001,
+        "distance_meters": 583,
+        "estimated_walk_time_min": 12
+      },
+      {
+        "title": "Kashi Bose Lane",
+        "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.590897899999998,
+        "lon": 88.36891740000002,
+        "distance_meters": 730,
+        "estimated_walk_time_min": 15
+      },
+      {
+        "title": "Ahiritola Jubak Brinda",
+        "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5945774,
+        "lon": 88.3605889,
+        "distance_meters": 865,
+        "estimated_walk_time_min": 17
+      },
+      {
+        "title": "Manicktala Chaltabagan Lohapatty",
+        "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.5848905,
+        "lon": 88.3721509,
+        "distance_meters": 963,
+        "estimated_walk_time_min": 19
+      },
+      {
+        "title": "Sovabazar Beniatola",
+        "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5958452,
+        "lon": 88.3611126,
+        "distance_meters": 988,
+        "estimated_walk_time_min": 19
+      },
+      {
+        "title": "Ahiritola Sarbojanin",
+        "address": "haro dhol lean, 22, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5948383,
+        "lon": 88.3571698,
+        "distance_meters": 1049,
+        "estimated_walk_time_min": 20
+      },
+      {
+        "title": "Sovabazar Rajbari",
+        "address": "Raja Nabakrishna St, Raja Nabakrishna Street, Sovabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5962644,
+        "lon": 88.3673797,
+        "distance_meters": 1106,
+        "estimated_walk_time_min": 21
+      },
+      {
+        "title": "Brindaban Matri Mandir",
+        "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.582717199999998,
+        "lon": 88.3729053,
+        "distance_meters": 1121,
+        "estimated_walk_time_min": 21
+      },
+      {
+        "title": "Hatibagan Sarbojanin",
+        "address": "134, Sri Aurobinda Sarani, Principal Khudiram Bose Rd, Sovabazar, Hati Bagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.5943863,
+        "lon": 88.3720004,
+        "distance_meters": 1219,
+        "estimated_walk_time_min": 23
+      },
+      {
+        "title": "Kumartuli Park",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 1327,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Kumartuli Sarbojanin",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 1327,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Nalin Sarkar Street Sarbojanin Durgotsab",
+        "address": "H9WF+577, Nalin Sarkar St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.59542,
+        "lon": 88.37318069999999,
+        "distance_meters": 1386,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Sikdar Bagan",
+        "address": "H9WC+MR3, Sikdar Bagan St, Shyambazar, 27, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.596625,
+        "lon": 88.3721388,
+        "distance_meters": 1405,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Jagat Mukherjee Park",
+        "address": "1, Jatindra Mohan Ave, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5994903,
+        "lon": 88.3660388,
+        "distance_meters": 1406,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Lalabagan Nabankur",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1410,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Sammilita Lalabagan Sarbojanin",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1410,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Nabinpally Hatibagan",
+        "address": "9/1, Nalin Sarkar Street Sovabazar, 16, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.595902799999998,
+        "lon": 88.3734176,
+        "distance_meters": 1440,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "North Tridhara Sarbojanin",
+        "address": "H9WF+9QF, 158N, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.5958155,
+        "lon": 88.3745568,
+        "distance_meters": 1522,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Shyambazar Pally Sangha",
+        "address": "48, Shyam Bazar St, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.6000564,
+        "lon": 88.3693864,
+        "distance_meters": 1575,
+        "estimated_walk_time_min": 29
+      },
+      {
+        "title": "Bidhan Sarani Atlas Club",
+        "address": "101, Bidhan Sarani Rd, Fariapukur, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.599686,
+        "lon": 88.37291809999999,
+        "distance_meters": 1721,
+        "estimated_walk_time_min": 31
+      },
+      {
+        "title": "Gouriberia",
+        "address": "700067, 4, Gouri Bari Ln, Manicktala, Gouri Bari, Kolkata, West Bengal 700004, India",
+        "lat": 22.594448099999997,
+        "lon": 88.37908569999999,
+        "distance_meters": 1832,
+        "estimated_walk_time_min": 33
+      },
+      {
+        "title": "Baghbazar Sarbojanin Durgotsav & Exhibition",
+        "address": "78, Bagbazar St, Baghbazar, Kolkata, West Bengal 700003, India",
+        "lat": 22.6044897,
+        "lon": 88.36561499999999,
+        "distance_meters": 1946,
+        "estimated_walk_time_min": 35
+      },
+      {
+        "title": "Aurobinda Setu Sarbojanin",
+        "address": "9/1/5, Canal E Rd, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.594482499999998,
+        "lon": 88.3805509,
+        "distance_meters": 1970,
+        "estimated_walk_time_min": 35
+      },
+      {
+        "title": "Ultadanga Yuba Brinda",
+        "address": "H9WJ+9W8, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595916,
+        "lon": 88.3823154,
+        "distance_meters": 2202,
+        "estimated_walk_time_min": 39
+      },
+      {
+        "title": "Ultadanga Jagarani Sangha",
+        "address": "16/1, Biplabi Barin Ghosh Sarani, Murari Pukur, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5932927,
+        "lon": 88.3849094,
+        "distance_meters": 2342,
+        "estimated_walk_time_min": 42
+      },
+      {
+        "title": "Ultadanga Bidhan Sangha",
+        "address": "National Academy of Customs Indirect Taxes & Narcotics (NACIN, H9VM+FW9, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5936517,
+        "lon": 88.38486449999999,
+        "distance_meters": 2350,
+        "estimated_walk_time_min": 42
+      },
+      {
+        "title": "Karbagan Sarbojanin",
+        "address": "17/1/H/25, Karbagan Durga puja, Ultadanga Main Rd, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595240999999998,
+        "lon": 88.3842775,
+        "distance_meters": 2354,
+        "estimated_walk_time_min": 42
+      },
+      {
+        "title": "Ultadanga Pallysree",
+        "address": "1/1P, Jaharlal Dutta Ln, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5957731,
+        "lon": 88.38468820000001,
+        "distance_meters": 2416,
+        "estimated_walk_time_min": 43
+      },
+      {
+        "title": "Tala Barowari",
+        "address": "6-1, NG Chatterjee Ln, Tala, Bidhan Sarani, Paikpara, Kolkata, West Bengal 700002, India",
+        "lat": 22.6067969,
+        "lon": 88.3762168,
+        "distance_meters": 2567,
+        "estimated_walk_time_min": 45
+      },
+      {
+        "title": "Sarkar Bagan Sammilita Sangha",
+        "address": "3/2, Nilmoni Mitra Row, Tala, Bidhan Sarani, Kolkata, West Bengal 700002, India",
+        "lat": 22.6062589,
+        "lon": 88.37729569999999,
+        "distance_meters": 2578,
+        "estimated_walk_time_min": 45
+      },
+      {
+        "title": "Telengabagan",
+        "address": "35, Adhar Chandra Das Ln, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5962942,
+        "lon": 88.3869813,
+        "distance_meters": 2656,
+        "estimated_walk_time_min": 47
+      },
+      {
+        "title": "Kankurgachi Jubak Brinda",
+        "address": "H9HQ+P6X, Phoolbagan, Kankurgachi, Kolkata, West Bengal 700054, India",
+        "lat": 22.579356800000003,
+        "lon": 88.3881073,
+        "distance_meters": 2711,
+        "estimated_walk_time_min": 48
+      }
+    ]
+  },
+  {
+    "metro_station": "Mahatma Gandhi Road",
+    "lat": 22.580696,
+    "lon": 88.36138129999999,
+    "ranked_pandals": [
+      {
+        "title": "Chorebagan Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 379,
+        "estimated_walk_time_min": 9
+      },
+      {
+        "title": "Girish Park Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 379,
+        "estimated_walk_time_min": 9
+      },
+      {
+        "title": "Simla Byayam Samity",
+        "address": "9B, Singhee Lane, P O, Abhedananda Rd, Simla, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.5851371,
+        "lon": 88.3645461,
+        "distance_meters": 591,
+        "estimated_walk_time_min": 12
+      },
+      {
+        "title": "Vivekananda Sporting Club",
+        "address": "77/1, Simla St, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.584103799999998,
+        "lon": 88.3664881,
+        "distance_meters": 646,
+        "estimated_walk_time_min": 13
+      },
+      {
+        "title": "Pathuriaghata Pancher Pally",
+        "address": "H9Q5+C3R, Malapara, Santoshpur, Jorabagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.588606799999997,
+        "lon": 88.35763170000001,
+        "distance_meters": 960,
+        "estimated_walk_time_min": 19
+      },
+      {
+        "title": "Beadon Street Sarbojanin",
+        "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.5892707,
+        "lon": 88.3676133,
+        "distance_meters": 1148,
+        "estimated_walk_time_min": 22
+      },
+      {
+        "title": "Manicktala Chaltabagan Lohapatty",
+        "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.5848905,
+        "lon": 88.3721509,
+        "distance_meters": 1200,
+        "estimated_walk_time_min": 23
+      },
+      {
+        "title": "Brindaban Matri Mandir",
+        "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.582717199999998,
+        "lon": 88.3729053,
+        "distance_meters": 1204,
+        "estimated_walk_time_min": 23
+      },
+      {
+        "title": "Kashi Bose Lane",
+        "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.590897899999998,
+        "lon": 88.36891740000002,
+        "distance_meters": 1373,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Ahiritola Jubak Brinda",
+        "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5945774,
+        "lon": 88.3605889,
+        "distance_meters": 1545,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Ahiritola Sarbojanin",
+        "address": "haro dhol lean, 22, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5948383,
+        "lon": 88.3571698,
+        "distance_meters": 1630,
+        "estimated_walk_time_min": 30
+      },
+      {
+        "title": "Sovabazar Beniatola",
+        "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5958452,
+        "lon": 88.3611126,
+        "distance_meters": 1684,
+        "estimated_walk_time_min": 31
+      },
+      {
+        "title": "Lalabagan Nabankur",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1794,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Sammilita Lalabagan Sarbojanin",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1794,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Sovabazar Rajbari",
+        "address": "Raja Nabakrishna St, Raja Nabakrishna Street, Sovabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5962644,
+        "lon": 88.3673797,
+        "distance_meters": 1837,
+        "estimated_walk_time_min": 33
+      },
+      {
+        "title": "Hatibagan Sarbojanin",
+        "address": "134, Sri Aurobinda Sarani, Principal Khudiram Bose Rd, Sovabazar, Hati Bagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.5943863,
+        "lon": 88.3720004,
+        "distance_meters": 1872,
+        "estimated_walk_time_min": 34
+      },
+      {
+        "title": "Kumartuli Park",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 2033,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Kumartuli Sarbojanin",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 2033,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Nalin Sarkar Street Sarbojanin Durgotsab",
+        "address": "H9WF+577, Nalin Sarkar St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.59542,
+        "lon": 88.37318069999999,
+        "distance_meters": 2036,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Sikdar Bagan",
+        "address": "H9WC+MR3, Sikdar Bagan St, Shyambazar, 27, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.596625,
+        "lon": 88.3721388,
+        "distance_meters": 2087,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Nabinpally Hatibagan",
+        "address": "9/1, Nalin Sarkar Street Sovabazar, 16, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.595902799999998,
+        "lon": 88.3734176,
+        "distance_meters": 2094,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Jagat Mukherjee Park",
+        "address": "1, Jatindra Mohan Ave, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5994903,
+        "lon": 88.3660388,
+        "distance_meters": 2143,
+        "estimated_walk_time_min": 38
+      },
+      {
+        "title": "North Tridhara Sarbojanin",
+        "address": "H9WF+9QF, 158N, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.5958155,
+        "lon": 88.3745568,
+        "distance_meters": 2157,
+        "estimated_walk_time_min": 38
+      },
+      {
+        "title": "Shyambazar Pally Sangha",
+        "address": "48, Shyam Bazar St, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.6000564,
+        "lon": 88.3693864,
+        "distance_meters": 2304,
+        "estimated_walk_time_min": 41
+      },
+      {
+        "title": "Gouriberia",
+        "address": "700067, 4, Gouri Bari Ln, Manicktala, Gouri Bari, Kolkata, West Bengal 700004, India",
+        "lat": 22.594448099999997,
+        "lon": 88.37908569999999,
+        "distance_meters": 2375,
+        "estimated_walk_time_min": 42
+      },
+      {
+        "title": "Bidhan Sarani Atlas Club",
+        "address": "101, Bidhan Sarani Rd, Fariapukur, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.599686,
+        "lon": 88.37291809999999,
+        "distance_meters": 2421,
+        "estimated_walk_time_min": 43
+      },
+      {
+        "title": "Aurobinda Setu Sarbojanin",
+        "address": "9/1/5, Canal E Rd, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.594482499999998,
+        "lon": 88.3805509,
+        "distance_meters": 2494,
+        "estimated_walk_time_min": 44
+      },
+      {
+        "title": "Baghbazar Sarbojanin Durgotsav & Exhibition",
+        "address": "78, Bagbazar St, Baghbazar, Kolkata, West Bengal 700003, India",
+        "lat": 22.6044897,
+        "lon": 88.36561499999999,
+        "distance_meters": 2681,
+        "estimated_walk_time_min": 47
+      },
+      {
+        "title": "Ultadanga Yuba Brinda",
+        "address": "H9WJ+9W8, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595916,
+        "lon": 88.3823154,
+        "distance_meters": 2735,
+        "estimated_walk_time_min": 48
+      },
+      {
+        "title": "Kankurgachi Jubak Brinda",
+        "address": "H9HQ+P6X, Phoolbagan, Kankurgachi, Kolkata, West Bengal 700054, India",
+        "lat": 22.579356800000003,
+        "lon": 88.3881073,
+        "distance_meters": 2748,
+        "estimated_walk_time_min": 48
+      },
+      {
+        "title": "Ultadanga Jagarani Sangha",
+        "address": "16/1, Biplabi Barin Ghosh Sarani, Murari Pukur, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5932927,
+        "lon": 88.3849094,
+        "distance_meters": 2792,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Ultadanga Bidhan Sangha",
+        "address": "National Academy of Customs Indirect Taxes & Narcotics (NACIN, H9VM+FW9, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5936517,
+        "lon": 88.38486449999999,
+        "distance_meters": 2808,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Karbagan Sarbojanin",
+        "address": "17/1/H/25, Karbagan Durga puja, Ultadanga Main Rd, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595240999999998,
+        "lon": 88.3842775,
+        "distance_meters": 2853,
+        "estimated_walk_time_min": 50
+      },
+      {
+        "title": "Ultadanga Pallysree",
+        "address": "1/1P, Jaharlal Dutta Ln, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5957731,
+        "lon": 88.38468820000001,
+        "distance_meters": 2921,
+        "estimated_walk_time_min": 51
+      }
+    ]
+  },
+  {
+    "metro_station": "Central",
+    "lat": 22.572523699999998,
+    "lon": 88.3582423,
+    "ranked_pandals": [
+      {
+        "title": "Chorebagan Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1331,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Girish Park Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1331,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Vivekananda Sporting Club",
+        "address": "77/1, Simla St, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.584103799999998,
+        "lon": 88.3664881,
+        "distance_meters": 1541,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Simla Byayam Samity",
+        "address": "9B, Singhee Lane, P O, Abhedananda Rd, Simla, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.5851371,
+        "lon": 88.3645461,
+        "distance_meters": 1544,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Pathuriaghata Pancher Pally",
+        "address": "H9Q5+C3R, Malapara, Santoshpur, Jorabagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.588606799999997,
+        "lon": 88.35763170000001,
+        "distance_meters": 1789,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Brindaban Matri Mandir",
+        "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.582717199999998,
+        "lon": 88.3729053,
+        "distance_meters": 1884,
+        "estimated_walk_time_min": 34
+      },
+      {
+        "title": "Manicktala Chaltabagan Lohapatty",
+        "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.5848905,
+        "lon": 88.3721509,
+        "distance_meters": 1982,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Beadon Street Sarbojanin",
+        "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.5892707,
+        "lon": 88.3676133,
+        "distance_meters": 2096,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Kashi Bose Lane",
+        "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.590897899999998,
+        "lon": 88.36891740000002,
+        "distance_meters": 2318,
+        "estimated_walk_time_min": 41
+      },
+      {
+        "title": "Ahiritola Jubak Brinda",
+        "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5945774,
+        "lon": 88.3605889,
+        "distance_meters": 2464,
+        "estimated_walk_time_min": 44
+      },
+      {
+        "title": "Ahiritola Sarbojanin",
+        "address": "haro dhol lean, 22, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5948383,
+        "lon": 88.3571698,
+        "distance_meters": 2483,
+        "estimated_walk_time_min": 44
+      },
+      {
+        "title": "Lalabagan Nabankur",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 2592,
+        "estimated_walk_time_min": 46
+      },
+      {
+        "title": "Sammilita Lalabagan Sarbojanin",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 2592,
+        "estimated_walk_time_min": 46
+      },
+      {
+        "title": "Sovabazar Beniatola",
+        "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5958452,
+        "lon": 88.3611126,
+        "distance_meters": 2609,
+        "estimated_walk_time_min": 46
+      },
+      {
+        "title": "Sovabazar Rajbari",
+        "address": "Raja Nabakrishna St, Raja Nabakrishna Street, Sovabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5962644,
+        "lon": 88.3673797,
+        "distance_meters": 2801,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Hatibagan Sarbojanin",
+        "address": "134, Sri Aurobinda Sarani, Principal Khudiram Bose Rd, Sovabazar, Hati Bagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.5943863,
+        "lon": 88.3720004,
+        "distance_meters": 2811,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Kumartuli Park",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 2960,
+        "estimated_walk_time_min": 52
+      },
+      {
+        "title": "Kumartuli Sarbojanin",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 2960,
+        "estimated_walk_time_min": 52
+      },
+      {
+        "title": "Nalin Sarkar Street Sarbojanin Durgotsab",
+        "address": "H9WF+577, Nalin Sarkar St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.59542,
+        "lon": 88.37318069999999,
+        "distance_meters": 2972,
+        "estimated_walk_time_min": 52
+      }
+    ]
+  },
+  {
+    "metro_station": "Central (Bowbazar)",
+    "lat": 22.56984,
+    "lon": 88.358025,
+    "ranked_pandals": [
+      {
+        "title": "Chorebagan Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1615,
+        "estimated_walk_time_min": 29
+      },
+      {
+        "title": "Girish Park Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1615,
+        "estimated_walk_time_min": 29
+      },
+      {
+        "title": "Vivekananda Sporting Club",
+        "address": "77/1, Simla St, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.584103799999998,
+        "lon": 88.3664881,
+        "distance_meters": 1808,
+        "estimated_walk_time_min": 33
+      },
+      {
+        "title": "Simla Byayam Samity",
+        "address": "9B, Singhee Lane, P O, Abhedananda Rd, Simla, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.5851371,
+        "lon": 88.3645461,
+        "distance_meters": 1827,
+        "estimated_walk_time_min": 33
+      },
+      {
+        "title": "Pathuriaghata Pancher Pally",
+        "address": "H9Q5+C3R, Malapara, Santoshpur, Jorabagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.588606799999997,
+        "lon": 88.35763170000001,
+        "distance_meters": 2087,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Brindaban Matri Mandir",
+        "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.582717199999998,
+        "lon": 88.3729053,
+        "distance_meters": 2093,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Manicktala Chaltabagan Lohapatty",
+        "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.5848905,
+        "lon": 88.3721509,
+        "distance_meters": 2214,
+        "estimated_walk_time_min": 39
+      },
+      {
+        "title": "Beadon Street Sarbojanin",
+        "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.5892707,
+        "lon": 88.3676133,
+        "distance_meters": 2374,
+        "estimated_walk_time_min": 42
+      },
+      {
+        "title": "Kashi Bose Lane",
+        "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.590897899999998,
+        "lon": 88.36891740000002,
+        "distance_meters": 2594,
+        "estimated_walk_time_min": 46
+      },
+      {
+        "title": "Ahiritola Jubak Brinda",
+        "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5945774,
+        "lon": 88.3605889,
+        "distance_meters": 2763,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Ahiritola Sarbojanin",
+        "address": "haro dhol lean, 22, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5948383,
+        "lon": 88.3571698,
+        "distance_meters": 2781,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Lalabagan Nabankur",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 2818,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Sammilita Lalabagan Sarbojanin",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 2818,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Sovabazar Beniatola",
+        "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5958452,
+        "lon": 88.3611126,
+        "distance_meters": 2908,
+        "estimated_walk_time_min": 51
+      }
+    ]
+  },
+  {
+    "metro_station": "M.G. Road & Central Avenue",
+    "lat": 22.57894,
+    "lon": 88.359488,
+    "ranked_pandals": [
+      {
+        "title": "Chorebagan Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 653,
+        "estimated_walk_time_min": 13
+      },
+      {
+        "title": "Girish Park Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 653,
+        "estimated_walk_time_min": 13
+      },
+      {
+        "title": "Simla Byayam Samity",
+        "address": "9B, Singhee Lane, P O, Abhedananda Rd, Simla, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.5851371,
+        "lon": 88.3645461,
+        "distance_meters": 862,
+        "estimated_walk_time_min": 17
+      },
+      {
+        "title": "Vivekananda Sporting Club",
+        "address": "77/1, Simla St, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.584103799999998,
+        "lon": 88.3664881,
+        "distance_meters": 919,
+        "estimated_walk_time_min": 18
+      },
+      {
+        "title": "Pathuriaghata Pancher Pally",
+        "address": "H9Q5+C3R, Malapara, Santoshpur, Jorabagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.588606799999997,
+        "lon": 88.35763170000001,
+        "distance_meters": 1091,
+        "estimated_walk_time_min": 21
+      },
+      {
+        "title": "Beadon Street Sarbojanin",
+        "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.5892707,
+        "lon": 88.3676133,
+        "distance_meters": 1419,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Brindaban Matri Mandir",
+        "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.582717199999998,
+        "lon": 88.3729053,
+        "distance_meters": 1440,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Manicktala Chaltabagan Lohapatty",
+        "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.5848905,
+        "lon": 88.3721509,
+        "distance_meters": 1458,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Kashi Bose Lane",
+        "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.590897899999998,
+        "lon": 88.36891740000002,
+        "distance_meters": 1644,
+        "estimated_walk_time_min": 30
+      },
+      {
+        "title": "Ahiritola Jubak Brinda",
+        "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5945774,
+        "lon": 88.3605889,
+        "distance_meters": 1742,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Ahiritola Sarbojanin",
+        "address": "haro dhol lean, 22, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5948383,
+        "lon": 88.3571698,
+        "distance_meters": 1783,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Sovabazar Beniatola",
+        "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5958452,
+        "lon": 88.3611126,
+        "distance_meters": 1887,
+        "estimated_walk_time_min": 34
+      },
+      {
+        "title": "Lalabagan Nabankur",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 2059,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Sammilita Lalabagan Sarbojanin",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 2059,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Sovabazar Rajbari",
+        "address": "Raja Nabakrishna St, Raja Nabakrishna Street, Sovabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5962644,
+        "lon": 88.3673797,
+        "distance_meters": 2089,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Hatibagan Sarbojanin",
+        "address": "134, Sri Aurobinda Sarani, Principal Khudiram Bose Rd, Sovabazar, Hati Bagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.5943863,
+        "lon": 88.3720004,
+        "distance_meters": 2144,
+        "estimated_walk_time_min": 38
+      },
+      {
+        "title": "Kumartuli Park",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 2237,
+        "estimated_walk_time_min": 40
+      },
+      {
+        "title": "Kumartuli Sarbojanin",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 2237,
+        "estimated_walk_time_min": 40
+      },
+      {
+        "title": "Nalin Sarkar Street Sarbojanin Durgotsab",
+        "address": "H9WF+577, Nalin Sarkar St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.59542,
+        "lon": 88.37318069999999,
+        "distance_meters": 2309,
+        "estimated_walk_time_min": 41
+      },
+      {
+        "title": "Sikdar Bagan",
+        "address": "H9WC+MR3, Sikdar Bagan St, Shyambazar, 27, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.596625,
+        "lon": 88.3721388,
+        "distance_meters": 2356,
+        "estimated_walk_time_min": 42
+      },
+      {
+        "title": "Nabinpally Hatibagan",
+        "address": "9/1, Nalin Sarkar Street Sovabazar, 16, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.595902799999998,
+        "lon": 88.3734176,
+        "distance_meters": 2367,
+        "estimated_walk_time_min": 42
+      },
+      {
+        "title": "Jagat Mukherjee Park",
+        "address": "1, Jatindra Mohan Ave, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5994903,
+        "lon": 88.3660388,
+        "distance_meters": 2382,
+        "estimated_walk_time_min": 42
+      },
+      {
+        "title": "North Tridhara Sarbojanin",
+        "address": "H9WF+9QF, 158N, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.5958155,
+        "lon": 88.3745568,
+        "distance_meters": 2431,
+        "estimated_walk_time_min": 43
+      },
+      {
+        "title": "Shyambazar Pally Sangha",
+        "address": "48, Shyam Bazar St, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.6000564,
+        "lon": 88.3693864,
+        "distance_meters": 2558,
+        "estimated_walk_time_min": 45
+      },
+      {
+        "title": "Gouriberia",
+        "address": "700067, 4, Gouri Bari Ln, Manicktala, Gouri Bari, Kolkata, West Bengal 700004, India",
+        "lat": 22.594448099999997,
+        "lon": 88.37908569999999,
+        "distance_meters": 2649,
+        "estimated_walk_time_min": 47
+      },
+      {
+        "title": "Bidhan Sarani Atlas Club",
+        "address": "101, Bidhan Sarani Rd, Fariapukur, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.599686,
+        "lon": 88.37291809999999,
+        "distance_meters": 2687,
+        "estimated_walk_time_min": 47
+      },
+      {
+        "title": "Aurobinda Setu Sarbojanin",
+        "address": "9/1/5, Canal E Rd, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.594482499999998,
+        "lon": 88.3805509,
+        "distance_meters": 2768,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Baghbazar Sarbojanin Durgotsav & Exhibition",
+        "address": "78, Bagbazar St, Baghbazar, Kolkata, West Bengal 700003, India",
+        "lat": 22.6044897,
+        "lon": 88.36561499999999,
+        "distance_meters": 2909,
+        "estimated_walk_time_min": 51
+      },
+      {
+        "title": "Kankurgachi Jubak Brinda",
+        "address": "H9HQ+P6X, Phoolbagan, Kankurgachi, Kolkata, West Bengal 700054, India",
+        "lat": 22.579356800000003,
+        "lon": 88.3881073,
+        "distance_meters": 2938,
+        "estimated_walk_time_min": 51
+      }
+    ]
+  },
+  {
+    "metro_station": "Sovabazar Ahiritola",
+    "lat": 22.5975395,
+    "lon": 88.3550266,
+    "ranked_pandals": [
+      {
+        "title": "Ahiritola Sarbojanin",
+        "address": "haro dhol lean, 22, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5948383,
+        "lon": 88.3571698,
+        "distance_meters": 372,
+        "estimated_walk_time_min": 9
+      },
+      {
+        "title": "Sovabazar Beniatola",
+        "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5958452,
+        "lon": 88.3611126,
+        "distance_meters": 652,
+        "estimated_walk_time_min": 13
+      },
+      {
+        "title": "Ahiritola Jubak Brinda",
+        "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5945774,
+        "lon": 88.3605889,
+        "distance_meters": 659,
+        "estimated_walk_time_min": 13
+      },
+      {
+        "title": "Kumartuli Park",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 680,
+        "estimated_walk_time_min": 14
+      },
+      {
+        "title": "Kumartuli Sarbojanin",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 680,
+        "estimated_walk_time_min": 14
+      },
+      {
+        "title": "Pathuriaghata Pancher Pally",
+        "address": "H9Q5+C3R, Malapara, Santoshpur, Jorabagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.588606799999997,
+        "lon": 88.35763170000001,
+        "distance_meters": 1028,
+        "estimated_walk_time_min": 20
+      },
+      {
+        "title": "Jagat Mukherjee Park",
+        "address": "1, Jatindra Mohan Ave, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5994903,
+        "lon": 88.3660388,
+        "distance_meters": 1151,
+        "estimated_walk_time_min": 22
+      },
+      {
+        "title": "Sovabazar Rajbari",
+        "address": "Raja Nabakrishna St, Raja Nabakrishna Street, Sovabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5962644,
+        "lon": 88.3673797,
+        "distance_meters": 1276,
+        "estimated_walk_time_min": 24
+      },
+      {
+        "title": "Baghbazar Sarbojanin Durgotsav & Exhibition",
+        "address": "78, Bagbazar St, Baghbazar, Kolkata, West Bengal 700003, India",
+        "lat": 22.6044897,
+        "lon": 88.36561499999999,
+        "distance_meters": 1333,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Shyambazar Pally Sangha",
+        "address": "48, Shyam Bazar St, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.6000564,
+        "lon": 88.3693864,
+        "distance_meters": 1500,
+        "estimated_walk_time_min": 28
+      },
+      {
+        "title": "Beadon Street Sarbojanin",
+        "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.5892707,
+        "lon": 88.3676133,
+        "distance_meters": 1585,
+        "estimated_walk_time_min": 29
+      },
+      {
+        "title": "Kashi Bose Lane",
+        "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.590897899999998,
+        "lon": 88.36891740000002,
+        "distance_meters": 1605,
+        "estimated_walk_time_min": 29
+      },
+      {
+        "title": "Simla Byayam Samity",
+        "address": "9B, Singhee Lane, P O, Abhedananda Rd, Simla, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.5851371,
+        "lon": 88.3645461,
+        "distance_meters": 1690,
+        "estimated_walk_time_min": 31
+      },
+      {
+        "title": "Sikdar Bagan",
+        "address": "H9WC+MR3, Sikdar Bagan St, Shyambazar, 27, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.596625,
+        "lon": 88.3721388,
+        "distance_meters": 1759,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Hatibagan Sarbojanin",
+        "address": "134, Sri Aurobinda Sarani, Principal Khudiram Bose Rd, Sovabazar, Hati Bagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.5943863,
+        "lon": 88.3720004,
+        "distance_meters": 1777,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Chorebagan Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1798,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Girish Park Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1798,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Bidhan Sarani Atlas Club",
+        "address": "101, Bidhan Sarani Rd, Fariapukur, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.599686,
+        "lon": 88.37291809999999,
+        "distance_meters": 1852,
+        "estimated_walk_time_min": 33
+      },
+      {
+        "title": "Nalin Sarkar Street Sarbojanin Durgotsab",
+        "address": "H9WF+577, Nalin Sarkar St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.59542,
+        "lon": 88.37318069999999,
+        "distance_meters": 1878,
+        "estimated_walk_time_min": 34
+      },
+      {
+        "title": "Nabinpally Hatibagan",
+        "address": "9/1, Nalin Sarkar Street Sovabazar, 16, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.595902799999998,
+        "lon": 88.3734176,
+        "distance_meters": 1896,
+        "estimated_walk_time_min": 34
+      },
+      {
+        "title": "Vivekananda Sporting Club",
+        "address": "77/1, Simla St, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.584103799999998,
+        "lon": 88.3664881,
+        "distance_meters": 1901,
+        "estimated_walk_time_min": 34
+      },
+      {
+        "title": "North Tridhara Sarbojanin",
+        "address": "H9WF+9QF, 158N, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.5958155,
+        "lon": 88.3745568,
+        "distance_meters": 2014,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Manicktala Chaltabagan Lohapatty",
+        "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.5848905,
+        "lon": 88.3721509,
+        "distance_meters": 2251,
+        "estimated_walk_time_min": 40
+      },
+      {
+        "title": "Tala Barowari",
+        "address": "6-1, NG Chatterjee Ln, Tala, Bidhan Sarani, Paikpara, Kolkata, West Bengal 700002, India",
+        "lat": 22.6067969,
+        "lon": 88.3762168,
+        "distance_meters": 2406,
+        "estimated_walk_time_min": 43
+      },
+      {
+        "title": "Lalabagan Nabankur",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 2452,
+        "estimated_walk_time_min": 43
+      },
+      {
+        "title": "Sammilita Lalabagan Sarbojanin",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 2452,
+        "estimated_walk_time_min": 43
+      },
+      {
+        "title": "Brindaban Matri Mandir",
+        "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.582717199999998,
+        "lon": 88.3729053,
+        "distance_meters": 2466,
+        "estimated_walk_time_min": 44
+      },
+      {
+        "title": "Sarkar Bagan Sammilita Sangha",
+        "address": "3/2, Nilmoni Mitra Row, Tala, Bidhan Sarani, Kolkata, West Bengal 700002, India",
+        "lat": 22.6062589,
+        "lon": 88.37729569999999,
+        "distance_meters": 2483,
+        "estimated_walk_time_min": 44
+      },
+      {
+        "title": "Gouriberia",
+        "address": "700067, 4, Gouri Bari Ln, Manicktala, Gouri Bari, Kolkata, West Bengal 700004, India",
+        "lat": 22.594448099999997,
+        "lon": 88.37908569999999,
+        "distance_meters": 2493,
+        "estimated_walk_time_min": 44
+      },
+      {
+        "title": "Aurobinda Setu Sarbojanin",
+        "address": "9/1/5, Canal E Rd, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.594482499999998,
+        "lon": 88.3805509,
+        "distance_meters": 2642,
+        "estimated_walk_time_min": 47
+      },
+      {
+        "title": "Ultadanga Yuba Brinda",
+        "address": "H9WJ+9W8, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595916,
+        "lon": 88.3823154,
+        "distance_meters": 2807,
+        "estimated_walk_time_min": 49
+      }
+    ]
+  },
+  {
+    "metro_station": "Sovabazar Metro Bus & Auto Stand",
+    "lat": 22.5957591,
+    "lon": 88.3651547,
+    "ranked_pandals": [
+      {
+        "title": "Sovabazar Rajbari",
+        "address": "Raja Nabakrishna St, Raja Nabakrishna Street, Sovabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5962644,
+        "lon": 88.3673797,
+        "distance_meters": 235,
+        "estimated_walk_time_min": 6
+      },
+      {
+        "title": "Sovabazar Beniatola",
+        "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5958452,
+        "lon": 88.3611126,
+        "distance_meters": 415,
+        "estimated_walk_time_min": 9
+      },
+      {
+        "title": "Jagat Mukherjee Park",
+        "address": "1, Jatindra Mohan Ave, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5994903,
+        "lon": 88.3660388,
+        "distance_meters": 424,
+        "estimated_walk_time_min": 10
+      },
+      {
+        "title": "Ahiritola Jubak Brinda",
+        "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5945774,
+        "lon": 88.3605889,
+        "distance_meters": 486,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Kumartuli Park",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 521,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Kumartuli Sarbojanin",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 521,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Shyambazar Pally Sangha",
+        "address": "48, Shyam Bazar St, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.6000564,
+        "lon": 88.3693864,
+        "distance_meters": 645,
+        "estimated_walk_time_min": 13
+      },
+      {
+        "title": "Kashi Bose Lane",
+        "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.590897899999998,
+        "lon": 88.36891740000002,
+        "distance_meters": 664,
+        "estimated_walk_time_min": 14
+      },
+      {
+        "title": "Hatibagan Sarbojanin",
+        "address": "134, Sri Aurobinda Sarani, Principal Khudiram Bose Rd, Sovabazar, Hati Bagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.5943863,
+        "lon": 88.3720004,
+        "distance_meters": 719,
+        "estimated_walk_time_min": 14
+      },
+      {
+        "title": "Sikdar Bagan",
+        "address": "H9WC+MR3, Sikdar Bagan St, Shyambazar, 27, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.596625,
+        "lon": 88.3721388,
+        "distance_meters": 723,
+        "estimated_walk_time_min": 15
+      },
+      {
+        "title": "Beadon Street Sarbojanin",
+        "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.5892707,
+        "lon": 88.3676133,
+        "distance_meters": 764,
+        "estimated_walk_time_min": 15
+      },
+      {
+        "title": "Nalin Sarkar Street Sarbojanin Durgotsab",
+        "address": "H9WF+577, Nalin Sarkar St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.59542,
+        "lon": 88.37318069999999,
+        "distance_meters": 824,
+        "estimated_walk_time_min": 16
+      },
+      {
+        "title": "Ahiritola Sarbojanin",
+        "address": "haro dhol lean, 22, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5948383,
+        "lon": 88.3571698,
+        "distance_meters": 826,
+        "estimated_walk_time_min": 16
+      },
+      {
+        "title": "Nabinpally Hatibagan",
+        "address": "9/1, Nalin Sarkar Street Sovabazar, 16, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.595902799999998,
+        "lon": 88.3734176,
+        "distance_meters": 848,
+        "estimated_walk_time_min": 17
+      },
+      {
+        "title": "Bidhan Sarani Atlas Club",
+        "address": "101, Bidhan Sarani Rd, Fariapukur, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.599686,
+        "lon": 88.37291809999999,
+        "distance_meters": 908,
+        "estimated_walk_time_min": 18
+      },
+      {
+        "title": "North Tridhara Sarbojanin",
+        "address": "H9WF+9QF, 158N, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.5958155,
+        "lon": 88.3745568,
+        "distance_meters": 965,
+        "estimated_walk_time_min": 19
+      },
+      {
+        "title": "Baghbazar Sarbojanin Durgotsav & Exhibition",
+        "address": "78, Bagbazar St, Baghbazar, Kolkata, West Bengal 700003, India",
+        "lat": 22.6044897,
+        "lon": 88.36561499999999,
+        "distance_meters": 971,
+        "estimated_walk_time_min": 19
+      },
+      {
+        "title": "Pathuriaghata Pancher Pally",
+        "address": "H9Q5+C3R, Malapara, Santoshpur, Jorabagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.588606799999997,
+        "lon": 88.35763170000001,
+        "distance_meters": 1108,
+        "estimated_walk_time_min": 21
+      },
+      {
+        "title": "Simla Byayam Samity",
+        "address": "9B, Singhee Lane, P O, Abhedananda Rd, Simla, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.5851371,
+        "lon": 88.3645461,
+        "distance_meters": 1182,
+        "estimated_walk_time_min": 22
+      },
+      {
+        "title": "Vivekananda Sporting Club",
+        "address": "77/1, Simla St, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.584103799999998,
+        "lon": 88.3664881,
+        "distance_meters": 1303,
+        "estimated_walk_time_min": 24
+      },
+      {
+        "title": "Chorebagan Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1380,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Girish Park Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1380,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Manicktala Chaltabagan Lohapatty",
+        "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.5848905,
+        "lon": 88.3721509,
+        "distance_meters": 1405,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Gouriberia",
+        "address": "700067, 4, Gouri Bari Ln, Manicktala, Gouri Bari, Kolkata, West Bengal 700004, India",
+        "lat": 22.594448099999997,
+        "lon": 88.37908569999999,
+        "distance_meters": 1437,
+        "estimated_walk_time_min": 26
+      },
+      {
+        "title": "Lalabagan Nabankur",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1446,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Sammilita Lalabagan Sarbojanin",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1446,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Aurobinda Setu Sarbojanin",
+        "address": "9/1/5, Canal E Rd, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.594482499999998,
+        "lon": 88.3805509,
+        "distance_meters": 1586,
+        "estimated_walk_time_min": 29
+      },
+      {
+        "title": "Brindaban Matri Mandir",
+        "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.582717199999998,
+        "lon": 88.3729053,
+        "distance_meters": 1654,
+        "estimated_walk_time_min": 30
+      },
+      {
+        "title": "Tala Barowari",
+        "address": "6-1, NG Chatterjee Ln, Tala, Bidhan Sarani, Paikpara, Kolkata, West Bengal 700002, India",
+        "lat": 22.6067969,
+        "lon": 88.3762168,
+        "distance_meters": 1672,
+        "estimated_walk_time_min": 30
+      },
+      {
+        "title": "Sarkar Bagan Sammilita Sangha",
+        "address": "3/2, Nilmoni Mitra Row, Tala, Bidhan Sarani, Kolkata, West Bengal 700002, India",
+        "lat": 22.6062589,
+        "lon": 88.37729569999999,
+        "distance_meters": 1707,
+        "estimated_walk_time_min": 31
+      },
+      {
+        "title": "Ultadanga Yuba Brinda",
+        "address": "H9WJ+9W8, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595916,
+        "lon": 88.3823154,
+        "distance_meters": 1761,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Karbagan Sarbojanin",
+        "address": "17/1/H/25, Karbagan Durga puja, Ultadanga Main Rd, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595240999999998,
+        "lon": 88.3842775,
+        "distance_meters": 1963,
+        "estimated_walk_time_min": 35
+      },
+      {
+        "title": "Ultadanga Pallysree",
+        "address": "1/1P, Jaharlal Dutta Ln, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5957731,
+        "lon": 88.38468820000001,
+        "distance_meters": 2005,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Ultadanga Bidhan Sangha",
+        "address": "National Academy of Customs Indirect Taxes & Narcotics (NACIN, H9VM+FW9, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5936517,
+        "lon": 88.38486449999999,
+        "distance_meters": 2036,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Ultadanga Jagarani Sangha",
+        "address": "16/1, Biplabi Barin Ghosh Sarani, Murari Pukur, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5932927,
+        "lon": 88.3849094,
+        "distance_meters": 2046,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Telengabagan",
+        "address": "35, Adhar Chandra Das Ln, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5962942,
+        "lon": 88.3869813,
+        "distance_meters": 2241,
+        "estimated_walk_time_min": 40
+      },
+      {
+        "title": "Belgachia Sadharan Durgatsab",
+        "address": "J95M+33X, Tala, Belgachia, Kolkata, West Bengal 700037, India",
+        "lat": 22.607731899999997,
+        "lon": 88.3827393,
+        "distance_meters": 2242,
+        "estimated_walk_time_min": 40
+      },
+      {
+        "title": "Tala Park Prattay",
+        "address": "J95M+G26, Tala Park Rd, Tala, Kolkata, West Bengal 700037, India",
+        "lat": 22.608791099999998,
+        "lon": 88.382502,
+        "distance_meters": 2295,
+        "estimated_walk_time_min": 41
+      },
+      {
+        "title": "Tala Ponero Pally",
+        "address": "J96M+XWR, Gangulipara, Paikpara, Kolkata, West Bengal 700037, India",
+        "lat": 22.612476299999997,
+        "lon": 88.3847732,
+        "distance_meters": 2740,
+        "estimated_walk_time_min": 48
+      },
+      {
+        "title": "Kankurgachi Jubak Brinda",
+        "address": "H9HQ+P6X, Phoolbagan, Kankurgachi, Kolkata, West Bengal 700054, India",
+        "lat": 22.579356800000003,
+        "lon": 88.3881073,
+        "distance_meters": 2979,
+        "estimated_walk_time_min": 52
+      }
+    ]
+  },
+  {
+    "metro_station": "Sovabazar",
+    "lat": 22.59532,
+    "lon": 88.364866,
+    "ranked_pandals": [
+      {
+        "title": "Sovabazar Rajbari",
+        "address": "Raja Nabakrishna St, Raja Nabakrishna Street, Sovabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5962644,
+        "lon": 88.3673797,
+        "distance_meters": 278,
+        "estimated_walk_time_min": 7
+      },
+      {
+        "title": "Sovabazar Beniatola",
+        "address": "H9W6+8CQ, Beniatola St, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5958452,
+        "lon": 88.3611126,
+        "distance_meters": 389,
+        "estimated_walk_time_min": 9
+      },
+      {
+        "title": "Ahiritola Jubak Brinda",
+        "address": "83, Ahiritola St, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5945774,
+        "lon": 88.3605889,
+        "distance_meters": 446,
+        "estimated_walk_time_min": 10
+      },
+      {
+        "title": "Jagat Mukherjee Park",
+        "address": "1, Jatindra Mohan Ave, Sovabazar, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.5994903,
+        "lon": 88.3660388,
+        "distance_meters": 479,
+        "estimated_walk_time_min": 10
+      },
+      {
+        "title": "Kumartuli Park",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 536,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Kumartuli Sarbojanin",
+        "address": "SARBOJANIN DURGOTSAB COMMITTEE, 8B, Abhay Mitra St, Sovabazar, Kumartuli, Shobhabazar, Kolkata, West Bengal 700005, India",
+        "lat": 22.598982700000004,
+        "lon": 88.36146629999999,
+        "distance_meters": 536,
+        "estimated_walk_time_min": 11
+      },
+      {
+        "title": "Kashi Bose Lane",
+        "address": "5/1, Kashi Bose Ln, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.590897899999998,
+        "lon": 88.36891740000002,
+        "distance_meters": 644,
+        "estimated_walk_time_min": 13
+      },
+      {
+        "title": "Shyambazar Pally Sangha",
+        "address": "48, Shyam Bazar St, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.6000564,
+        "lon": 88.3693864,
+        "distance_meters": 701,
+        "estimated_walk_time_min": 14
+      },
+      {
+        "title": "Beadon Street Sarbojanin",
+        "address": "62/5, Abhedananda Rd, Manicktala, Darjipara, Kolkata, West Bengal 700006, India",
+        "lat": 22.5892707,
+        "lon": 88.3676133,
+        "distance_meters": 729,
+        "estimated_walk_time_min": 15
+      },
+      {
+        "title": "Hatibagan Sarbojanin",
+        "address": "134, Sri Aurobinda Sarani, Principal Khudiram Bose Rd, Sovabazar, Hati Bagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.5943863,
+        "lon": 88.3720004,
+        "distance_meters": 739,
+        "estimated_walk_time_min": 15
+      },
+      {
+        "title": "Sikdar Bagan",
+        "address": "H9WC+MR3, Sikdar Bagan St, Shyambazar, 27, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.596625,
+        "lon": 88.3721388,
+        "distance_meters": 760,
+        "estimated_walk_time_min": 15
+      },
+      {
+        "title": "Ahiritola Sarbojanin",
+        "address": "haro dhol lean, 22, Ahiritola, Beniatola, Kolkata, West Bengal 700005, India",
+        "lat": 22.5948383,
+        "lon": 88.3571698,
+        "distance_meters": 791,
+        "estimated_walk_time_min": 16
+      },
+      {
+        "title": "Nalin Sarkar Street Sarbojanin Durgotsab",
+        "address": "H9WF+577, Nalin Sarkar St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.59542,
+        "lon": 88.37318069999999,
+        "distance_meters": 853,
+        "estimated_walk_time_min": 17
+      },
+      {
+        "title": "Nabinpally Hatibagan",
+        "address": "9/1, Nalin Sarkar Street Sovabazar, 16, Sikdar Bagan St, Sovabazar, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.595902799999998,
+        "lon": 88.3734176,
+        "distance_meters": 880,
+        "estimated_walk_time_min": 17
+      },
+      {
+        "title": "Bidhan Sarani Atlas Club",
+        "address": "101, Bidhan Sarani Rd, Fariapukur, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.599686,
+        "lon": 88.37291809999999,
+        "distance_meters": 958,
+        "estimated_walk_time_min": 18
+      },
+      {
+        "title": "North Tridhara Sarbojanin",
+        "address": "H9WF+9QF, 158N, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
+        "lat": 22.5958155,
+        "lon": 88.3745568,
+        "distance_meters": 996,
+        "estimated_walk_time_min": 19
+      },
+      {
+        "title": "Baghbazar Sarbojanin Durgotsav & Exhibition",
+        "address": "78, Bagbazar St, Baghbazar, Kolkata, West Bengal 700003, India",
+        "lat": 22.6044897,
+        "lon": 88.36561499999999,
+        "distance_meters": 1022,
+        "estimated_walk_time_min": 20
+      },
+      {
+        "title": "Pathuriaghata Pancher Pally",
+        "address": "H9Q5+C3R, Malapara, Santoshpur, Jorabagan, Kolkata, West Bengal 700006, India",
+        "lat": 22.588606799999997,
+        "lon": 88.35763170000001,
+        "distance_meters": 1053,
+        "estimated_walk_time_min": 20
+      },
+      {
+        "title": "Simla Byayam Samity",
+        "address": "9B, Singhee Lane, P O, Abhedananda Rd, Simla, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.5851371,
+        "lon": 88.3645461,
+        "distance_meters": 1132,
+        "estimated_walk_time_min": 21
+      },
+      {
+        "title": "Vivekananda Sporting Club",
+        "address": "77/1, Simla St, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700006, India",
+        "lat": 22.584103799999998,
+        "lon": 88.3664881,
+        "distance_meters": 1258,
+        "estimated_walk_time_min": 23
+      },
+      {
+        "title": "Chorebagan Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1328,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Girish Park Sarbojanin",
+        "address": "0/1, Radha Madhab Saha Ln, Simla, Machuabazar, Kolkata, West Bengal 700007, India",
+        "lat": 22.5834284,
+        "lon": 88.3635965,
+        "distance_meters": 1328,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Manicktala Chaltabagan Lohapatty",
+        "address": "159D, Vivekananda Rd, Manicktala, Azad Hind Bag, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.5848905,
+        "lon": 88.3721509,
+        "distance_meters": 1379,
+        "estimated_walk_time_min": 25
+      },
+      {
+        "title": "Lalabagan Nabankur",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1444,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Sammilita Lalabagan Sarbojanin",
+        "address": "Raja Dinendra St, Manicktala, Sahitya Parishad, Ward Number 15, Kolkata, West Bengal 700006, India",
+        "lat": 22.5883732,
+        "lon": 88.3767567,
+        "distance_meters": 1444,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Gouriberia",
+        "address": "700067, 4, Gouri Bari Ln, Manicktala, Gouri Bari, Kolkata, West Bengal 700004, India",
+        "lat": 22.594448099999997,
+        "lon": 88.37908569999999,
+        "distance_meters": 1463,
+        "estimated_walk_time_min": 27
+      },
+      {
+        "title": "Aurobinda Setu Sarbojanin",
+        "address": "9/1/5, Canal E Rd, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.594482499999998,
+        "lon": 88.3805509,
+        "distance_meters": 1612,
+        "estimated_walk_time_min": 29
+      },
+      {
+        "title": "Brindaban Matri Mandir",
+        "address": "16, Brindaban Mullick 1st Ln, Manicktala, Machuabazar, Kolkata, West Bengal 700009, India",
+        "lat": 22.582717199999998,
+        "lon": 88.3729053,
+        "distance_meters": 1626,
+        "estimated_walk_time_min": 30
+      },
+      {
+        "title": "Tala Barowari",
+        "address": "6-1, NG Chatterjee Ln, Tala, Bidhan Sarani, Paikpara, Kolkata, West Bengal 700002, India",
+        "lat": 22.6067969,
+        "lon": 88.3762168,
+        "distance_meters": 1728,
+        "estimated_walk_time_min": 31
+      },
+      {
+        "title": "Sarkar Bagan Sammilita Sangha",
+        "address": "3/2, Nilmoni Mitra Row, Tala, Bidhan Sarani, Kolkata, West Bengal 700002, India",
+        "lat": 22.6062589,
+        "lon": 88.37729569999999,
+        "distance_meters": 1762,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Ultadanga Yuba Brinda",
+        "address": "H9WJ+9W8, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595916,
+        "lon": 88.3823154,
+        "distance_meters": 1792,
+        "estimated_walk_time_min": 32
+      },
+      {
+        "title": "Karbagan Sarbojanin",
+        "address": "17/1/H/25, Karbagan Durga puja, Ultadanga Main Rd, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.595240999999998,
+        "lon": 88.3842775,
+        "distance_meters": 1992,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Ultadanga Pallysree",
+        "address": "1/1P, Jaharlal Dutta Ln, Muchibazer, Daspara, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5957731,
+        "lon": 88.38468820000001,
+        "distance_meters": 2035,
+        "estimated_walk_time_min": 36
+      },
+      {
+        "title": "Ultadanga Bidhan Sangha",
+        "address": "National Academy of Customs Indirect Taxes & Narcotics (NACIN, H9VM+FW9, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5936517,
+        "lon": 88.38486449999999,
+        "distance_meters": 2061,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Ultadanga Jagarani Sangha",
+        "address": "16/1, Biplabi Barin Ghosh Sarani, Murari Pukur, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5932927,
+        "lon": 88.3849094,
+        "distance_meters": 2069,
+        "estimated_walk_time_min": 37
+      },
+      {
+        "title": "Telengabagan",
+        "address": "35, Adhar Chandra Das Ln, Telenga Bagan, Ultadanga, Kolkata, West Bengal 700067, India",
+        "lat": 22.5962942,
+        "lon": 88.3869813,
+        "distance_meters": 2272,
+        "estimated_walk_time_min": 40
+      },
+      {
+        "title": "Belgachia Sadharan Durgatsab",
+        "address": "J95M+33X, Tala, Belgachia, Kolkata, West Bengal 700037, India",
+        "lat": 22.607731899999997,
+        "lon": 88.3827393,
+        "distance_meters": 2295,
+        "estimated_walk_time_min": 41
+      },
+      {
+        "title": "Tala Park Prattay",
+        "address": "J95M+G26, Tala Park Rd, Tala, Kolkata, West Bengal 700037, India",
+        "lat": 22.608791099999998,
+        "lon": 88.382502,
+        "distance_meters": 2349,
+        "estimated_walk_time_min": 42
+      },
+      {
+        "title": "Tala Ponero Pally",
+        "address": "J96M+XWR, Gangulipara, Paikpara, Kolkata, West Bengal 700037, India",
+        "lat": 22.612476299999997,
+        "lon": 88.3847732,
+        "distance_meters": 2795,
+        "estimated_walk_time_min": 49
+      },
+      {
+        "title": "Kankurgachi Jubak Brinda",
+        "address": "H9HQ+P6X, Phoolbagan, Kankurgachi, Kolkata, West Bengal 700054, India",
+        "lat": 22.579356800000003,
+        "lon": 88.3881073,
+        "distance_meters": 2973,
+        "estimated_walk_time_min": 52
+      }
+    ]
+  }
+]

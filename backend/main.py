@@ -137,6 +137,30 @@ class Pandal(BaseModel):
     lon: float
     status: str
 
+class RoutePlanRequest(BaseModel):
+    metro_station_name: str
+    total_minutes: int
+    viewing_pace_minutes: int
+    restaurant_break_minutes: int
+    end_preference: str # "anywhere", "nearest_metro", "start_metro"
+
+class RouteStop(BaseModel):
+    name: str
+    address: str
+    lat: float
+    lon: float
+    estimated_travel_min: int
+    cumulative_time_min: int
+
+class RoutePlanResponse(BaseModel):
+    start_metro: str
+    total_budget_min: int
+    usable_time_min: int
+    total_pandals: int
+    restaurant_break_included: bool
+    end_preference: str
+    stops: List[RouteStop]
+
 # Defined landmarks & facilities in North Calcutta with coordinates
 FACILITIES = [
     {"name": "শ্যামবাজার মেট্রো (Shyambazar Metro)", "category": "🚇 Metro", "lat": 22.6006, "lon": 88.3697},
@@ -182,7 +206,10 @@ def read_root():
             "north_eateries": "/api/eateries/north",
             "north_facilities": "/api/facilities/north",
             "map": "/api/map",
-            "launch_date": "/api/launch-date"
+            "launch_date": "/api/launch-date",
+            "metro_stations": "/api/metro-stations",
+            "plan_route": "/api/plan-route",
+            "northpandel_distances": "/api/northpandel_distances"
         }
     }
 
@@ -618,6 +645,161 @@ def load_metros_data() -> List[dict]:
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading metros data: {str(e)}")
 
+@app.get("/api/metro-stations")
+def get_valid_metro_stations():
+    """Return only metro stations with valid coordinates."""
+    file_path = os.path.join(os.path.dirname(__file__), "data", "metro_stations.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Metro stations data file not found")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            metros = json.load(f)
+            valid = [m for m in metros if m.get("lat") and m.get("lon")]
+            return ORJSONResponse(content=valid)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error loading metro stations data: {str(e)}")
+
+# --- Route Planner Logic ---
+async def get_osrm_walking_route(lat1: float, lon1: float, lat2: float, lon2: float) -> tuple[float, float]:
+    """Get real walking duration (sec) and distance (meters) using OSRM demo server."""
+    url = f"http://router.project-osrm.org/route/v1/foot/{lon1},{lat1};{lon2},{lat2}?overview=false"
+    try:
+        async with httpx.AsyncClient(timeout=5.0) as client:
+            resp = await client.get(url)
+            if resp.status_code == 200:
+                data = resp.json()
+                if data.get("code") == "Ok" and len(data.get("routes", [])) > 0:
+                    route = data["routes"][0]
+                    return route["duration"], route["distance"]
+    except Exception as e:
+        print(f"OSRM request failed: {e}")
+    # Fallback to Haversine if OSRM fails (assume 1.2m/s walking speed)
+    dist = haversine_distance(lat1, lon1, lat2, lon2)
+    return dist / 1.2, dist
+
+def apply_crowd_adjustment(base_seconds: float) -> float:
+    """Crowd adjustment: 1.5x time + 3 minutes."""
+    return (base_seconds * 1.5) + 180
+
+def get_safety_buffer(total_minutes: int) -> int:
+    """Buffer based on duration tier."""
+    if total_minutes <= 120: return 15
+    if total_minutes <= 240: return 30
+    return 45
+
+def normalize_metro_name(name: str) -> str:
+    name = name.lower()
+    return name.replace("shobhabazar", "sovabazar").replace("sutanuti", "").replace("metro", "").replace("station", "").replace("&", "").strip()
+
+@app.post("/api/plan-route", response_model=RoutePlanResponse)
+async def plan_puja_route(request: RoutePlanRequest):
+    # 1. Determine starting coordinates for selected metro station
+    start_lat = getattr(request, 'start_lat', 0)
+    start_lon = getattr(request, 'start_lon', 0)
+    
+    # Try looking up in metro_stations.json if coordinates not provided or zero
+    try:
+        with open(os.path.join(os.path.dirname(__file__), "data", "metro_stations.json"), "r", encoding="utf-8") as f:
+            metro_data = json.load(f)
+            req_norm = normalize_metro_name(request.metro_station_name)
+            start_m = next((
+                m for m in metro_data 
+                if m.get("name") and (
+                    normalize_metro_name(m["name"]) in req_norm or 
+                    req_norm in normalize_metro_name(m["name"])
+                )
+            ), None)
+            if start_m and start_m.get("lat") and start_m.get("lon"):
+                start_lat = float(start_m["lat"])
+                start_lon = float(start_m["lon"])
+    except Exception as e:
+        print(f"Error resolving metro station: {e}")
+
+    if not start_lat or not start_lon:
+        start_lat, start_lon = 22.5726, 88.3639
+
+    # 2. Load pandals for the requested region
+    pandals = []
+    region = getattr(request, 'region', 'all').lower()
+    region_file_map = {
+        "north": ["north_cords.json"],
+        "south": ["south_kolkata.json"],
+        "central": ["central_kolkata.json"],
+        "all": ["north_cords.json", "south_kolkata.json", "central_kolkata.json", "bonedi_kolkata.json"]
+    }
+    files = region_file_map.get(region, region_file_map["all"])
+    for filename in files:
+        try:
+            with open(os.path.join(os.path.dirname(__file__), "data", filename), "r", encoding="utf-8") as f:
+                data = json.load(f)
+                for p in data:
+                    if p.get("lat") and p.get("lon"):
+                        pandals.append({
+                            "title": p.get("name") or p.get("api_name") or "Durga Puja Pandal",
+                            "address": p.get("address", ""),
+                            "lat": float(p["lat"]),
+                            "lon": float(p["lon"])
+                        })
+        except Exception as e:
+            print(f"Error loading {filename}: {e}")
+
+    # 3. Chained Nearest Neighbor Walk (Metro -> Pandal 1 -> Pandal 2 -> Pandal 3 ...)
+    usable_time = request.total_minutes - request.restaurant_break_minutes
+    budget = usable_time - (20 if usable_time > 120 else 10)
+    
+    current_lat = start_lat
+    current_lon = start_lon
+    cumulative_time = 0
+    stops = []
+    visited = set()
+
+    while cumulative_time < budget and len(stops) < len(pandals):
+        best_pandal = None
+        best_dist_m = float('inf')
+        
+        for p in pandals:
+            if p["title"] in visited:
+                continue
+            dist_m = haversine_distance(current_lat, current_lon, p["lat"], p["lon"])
+            # Maximum 2km walk between consecutive pandals
+            if dist_m > 2000 and len(stops) > 0:
+                continue
+            if dist_m < best_dist_m:
+                best_dist_m = dist_m
+                best_pandal = p
+                
+        if not best_pandal:
+            break
+            
+        travel_min = int(best_dist_m / 60) + 3 # ~1m/s walk + 3 min buffer
+        step_total = travel_min + request.viewing_pace_minutes
+        if cumulative_time + step_total > budget:
+            break
+            
+        cumulative_time += step_total
+        stops.append(RouteStop(
+            name=best_pandal["title"],
+            address=best_pandal.get("address", ""),
+            lat=best_pandal["lat"],
+            lon=best_pandal["lon"],
+            estimated_travel_min=travel_min,
+            cumulative_time_min=cumulative_time
+        ))
+        visited.add(best_pandal["title"])
+        # Update current position to the pandal just added
+        current_lat = best_pandal["lat"]
+        current_lon = best_pandal["lon"]
+
+    return RoutePlanResponse(
+        start_metro=request.metro_station_name,
+        total_budget_min=request.total_minutes,
+        usable_time_min=usable_time,
+        total_pandals=len(stops),
+        restaurant_break_included=(request.restaurant_break_minutes > 0),
+        end_preference=request.end_preference,
+        stops=stops
+    )
+
 @app.get("/api/metros")
 def get_metros():
     headers = {
@@ -995,6 +1177,36 @@ def generate_map_html(q: str, selected: str = "") -> str:
 @app.get("/api/map", response_class=HTMLResponse)
 def get_map(q: str = "", selected: str = ""):
     return generate_map_html(q, selected)
+
+class RoutePlanRequest(BaseModel):
+    region: str = "all"
+    metro_station_name: str
+    start_lat: float
+    start_lon: float
+    total_minutes: int
+    viewing_pace_minutes: int
+    restaurant_break_minutes: int
+    end_preference: str
+
+def haversine_distance(lat1, lon1, lat2, lon2):
+    R = 6371000  # Radius of Earth in meters
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lon2 - lon1)
+    a = math.sin(delta_phi / 2.0) ** 2 + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2.0) ** 2
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return R * c
+
+@app.get("/api/northpandel_distances")
+def get_north_pandal_distances():
+    try:
+        with open("data/north_metro_pandals_ranked.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+            return data
+    except Exception as e:
+        return {"error": f"Failed to load distance data: {e}"}
+
 
 if __name__ == "__main__":
     import uvicorn

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { AlertTriangle, X, Sparkles, ArrowRight, Wrench } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 

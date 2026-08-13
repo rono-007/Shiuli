@@ -29,3 +29,7 @@ Thumbs.db
 
 # Analysis Output
 backend/analysis_output/
+
+# Temporary / Other projects
+comingsoon/
+frontend/temp_metros.json

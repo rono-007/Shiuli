@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, Calendar, Phone, Train, CloudSun, Sparkles, Clock, ShieldAlert, ChevronDown, ChevronUp, MapPin, AlertCircle, Info, ArrowRight, Sun, Moon } from 'lucide-react';
+import { X, Calendar, Phone, Train, CloudSun, Clock, ShieldAlert, ChevronDown, AlertCircle, Info, ArrowRight, Sun, Moon } from 'lucide-react';
 
 interface EssentialInfoModalProps {
   isOpen: boolean;
@@ -195,7 +195,7 @@ export const EssentialInfoModal: React.FC<EssentialInfoModalProps> = ({ isOpen, 
                 <div className="absolute left-4 sm:left-6 top-4 bottom-4 w-[2px] bg-[#EAE3D9]" />
 
                 <div className="space-y-6">
-                  {scheduleEvents.map((evt, idx) => {
+                  {scheduleEvents.map((evt) => {
                     const isExpanded = expandedDay === evt.id;
                     const isCurrent = evt.id === 'Maha Shashthi'; // Just a demo highlight
 

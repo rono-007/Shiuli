@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import metrosData from '../data/metros.json';
 import { ArrowLeft, Map, Clock, Zap, Coffee, CheckCircle, MapPin, Navigation } from 'lucide-react';
 

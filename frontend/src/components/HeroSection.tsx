@@ -5,6 +5,7 @@ import { useLanguage } from '../context/LanguageContext';
 interface HeroSectionProps {
   onSearch: (query: string) => void;
   onFilterChange: (filter: string) => void;
+  activeFilter?: string;
   onSelectZone: (zone: 'north' | 'central' | 'south' | 'bonedi') => void;
   onSelectFacilities?: () => void;
 }

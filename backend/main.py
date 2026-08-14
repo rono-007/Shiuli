@@ -194,24 +194,30 @@ def haversine_distance(lat1: float, lon1: float, lat2: float, lon2: float) -> fl
     return R * c * 1000  # Distance in meters
 
 @app.get("/")
-def read_root():
+def read_root(request: Request):
+    render_base = "https://shiuli-backend.onrender.com"
     return {
         "message": "Welcome to PujoPoth API.",
+        "base_url": render_base,
         "endpoints": {
-            "all": "/api/pandals",
-            "north": "/api/pandals/north",
-            "south": "/api/pandals/south",
-            "central": "/api/pandals/central",
-            "bonedi": "/api/pandals/bonedi",
-            "north_eateries": "/api/eateries/north",
-            "north_facilities": "/api/facilities/north",
-            "map": "/api/map",
-            "launch_date": "/api/launch-date",
-            "metro_stations": "/api/metro-stations",
-            "plan_route": "/api/plan-route",
-            "northpandel_distances": "/api/northpandel_distances",
-            "beta_users": "/api/beta/users",
-            "beta_verify": "/api/beta/verify"
+            "all": f"{render_base}/api/pandals",
+            "north": f"{render_base}/api/pandals/north",
+            "south": f"{render_base}/api/pandals/south",
+            "central": f"{render_base}/api/pandals/central",
+            "bonedi": f"{render_base}/api/pandals/bonedi",
+            "north_eateries": f"{render_base}/api/eateries/north",
+            "north_facilities": f"{render_base}/api/facilities/north",
+            "map": f"{render_base}/api/map",
+            "launch_date": f"{render_base}/api/launch-date",
+            "metro_stations": f"{render_base}/api/metro-stations",
+            "plan_route": f"{render_base}/api/plan-route",
+            "northpandel_distances": f"{render_base}/api/northpandel_distances",
+            "beta_users": f"{render_base}/api/beta/users",
+            "beta_verify": f"{render_base}/api/beta/verify"
+        },
+        "render_beta_endpoints": {
+            "beta_users_url": "https://shiuli-backend.onrender.com/api/beta/users",
+            "beta_verify_url": "https://shiuli-backend.onrender.com/api/beta/verify"
         }
     }
 

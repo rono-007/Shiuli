@@ -18,19 +18,30 @@ import { EssentialInfoModal } from './EssentialInfoModal';
 
 interface PujaGuideSectionProps {
   onSelectRoutePlanner?: () => void;
+  onSelectFacilities?: () => void;
 }
 
-export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRoutePlanner }) => {
+export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRoutePlanner, onSelectFacilities }) => {
   const { t, language } = useLanguage();
   const [isEssentialModalOpen, setIsEssentialModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const isBn = language === 'bn';
+
+  const showDevToast = (featureName: string) => {
+    const msg = isBn 
+      ? `"${featureName}" বিভাগটি বর্তমানে উন্নয়নাধীন` 
+      : `"${featureName}" section is currently Under Development`;
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   const cards = [
     {
       id: 'heritage',
       title: isBn ? 'ইতিহাস ও ঐতিহ্য' : 'History & Heritage',
       subtitle: isBn ? 'কলকাতার পুজোর গল্প ও ঐতিহ্য' : 'Stories & heritage of Kolkata Pujas',
+      isUnderDev: true,
       items: isBn ? [
         'পুজোর ইতিহাস ও বিবর্তন',
         'প্রসিদ্ধ পুজোর পুরস্কার',
@@ -43,7 +54,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       icon: <Landmark className="w-5 h-5 text-[#A0353A]" />,
       badgeBg: 'bg-[#F9EAEA]',
       badgeBorder: 'border-[#F0C8C9]',
-      btnBg: 'bg-[#F8E8E8] hover:bg-[#F3D5D5] text-[#A0353A]',
+      btnBg: 'bg-[#FAF6ED] hover:bg-[#F3EBE0] text-[#8C7A6B] border border-[#E5D5C5]',
       watermark: <Building2 className="w-24 h-24 text-[#A0353A]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
       accentColor: '#A0353A'
     },
@@ -51,6 +62,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       id: 'food',
       title: isBn ? 'খাবারের সন্ধান' : 'Food Directory',
       subtitle: isBn ? 'পুজো পরিক্রমায় সেরা খাবার' : 'Best dining during Puja hopping',
+      isUnderDev: false,
       items: isBn ? [
         'সেরা রেস্টুরেন্ট ও ক্যাফে',
         'পাড়া ঘুরে সেরা স্ট্রিট ফুড',
@@ -71,6 +83,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       id: 'safety',
       title: isBn ? 'সহায়তার গাইড' : 'Help & Safety Guide',
       subtitle: isBn ? 'জরুরি তথ্য, নিরাপদ থাকুন' : 'Emergency info, stay safe',
+      isUnderDev: true,
       items: isBn ? [
         'হাসপাতাল ও স্বাস্থ্যকেন্দ্র',
         'পুলিশ ও জরুরি হেল্পলাইন',
@@ -83,7 +96,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       icon: <BriefcaseMedical className="w-5 h-5 text-[#4D8357]" />,
       badgeBg: 'bg-[#EEF5ED]',
       badgeBorder: 'border-[#CCE2CB]',
-      btnBg: 'bg-[#E5F0E4] hover:bg-[#D5E6D3] text-[#45774F]',
+      btnBg: 'bg-[#FAF6ED] hover:bg-[#F3EBE0] text-[#8C7A6B] border border-[#E5D5C5]',
       watermark: <Ambulance className="w-24 h-24 text-[#4D8357]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
       accentColor: '#4D8357'
     },
@@ -91,6 +104,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       id: 'transit',
       title: isBn ? 'যাতায়াত গাইডলাইন' : 'Transit Guidelines',
       subtitle: isBn ? 'কীভাবে পৌঁছবেন, কোথায় যাবেন' : 'How to reach, where to go',
+      isUnderDev: true,
       items: isBn ? [
         'মেট্রো ও ট্রাম/বাস রুট ম্যাপ',
         'পার্কিং ও ট্রাফিক আপডেট',
@@ -103,7 +117,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       icon: <TrainFront className="w-5 h-5 text-[#7C579B]" />,
       badgeBg: 'bg-[#F3EFF9]',
       badgeBorder: 'border-[#DCD0EC]',
-      btnBg: 'bg-[#ECE6F5] hover:bg-[#DDD3ED] text-[#6F4B8E]',
+      btnBg: 'bg-[#FAF6ED] hover:bg-[#F3EBE0] text-[#8C7A6B] border border-[#E5D5C5]',
       watermark: <Bus className="w-24 h-24 text-[#7C579B]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
       accentColor: '#7C579B'
     },
@@ -111,6 +125,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       id: 'emergency',
       title: isBn ? 'জরুরি তথ্য' : 'Essential Info',
       subtitle: isBn ? 'প্রয়োজনীয় সবকিছু একসাথে' : 'Everything essential together',
+      isUnderDev: false,
       items: isBn ? [
         'পুজোর সময়সূচি ও তারিখ',
         'আবহাওয়ার পূর্বাভাস',
@@ -121,8 +136,8 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
         'Alerts & Key Updates'
       ],
       icon: <CalendarDays className="w-5 h-5 text-[#B84358]" />,
-      badgeBg: 'bg-[#FAECEE]',
-      badgeBorder: 'border-[#F2C5CC]',
+      badgeBg: 'bg-transparent',
+      badgeBorder: 'border-transparent',
       btnBg: 'bg-[#F7E4E7] hover:bg-[#F0CFD5] text-[#A83A4E]',
       watermark: <Megaphone className="w-24 h-24 text-[#B84358]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
       accentColor: '#B84358',
@@ -132,6 +147,14 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
 
   return (
     <section className="w-full bg-[#FAF5EC] bg-[url('/guidline.png')] bg-[length:100%_auto] md:bg-cover bg-top -mt-[2px] pt-14 sm:pt-20 pb-20 px-4 sm:px-8 relative overflow-hidden flex flex-col items-center border-none">
+      {/* Toast Notification for Under Development */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-[200] bg-[#3D1418] text-[#FAF5EC] px-5 py-3 rounded-2xl shadow-2xl border border-[#DFB86C]/40 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-300 font-serif text-xs sm:text-sm">
+          <span className="text-[#DFB86C]">❁</span>
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* Top Gradient Feathering Overlay */}
       <div className="absolute top-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-b from-[#FAF5EC] via-[#FAF5EC]/85 to-transparent pointer-events-none z-[1]" />
       
@@ -144,7 +167,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
           <span className="text-[#C68628]">❁</span>
         </div>
 
-        {/* Main Heading */}
+        {/* Title */}
         <h2 
           className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl text-[#5B1015] mb-2 sm:mb-3 text-center tracking-tight font-serif font-bold drop-shadow-xs px-2"
         >
@@ -170,18 +193,18 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
           {cards.map((card) => (
             <div 
               key={card.id} 
-              className={`rounded-3xl border border-[#EADECF] shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 px-5 py-6 flex flex-col items-center relative overflow-hidden group min-h-[380px] ${card.bgImage ? 'bg-cover bg-center' : 'bg-[#FFFDF9]'}`}
-              style={card.bgImage ? { backgroundImage: `url('${card.bgImage}')` } : undefined}
+              className="rounded-3xl border border-[#EADECF] shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 px-5 pt-20 pb-6 flex flex-col items-center relative overflow-hidden group min-h-[380px] bg-cover bg-center"
+              style={{ backgroundImage: "url('/essential-card.png')" }}
             >
+              {/* Under Development Top Badge */}
+              {card.isUnderDev && (
+                <div className="absolute top-4 left-4 bg-[#7A6458]/15 border border-[#7A6458]/30 px-2.5 py-0.5 rounded-full text-[10px] font-serif font-semibold text-[#6E5548] tracking-wider uppercase">
+                  {isBn ? 'উন্নয়নাধীন' : 'Under Development'}
+                </div>
+              )}
+
               {/* Background Watermark Icon */}
               {card.watermark}
-
-              {/* Scalloped Icon Container */}
-              <div className={`w-14 h-14 rounded-full flex items-center justify-center mb-4 transition-transform group-hover:scale-110 duration-300 ${card.badgeBg} border ${card.badgeBorder} shadow-xs relative`}>
-                {/* Decorative Scalloped Flower Trim */}
-                <div className="absolute inset-0 rounded-full border border-dashed border-current opacity-30 -m-1" style={{ color: card.accentColor }} />
-                {card.icon}
-              </div>
 
               {/* Card Title */}
               <h3 className="text-lg text-[#3D1418] mb-1 text-center font-serif font-bold leading-tight">
@@ -220,10 +243,22 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
               {/* Action Pill Button */}
               <div className="w-full pt-2 mt-auto">
                 <button 
-                  onClick={() => setIsEssentialModalOpen(true)}
+                  onClick={() => {
+                    if (card.id === 'food') {
+                      onSelectFacilities?.();
+                    } else if (card.id === 'emergency') {
+                      setIsEssentialModalOpen(true);
+                    } else {
+                      showDevToast(card.title);
+                    }
+                  }}
                   className={`w-full py-2.5 px-4 rounded-xl flex items-center justify-between text-xs font-serif font-bold transition-all duration-300 ${card.btnBg} cursor-pointer shadow-2xs group/btn`}
                 >
-                  <span>{isBn ? 'বিস্তারিত দেখুন' : 'View Details'}</span> 
+                  <span>
+                    {card.isUnderDev 
+                      ? (isBn ? 'উন্নয়নাধীন' : 'Under Development')
+                      : (isBn ? 'বিস্তারিত দেখুন' : 'View Details')}
+                  </span> 
                   <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
                 </button>
               </div>

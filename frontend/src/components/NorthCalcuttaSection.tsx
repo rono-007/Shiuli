@@ -392,7 +392,10 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
   };
 
   return (
-    <section className="min-h-screen bg-paper text-ink pt-32 pb-24 px-6 md:px-12 relative">
+    <section 
+      className="min-h-screen bg-cover bg-center bg-fixed bg-no-repeat bg-[#FAF6ED] text-ink pt-32 pb-24 px-6 md:px-12 relative"
+      style={{ backgroundImage: "url('/north-kolkata-banner.png')" }}
+    >
       {/* Heavy Noise Overlay for Vintage Print Feel */}
       <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.05] mix-blend-multiply bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
 

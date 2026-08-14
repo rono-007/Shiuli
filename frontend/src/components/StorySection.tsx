@@ -69,6 +69,17 @@ const storiesData: Story[] = [
 const StorySection: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const { t, language } = useLanguage();
+  const [toastMessage, setToastMessage] = React.useState<string | null>(null);
+
+  const isBn = language === 'bn';
+
+  const showDevToast = (title: string) => {
+    const msg = isBn 
+      ? `"${title}" বিভাগটি বর্তমানে উন্নয়নাধীন` 
+      : `"${title}" story is currently Under Development`;
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   const scrollLeft = () => {
     if (scrollContainerRef.current) {
@@ -85,6 +96,14 @@ const StorySection: React.FC = () => {
   return (
     <section className="py-24 bg-[#F8F1E7] text-[#3D2C22] relative overflow-hidden" id="stories">
       
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-[200] bg-[#3D1418] text-[#FAF5EC] px-5 py-3 rounded-2xl shadow-2xl border border-[#DFB86C]/40 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-300 font-serif text-xs sm:text-sm">
+          <span className="text-[#DFB86C]">❁</span>
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
       {/* Header Area */}
       <div className="max-w-[94vw] xl:max-w-[1700px] mx-auto px-4 md:px-8 relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center mb-12">
         
@@ -102,8 +121,11 @@ const StorySection: React.FC = () => {
           </div>
         </div>
 
-        <button className="px-5 py-2.5 rounded-md border border-[#A0353A]/40 text-[#7A1F26] font-serif text-sm hover:bg-[#A0353A]/5 transition-colors flex items-center gap-2 group cursor-pointer">
-          {t.readStory} 
+        <button 
+          onClick={() => showDevToast(t.storySectionTitle)}
+          className="px-5 py-2.5 rounded-md border border-[#A0353A]/40 text-[#7A1F26] font-serif text-sm hover:bg-[#A0353A]/5 transition-colors flex items-center gap-2 group cursor-pointer"
+        >
+          <span>{isBn ? 'উন্নয়নাধীন' : 'Under Development'}</span> 
           <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
         </button>
 
@@ -138,15 +160,18 @@ const StorySection: React.FC = () => {
           {storiesData.map((story) => (
             <div 
               key={story.id} 
-              // Mobile: 2 cards visible (50% - gap)
-              // Tablet: 3 cards visible (33.33% - gap)
-              // Laptop: 5 cards visible (20% - gap)
+              onClick={() => showDevToast(isBn ? story.titleBn : story.titleEn)}
               className="w-[calc(50%-0.5rem)] md:w-[calc(33.333%-0.85rem)] lg:w-[calc(20%-1rem)] flex-none h-[320px] md:h-[400px] lg:h-[440px] relative rounded-xl lg:rounded-2xl overflow-hidden snap-center group cursor-pointer shadow-md hover:shadow-xl transition-all duration-300"
             >
+              {/* Top Right Under Development Badge */}
+              <div className="absolute top-3 right-3 z-20 bg-black/40 backdrop-blur-md border border-white/20 px-2 py-0.5 rounded-full text-[9px] font-serif font-medium text-white/90">
+                {isBn ? 'উন্নয়নাধীন' : 'Under Development'}
+              </div>
+
               {/* Background Image */}
               <img 
                 src={story.image} 
-                alt={language === 'bn' ? story.titleBn : story.titleEn} 
+                alt={isBn ? story.titleBn : story.titleEn} 
                 className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-110"
               />
               
@@ -159,20 +184,20 @@ const StorySection: React.FC = () => {
                 {/* Tag */}
                 <div className="mb-3 lg:mb-5">
                   <span className="inline-block px-2 lg:px-4 py-0.5 lg:py-1 text-[10px] lg:text-xs border border-[#F8F1E7]/30 rounded-full bg-[#7A1F26]/40 backdrop-blur-md font-serif font-medium">
-                    {language === 'bn' ? story.tagBn : story.tagEn}
+                    {isBn ? story.tagBn : story.tagEn}
                   </span>
                 </div>
                 
                 <h3 className="text-lg lg:text-2xl font-serif mb-2 lg:mb-3 text-white drop-shadow-lg tracking-wide">
-                  {language === 'bn' ? story.titleBn : story.titleEn}
+                  {isBn ? story.titleBn : story.titleEn}
                 </h3>
                 
                 <p className="hidden md:block text-[13px] lg:text-[15px] text-white/80 line-clamp-2 mb-4 lg:mb-6 font-serif leading-relaxed text-shadow-sm">
-                  {language === 'bn' ? story.descBn : story.descEn}
+                  {isBn ? story.descBn : story.descEn}
                 </p>
                 
-                <div className="flex items-center text-xs lg:text-sm font-serif text-[#F8F1E7] group-hover:text-white transition-colors">
-                  <span>{t.readStory}</span>
+                <div className="flex items-center text-xs lg:text-sm font-serif text-[#F8F1E7]/80 group-hover:text-white transition-colors">
+                  <span>{isBn ? 'উন্নয়নাধীন' : 'Under Development'}</span>
                   <ArrowRight className="w-3 h-3 lg:w-4 lg:h-4 ml-1.5 lg:ml-2 transition-transform group-hover:translate-x-1.5" />
                 </div>
 

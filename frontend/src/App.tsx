@@ -129,7 +129,7 @@ function AppContent() {
           <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.05] mix-blend-multiply bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
 
           {/* Global Subtle Navigation Overlay */}
-          <nav className="fixed top-0 left-0 right-0 p-6 md:p-8 z-50 flex justify-between items-start pointer-events-none text-paper">
+          <nav className="fixed top-0 left-0 right-0 p-6 md:p-8 z-40 flex justify-between items-start pointer-events-none text-paper">
 
             {/* Left: Brand Logo (Transparent background, only logo shown) */}
             <div 
@@ -171,7 +171,7 @@ function AppContent() {
         {view === 'admin' ? (
           <AdminPanel onBack={() => { setView('home'); window.history.replaceState({}, '', window.location.pathname); }} />
         ) : (
-          <main className="w-full relative z-20">
+          <main className="w-full relative">
             {view === 'north' ? (
               <NorthCalcuttaSection onBack={() => setView('home')} />
             ) : view === 'south' ? (
@@ -208,7 +208,10 @@ function AppContent() {
 
                 {/* CONTENT SECTION */}
                 <div className="w-full">
-                  <PujaGuideSection onSelectRoutePlanner={() => setView('route-planner')} />
+                  <PujaGuideSection 
+                    onSelectRoutePlanner={() => setView('route-planner')} 
+                    onSelectFacilities={() => setView('facilities')}
+                  />
 
                   <StorySection />
                 </div>

@@ -88,10 +88,13 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
   }, [eateriesList, selectedCategory, minRating, searchQuery]);
 
   return (
-    <div className="w-full bg-paper min-h-screen pt-24 pb-32 relative text-ink">
+    <div 
+      className="w-full bg-[#FAF6ED] bg-cover bg-center bg-fixed bg-no-repeat min-h-screen pt-24 pb-32 relative text-ink"
+      style={{ backgroundImage: "url('/food.png')" }}
+    >
       
-      {/* Vintage Noise Texture */}
-      <div className="pointer-events-none absolute inset-0 opacity-[0.03] mix-blend-multiply bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+      {/* Soft overlay for contrast & readability */}
+      <div className="absolute inset-0 bg-[#FAF6ED]/75 pointer-events-none z-0"></div>
 
       <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
 
@@ -125,17 +128,20 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
         </div>
 
         {/* SEARCH & FILTERS CONTAINER */}
-        <div className="bg-[#FAF6ED] border border-ink/10 rounded-2xl p-6 mb-12 shadow-sm space-y-6">
+        <div 
+          className="bg-[length:106%_106%] bg-center bg-no-repeat bg-[#FAF6ED] rounded-2xl p-6 md:p-8 mb-12 shadow-sm space-y-5 relative overflow-hidden border border-ink/10"
+          style={{ backgroundImage: "url('/food-banner.png')" }}
+        >
           
           {/* Search Bar */}
           <div className="relative max-w-2xl mx-auto">
-            <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-ink/40" />
+            <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-ink/40" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="খাবারের স্থান, ক্যাফে বা এলাকা দিয়ে খুঁজুন (যেমন: মিত্র ক্যাফে, বিরিয়ানি, শ্যামবাজার, সল্টলেক...)"
-              className="w-full bg-paper border border-ink/15 rounded-xl pl-12 pr-4 py-3.5 text-sm font-serif text-ink placeholder:text-ink/40 focus:outline-none focus:border-bengali-red/50 transition-colors shadow-inner"
+              className="w-full bg-paper/95 backdrop-blur-xs border border-ink/15 rounded-xl pl-11 pr-4 py-2.5 text-xs sm:text-sm font-serif text-ink placeholder:text-ink/40 focus:outline-none focus:border-bengali-red/50 transition-colors shadow-xs"
             />
             {searchQuery && (
               <button
@@ -148,18 +154,18 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
           </div>
 
           {/* Filter Options */}
-          <div className="flex flex-wrap items-center justify-between gap-4 border-t border-ink/10 pt-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-3">
             
             {/* Category Badges */}
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
               {CATEGORY_TAGS.map(cat => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-lg border text-xs font-serif transition-all ${
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-serif transition-all ${
                     selectedCategory === cat
-                      ? 'bg-bengali-red text-paper border-bengali-red font-bold shadow-sm'
-                      : 'bg-paper text-ink/70 border-ink/10 hover:border-ink/30'
+                      ? 'bg-bengali-red text-paper border-bengali-red font-bold shadow-xs'
+                      : 'bg-paper/90 backdrop-blur-xs text-ink/70 border-ink/10 hover:border-ink/30'
                   }`}
                 >
                   {cat === 'All' ? 'সবকিছু (All)' : cat}
@@ -168,16 +174,16 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
             </div>
 
             {/* Min Rating Filter */}
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-mono text-ink/50 uppercase">রেটিং:</span>
+            <div className="flex items-center gap-1.5 flex-shrink-0">
+              <span className="text-[11px] font-mono text-ink/50 uppercase">রেটিং:</span>
               {[0, 4.0, 4.2, 4.5].map(r => (
                 <button
                   key={r}
                   onClick={() => setMinRating(r)}
-                  className={`px-2.5 py-1 rounded text-xs font-mono transition-all ${
+                  className={`px-2 py-0.5 rounded text-[11px] font-mono transition-all ${
                     minRating === r
                       ? 'bg-amber-500 text-white font-bold'
-                      : 'bg-paper text-ink/60 border border-ink/10 hover:text-ink'
+                      : 'bg-paper/90 backdrop-blur-xs text-ink/60 border border-ink/10 hover:text-ink'
                   }`}
                 >
                   {r === 0 ? 'All' : `${r}★+`}

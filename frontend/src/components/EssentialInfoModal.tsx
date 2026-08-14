@@ -110,17 +110,17 @@ export const EssentialInfoModal: React.FC<EssentialInfoModalProps> = ({ isOpen, 
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#2B231D]/80 backdrop-blur-sm p-2 sm:p-6 font-serif">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#2B231D]/80 backdrop-blur-sm p-0 sm:p-6 font-serif">
       {/* Modal Dialog Card */}
       <div 
-        className="bg-[#FCFBF8] bg-cover bg-center bg-no-repeat rounded-2xl sm:rounded-[1.5rem] shadow-2xl w-full max-w-[1000px] h-[92vh] sm:h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 relative"
+        className="bg-[#FCFBF8] bg-cover bg-center bg-no-repeat rounded-none sm:rounded-[1.5rem] shadow-2xl w-full max-w-[1000px] h-full sm:h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 relative z-[100]"
         style={{ backgroundImage: "url('/essential-card.png')" }}
       >
         
         {/* 1. PREMIUM HEADER */}
         <div className="bg-transparent shrink-0 relative">
-          <div className="px-4 pt-14 sm:pt-36 pb-3 sm:px-8 flex flex-col items-center justify-center text-center relative z-10">
-            <div className="flex flex-col items-center gap-1">
+          <div className="px-4 pt-36 sm:pt-40 pb-2 sm:pb-3 sm:px-8 flex flex-col items-center justify-center text-center relative z-10">
+            <div className="hidden sm:flex flex-col items-center gap-1">
               <h2 className="text-xl sm:text-3xl font-bold tracking-tight font-serif text-[#7A1F26] leading-tight">
                 Durga Puja 2026
               </h2>
@@ -131,16 +131,16 @@ export const EssentialInfoModal: React.FC<EssentialInfoModalProps> = ({ isOpen, 
 
             <button 
               onClick={onClose}
-              className="absolute right-3 sm:right-6 top-3 sm:top-6 w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-white/30 bg-black/20 hover:bg-black/30 text-white flex items-center justify-center transition-all cursor-pointer shrink-0 z-20"
+              className="absolute right-4 sm:right-6 top-4 sm:top-6 w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-white/50 bg-black/40 hover:bg-black/60 text-white flex items-center justify-center transition-all cursor-pointer shrink-0 z-[110] shadow-lg"
               aria-label="Close"
             >
-              <X className="w-4 h-4 sm:w-5 sm:h-5" />
+              <X className="w-5 h-5" />
             </button>
           </div>
         </div>
 
         {/* 2. NAVIGATION TABS */}
-        <div className="px-3 sm:px-8 py-2.5 sm:py-3 bg-transparent border-b border-[#EAE3D9]/60 flex items-center justify-start sm:justify-center gap-2 sm:gap-4 overflow-x-auto custom-scrollbar shrink-0 shadow-sm z-10">
+        <div className="px-4 sm:px-8 py-2.5 sm:py-3 bg-transparent border-b border-[#EAE3D9]/60 flex items-center justify-start sm:justify-center gap-2 sm:gap-4 overflow-x-auto scrollbar-none shrink-0 shadow-sm z-10">
           {[
             { id: 'schedule', label: 'Puja Schedule', icon: <Calendar className="w-4 h-4" /> },
             { id: 'helpline', label: 'Emergency', icon: <ShieldAlert className="w-4 h-4" /> },
@@ -167,10 +167,10 @@ export const EssentialInfoModal: React.FC<EssentialInfoModalProps> = ({ isOpen, 
           
           {/* TAB 1: SCHEDULE */}
           {activeTab === 'schedule' && (
-            <div className="max-w-4xl mx-auto px-3 sm:px-8 py-5 sm:py-8">
+            <div className="max-w-4xl mx-auto px-3 sm:px-8 pt-8 pb-5 sm:py-8">
               
               {/* 3. INTRODUCTION / HERO STRIP */}
-              <div className="text-center mb-10">
+              <div className="text-center mt-2 sm:mt-0 mb-8 sm:mb-10">
                 <div className="inline-flex items-center justify-center gap-2 mb-3">
                   <Clock className="w-5 h-5 text-[#941F28]" />
                   <h3 className="text-xl sm:text-2xl font-bold text-[#3A2E28] font-serif">
@@ -192,17 +192,17 @@ export const EssentialInfoModal: React.FC<EssentialInfoModalProps> = ({ isOpen, 
               {/* 4. FESTIVAL TIMELINE */}
               <div className="relative">
                 {/* Vertical Line */}
-                <div className="absolute left-4 sm:left-6 top-4 bottom-4 w-[2px] bg-[#EAE3D9]" />
+                <div className="absolute left-3.5 sm:left-6 top-4 bottom-4 w-[2px] bg-[#EAE3D9]" />
 
-                <div className="space-y-6">
+                <div className="space-y-5 sm:space-y-6">
                   {scheduleEvents.map((evt) => {
                     const isExpanded = expandedDay === evt.id;
                     const isCurrent = evt.id === 'Maha Shashthi'; // Just a demo highlight
 
                     return (
-                      <div key={evt.id} className="relative pl-10 sm:pl-16 pr-0 sm:pr-4">
+                      <div key={evt.id} className="relative pl-8 sm:pl-16 pr-0 sm:pr-4">
                         {/* Timeline Node */}
-                        <div className={`absolute left-[10px] sm:left-[18px] top-6 w-3.5 h-3.5 rounded-full border-2 bg-[#FCFBF8] z-10 transition-colors duration-300 ${isExpanded || isCurrent ? `${evt.theme.border} ${evt.theme.bg}` : 'border-[#DFB86C]'}`} />
+                        <div className={`absolute left-[8px] sm:left-[18px] top-5 sm:top-6 w-3.5 h-3.5 rounded-full border-2 bg-[#FCFBF8] z-10 transition-colors duration-300 ${isExpanded || isCurrent ? `${evt.theme.border} ${evt.theme.bg}` : 'border-[#DFB86C]'}`} />
 
                         {/* Accordion Card */}
                         <div 
@@ -412,18 +412,18 @@ export const EssentialInfoModal: React.FC<EssentialInfoModalProps> = ({ isOpen, 
         </div>
 
         {/* 8. BOTTOM SECTION */}
-        <div className="bg-transparent border-t border-[#EAE3D9]/60 px-6 py-5 flex flex-col sm:flex-row items-center justify-between shrink-0 z-10">
-          <div className="flex items-center gap-2 mb-4 sm:mb-0">
-             <span className="text-[#DFB86C] text-lg">❁</span>
-             <p className="text-[#5C4D43] font-serif font-medium text-sm sm:text-base">আরও কিছু জানতে চান?</p>
-             <span className="text-[#DFB86C] text-lg">❁</span>
+        <div className="bg-transparent border-t border-[#EAE3D9]/60 px-4 sm:px-6 py-3 sm:py-5 flex flex-col sm:flex-row items-center justify-between shrink-0 z-10">
+          <div className="flex items-center gap-2 mb-2.5 sm:mb-0">
+             <span className="text-[#DFB86C] text-base sm:text-lg">❁</span>
+             <p className="text-[#5C4D43] font-serif font-medium text-xs sm:text-base">আরও কিছু জানতে চান?</p>
+             <span className="text-[#DFB86C] text-base sm:text-lg">❁</span>
           </div>
           <button 
             onClick={onClose}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#FAF8F5] hover:bg-[#F2EDE4] text-[#941F28] font-serif font-bold text-sm px-6 py-2.5 rounded-full border border-[#DFB86C]/40 transition-colors cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#FAF8F5] hover:bg-[#F2EDE4] text-[#941F28] font-serif font-bold text-xs sm:text-sm px-5 py-2 sm:py-2.5 rounded-full border border-[#DFB86C]/40 transition-colors cursor-pointer shadow-xs"
           >
             <span>Explore Puja Guide</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           </button>
         </div>
 

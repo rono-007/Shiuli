@@ -209,7 +209,9 @@ def read_root():
             "launch_date": "/api/launch-date",
             "metro_stations": "/api/metro-stations",
             "plan_route": "/api/plan-route",
-            "northpandel_distances": "/api/northpandel_distances"
+            "northpandel_distances": "/api/northpandel_distances",
+            "beta_users": "/api/beta/users",
+            "beta_verify": "/api/beta/verify"
         }
     }
 
@@ -221,6 +223,56 @@ def get_launch_date():
         "target_timestamp": 1789410600000,
         "formatted": "September 15, 2026 00:00:00 IST"
     }
+
+# ─── Beta Access Endpoints ────────────────────────────────────────────────
+@app.get("/api/beta/users")
+def get_beta_users():
+    """Return all authorized beta access users with their 5-digit PINs and access codes."""
+    beta_file = os.path.join(os.path.dirname(__file__), "data", "beta_users.json")
+    if not os.path.exists(beta_file):
+        raise HTTPException(status_code=404, detail="Beta users dataset not found")
+    with open(beta_file, "r", encoding="utf-8") as f:
+        return json.load(f)
+
+@app.post("/api/beta/verify")
+def verify_beta_access(data: dict):
+    """Verify beta access using email and access_code, with instant developer bypass."""
+    email = (data.get("email") or "").strip().lower()
+    access_code = (data.get("access_code") or data.get("code") or data.get("pin") or "").strip().lower()
+
+    # Developer Bypass
+    DEV_CODES = {"dev", "developer", "admin", "pujopath2k26", "00000", "12345"}
+    if email in DEV_CODES or access_code in DEV_CODES:
+        return {
+            "valid": True, 
+            "message": "Developer Access Granted", 
+            "user": {
+                "name": "Developer", 
+                "email": email or "dev@shiuli.local", 
+                "pin": "00000", 
+                "access_code": "dev-bypass"
+            }
+        }
+
+    if not email or not access_code:
+        return JSONResponse(status_code=400, content={"valid": False, "message": "Both email and access_code are required."})
+
+    beta_file = os.path.join(os.path.dirname(__file__), "data", "beta_users.json")
+    if not os.path.exists(beta_file):
+        raise HTTPException(status_code=404, detail="Beta users dataset not found")
+    
+    with open(beta_file, "r", encoding="utf-8") as f:
+        users = json.load(f)
+
+    for user in users:
+        u_email = user.get("email", "").strip().lower()
+        u_pin = user.get("pin", "").strip().lower()
+        u_code = user.get("access_code", "").strip().lower()
+
+        if u_email == email and (access_code == u_code or access_code == u_pin or access_code == f"{u_email}-{u_pin}"):
+            return {"valid": True, "message": "Access Granted", "user": user}
+        
+    return JSONResponse(status_code=401, content={"valid": False, "message": "Invalid email or access_code"})
 
 @app.get("/health")
 def health_check():

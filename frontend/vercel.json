@@ -1,8 +1,22 @@
 {
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [
+        {
+          "type": "host",
+          "value": "shiuli.vercel.app"
+        }
+      ],
+      "destination": "https://beta.shiuli.online/:path*",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     { "source": "/api/(.*)", "destination": "https://shiuli-backend.onrender.com/api/$1" },
     { "source": "/admin/(.*)", "destination": "https://shiuli-backend.onrender.com/admin/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ]
 }
+
 

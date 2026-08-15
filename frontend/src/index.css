@@ -166,3 +166,58 @@
     background-color: rgba(139, 30, 45, 0.1) !important;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   Shiuli Cinematic Loading Animation
+   GPU-accelerated keyframes for the intro loader
+   ═══════════════════════════════════════════════════════ */
+
+/* Continuous clockwise rotation — runs throughout the entire animation */
+@keyframes shiuli-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Cinematic zoom toward the orange center of the flower.
+   Starts at scale(1), accelerates into a massive scale(80) 
+   so the orange center fills any viewport size. */
+@keyframes shiuli-zoom {
+  0%   { transform: scale(1);   }
+  15%  { transform: scale(1.2); }
+  40%  { transform: scale(3);   }
+  65%  { transform: scale(12);  }
+  85%  { transform: scale(40);  }
+  100% { transform: scale(80);  }
+}
+
+/* Loader overlay fades out during the final portion of the zoom */
+@keyframes shiuli-overlay-fade {
+  0%   { opacity: 1; }
+  50%  { opacity: 1; }
+  85%  { opacity: 0.3; }
+  100% { opacity: 0; }
+}
+
+/* Website fades in — starts slightly before overlay fully disappears for crossfade */
+@keyframes shiuli-website-reveal {
+  0%   { opacity: 0; }
+  40%  { opacity: 0; }
+  75%  { opacity: 0.6; }
+  100% { opacity: 1; }
+}
+
+/* Accessibility: skip animation for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .shiuli-loader-overlay {
+    animation: none !important;
+    opacity: 0 !important;
+    transition: opacity 0.3s ease !important;
+  }
+  .shiuli-loader-overlay.shiuli-done {
+    opacity: 0 !important;
+  }
+  .shiuli-spin-layer,
+  .shiuli-zoom-layer {
+    animation: none !important;
+  }
+}

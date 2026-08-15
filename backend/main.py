@@ -79,6 +79,22 @@ app = FastAPI(
 # Enable GZip compression for responses > 500 bytes
 app.add_middleware(GZipMiddleware, minimum_size=500)
 
+# Configure CORS origins including custom domains and beta subdomain
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "https://shiuli.online",
+        "https://www.shiuli.online",
+        "https://beta.shiuli.online",
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # ─── Request Logging Middleware ────────────────────────────────────────────
 @app.middleware("http")
 async def log_requests(request: Request, call_next):

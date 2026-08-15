@@ -2,13 +2,20 @@ import React, { useState } from 'react';
 import { AlertTriangle, X, Sparkles, ArrowRight, Wrench } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
-export const BetaModal: React.FC = () => {
+interface BetaModalProps {
+  onClose?: () => void;
+}
+
+export const BetaModal: React.FC<BetaModalProps> = ({ onClose }) => {
   const [isOpen, setIsOpen] = useState(true);
   const { language } = useLanguage();
   const isBn = language === 'bn';
 
   const handleClose = () => {
     setIsOpen(false);
+    if (onClose) {
+      onClose();
+    }
   };
 
   if (!isOpen) return null;

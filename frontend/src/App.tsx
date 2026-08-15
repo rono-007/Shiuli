@@ -21,67 +21,121 @@ const RoutePlanner = lazy(() => import('./components/RoutePlanner'));
 function SectionLoader() {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center bg-[#FAF6ED] font-serif">
-      <img src="/logo-shiuli.png" alt="Loading" className="h-16 w-auto animate-pulse mb-4" />
+      <img 
+        src="/shiuli2.png" 
+        alt="Loading" 
+        className="h-16 w-16 object-contain mb-4"
+        style={{
+          animation: 'shiuli-spin 1.5s linear infinite',
+          transformOrigin: '50% 50%',
+        }}
+      />
       <p className="text-sm font-bold text-[#3D0D11] tracking-wide font-serif">লোড হচ্ছে...</p>
     </div>
   );
 }
 
+/*
+ * InitialLogoLoader — Cinematic Shiuli Flower Intro
+ * 
+ * Architecture (3 nested GPU-accelerated layers):
+ *   Layer 1: OVERLAY — full-screen container, fades out via shiuli-overlay-fade
+ *   Layer 2: ZOOM ANCHOR — positioned at exact viewport center (50%/50%), 
+ *            scales from 1→80x via shiuli-zoom keyframe
+ *   Layer 3: SPIN — continuous clockwise rotation via shiuli-spin, 
+ *            runs independently throughout the entire animation
+ *
+ * Timeline (~2.2s total):
+ *   0.0s – 1.2s  Pure rotation (spin visible, zoom = 1x)
+ *   1.2s – 2.0s  Zoom accelerates while rotation continues
+ *   1.6s – 2.2s  Overlay crossfades out, website crossfades in
+ *   2.2s          Loader unmounted, website fully interactive
+ */
 function InitialLogoLoader({ onComplete }: { onComplete: () => void }) {
-  const [fadeState, setFadeState] = useState<'in' | 'out'>('in');
+  const [phase, setPhase] = useState<'spin' | 'zoom' | 'done'>('spin');
+
+  const SPIN_MS = 1200;
+  const TOTAL_MS = 2200;
 
   useEffect(() => {
-    const timer1 = setTimeout(() => {
-      setFadeState('out');
-    }, 1500);
-
-    const timer2 = setTimeout(() => {
+    const zoomTimer = setTimeout(() => setPhase('zoom'), SPIN_MS);
+    const doneTimer = setTimeout(() => {
+      setPhase('done');
       onComplete();
-    }, 2200);
+    }, TOTAL_MS);
 
     return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
+      clearTimeout(zoomTimer);
+      clearTimeout(doneTimer);
     };
   }, [onComplete]);
 
-  return (
-    <div 
-      className={`fixed inset-0 z-[100] bg-[#FAF6ED] flex flex-col items-center justify-center p-6 transition-opacity duration-700 ${
-        fadeState === 'out' ? 'opacity-0 pointer-events-none' : 'opacity-100'
-      }`}
-    >
-      <div className="flex flex-col items-center space-y-6">
-        {/* Enlarged Animated Logo Image */}
-        <img 
-          src="/logo-shiuli.png" 
-          alt="Shiuli Loading Logo" 
-          className="h-36 sm:h-48 md:h-56 w-auto object-contain filter drop-shadow-[0_10px_25px_rgba(61,13,17,0.15)] animate-pulse transition-all duration-500" 
-        />
-        
-        {/* Bengali Brand Text */}
-        <div className="text-center space-y-1.5 font-serif">
-          <h1 className="text-3xl sm:text-4xl font-bold text-[#3D0D11] tracking-wider font-serif">
-            শিউলি
-          </h1>
-          <p className="text-xs sm:text-sm text-[#C86040] tracking-[0.2em] font-medium font-serif uppercase">
-            কলকাতার পুজো সঙ্গী
-          </p>
-        </div>
+  if (phase === 'done') return null;
 
-        {/* Subtle Animated Loading Dots */}
-        <div className="flex items-center gap-2 pt-3">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#C86040] animate-ping" />
-          <div className="w-2.5 h-2.5 rounded-full bg-[#C86040]/70 animate-ping [animation-delay:200ms]" />
-          <div className="w-2.5 h-2.5 rounded-full bg-[#C86040]/40 animate-ping [animation-delay:400ms]" />
+  const isZooming = phase === 'zoom';
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] bg-[#FAF6ED] overflow-hidden"
+      style={{
+        opacity: isZooming ? 0 : 1,
+        transition: isZooming ? 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1) 0.4s' : 'none',
+        pointerEvents: 'none',
+        willChange: 'opacity',
+      }}
+    >
+      {/* Centering anchor — strict 50%/50% absolute positioning.
+          translate(-50%, -50%) lives here and never changes. */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+      >
+        {/* Zoom layer — scales from center. Separate div so scale 
+            doesn't conflict with the translate above. */}
+        <div
+          style={{
+            transform: isZooming ? 'scale(80)' : 'scale(1)',
+            transition: isZooming ? 'transform 1s cubic-bezier(0.25, 0.1, 0.25, 1)' : 'none',
+            transformOrigin: '50% 50%',
+            willChange: 'transform',
+          }}
+        >
+          {/* Spin layer — continuous clockwise rotation from frame 0,
+              never stops, runs on its own compositing layer. */}
+          <div
+            style={{
+              animation: 'shiuli-spin 1.5s linear infinite',
+              transformOrigin: '50% 50%',
+              willChange: 'transform',
+            }}
+          >
+            <img
+              src="/shiuli2.png"
+              alt="Shiuli Loading"
+              draggable={false}
+              style={{
+                width: 'min(220px, 30vw)',
+                height: 'auto',
+                display: 'block',
+                objectFit: 'contain' as const,
+                userSelect: 'none',
+                filter: 'drop-shadow(0 6px 18px rgba(200, 96, 64, 0.18))',
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>
   );
 }
 
+
 function AppContent() {
-  const [showLoader, setShowLoader] = useState(true);
+  const [showLoader, setShowLoader] = useState(false);
   const [view, setView] = useState<'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities' | 'route-planner' | 'admin'>(() => {
     const params = new URLSearchParams(window.location.search);
     return params.has('admin') ? 'admin' : 'home';
@@ -105,7 +159,7 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink">
       <InitialLanguageModal />
-      <BetaModal />
+      <BetaModal onClose={() => setShowLoader(true)} />
       
       {/* Sticky Floating Beta Badge */}
       <div className="fixed bottom-4 right-4 z-40 bg-[#7A1F26]/95 text-[#FAF6ED] border border-[#D4A24C]/40 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold shadow-xl flex items-center gap-2 backdrop-blur-md select-none pointer-events-auto">

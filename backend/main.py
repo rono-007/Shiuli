@@ -4,7 +4,11 @@ import math
 import html
 import time
 import uuid
+import logging
 from collections import deque
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 from datetime import datetime, timezone, timedelta
 from fastapi import FastAPI, HTTPException, Request, Depends
 from fastapi.middleware.cors import CORSMiddleware
@@ -45,9 +49,21 @@ async def lifespan(app: FastAPI):
     # Shutdown: Cancel background task
     pinger_task.cancel()
 
-# ─── Admin Config ──────────────────────────────────────────────────────────
-ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "Pujopath2k26")   # Fallback to default if env var not set
+# ─── Admin Config (F2: hardcoded fallback removed) ───────────────────────
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN")
+if not ADMIN_TOKEN:
+    raise RuntimeError(
+        "FATAL: ADMIN_TOKEN environment variable is not set. "
+        "Set it in Render Dashboard \u2192 Environment Variables."
+    )
 MAX_LOG_ENTRIES = 500                  # Keep last 500 requests in memory
+
+# ─── Dev Mode Config (F3: bypass only active via explicit env var) ─────────
+DEV_MODE = os.getenv("DEV_MODE", "false").lower() == "true"
+DEV_BYPASS_SECRET = os.getenv("DEV_BYPASS_SECRET")  # Only checked when DEV_MODE=true
+
+# ─── Logger ───────────────────────────────────────────────────────────────
+logger = logging.getLogger(__name__)
 
 # ─── In-memory log store ───────────────────────────────────────────────────
 request_logs: deque = deque(maxlen=MAX_LOG_ENTRIES)
@@ -125,20 +141,45 @@ async def log_requests(request: Request, call_next):
 
     return response
 
-# ─── Admin Auth Dependency ─────────────────────────────────────────────────
+# ─── Security Headers Middleware (F7) ─────────────────────────────────────
+@app.middleware("http")
+async def add_security_headers(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
+    response.headers["Referrer-Policy"] = "strict-origin-when-cross-origin"
+    response.headers["Permissions-Policy"] = "geolocation=(self), microphone=()"
+    response.headers["X-XSS-Protection"] = "1; mode=block"
+    return response
+
+# ─── Admin Auth Dependency (F9: token rotated via env var) ────────────────
 def verify_admin(request: Request):
     token = request.headers.get("x-admin-token", "")
     if token != ADMIN_TOKEN:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-# ─── CORS Middleware ───────────────────────────────────────────────────────
+# ─── CORS Middleware (F5: explicit origin allowlist, no wildcard) ──────────
+ALLOWED_ORIGINS = [
+    "https://shiuli.online",
+    "https://www.shiuli.online",
+    "https://beta.shiuli.online",
+    "http://localhost:5173",   # Local dev only
+    "http://localhost:4173",   # Vite preview
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=False,   # No cookies/sessions used — credentials=True + wildcard is dangerous
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "x-admin-token"],
 )
+
+# ─── Rate Limiter (F6) ────────────────────────────────────────────────────
+limiter = Limiter(key_func=get_remote_address)
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
 class Pandal(BaseModel):
@@ -244,8 +285,8 @@ def get_launch_date():
 
 # ─── Beta Access Endpoints ────────────────────────────────────────────────
 @app.get("/api/beta/users")
-def get_beta_users():
-    """Return all authorized beta access users with their 5-digit PINs and access codes."""
+def get_beta_users(_: None = Depends(verify_admin)):
+    """Return all authorized beta access users (admin only). F1: requires admin auth."""
     beta_file = os.path.join(os.path.dirname(__file__), "data", "beta_users.json")
     if not os.path.exists(beta_file):
         raise HTTPException(status_code=404, detail="Beta users dataset not found")
@@ -253,21 +294,21 @@ def get_beta_users():
         return json.load(f)
 
 @app.post("/api/beta/verify")
-def verify_beta_access(data: dict):
-    """Verify beta access using email and access_code, with instant developer bypass."""
+@limiter.limit("5/minute")
+def verify_beta_access(request: Request, data: dict):
+    """Verify beta access using email and access_code. F6: rate-limited to 5 req/min per IP."""
     email = (data.get("email") or "").strip().lower()
     access_code = (data.get("access_code") or data.get("code") or data.get("pin") or "").strip().lower()
 
-    # Developer Bypass
-    DEV_CODES = {"dev", "developer", "admin", "pujopath2k26", "00000", "12345"}
-    if email in DEV_CODES or access_code in DEV_CODES:
+    # F3: Dev bypass disabled in production. Only active when DEV_MODE=true env var is set.
+    if DEV_MODE and DEV_BYPASS_SECRET and access_code == DEV_BYPASS_SECRET:
         return {
-            "valid": True, 
-            "message": "Developer Access Granted", 
+            "valid": True,
+            "message": "Developer Access Granted",
             "user": {
-                "name": "Developer", 
-                "email": email or "dev@shiuli.local", 
-                "pin": "00000", 
+                "name": "Developer",
+                "email": email or "dev@shiuli.local",
+                "pin": "00000",
                 "access_code": "dev-bypass"
             }
         }
@@ -595,7 +636,8 @@ def load_south_pandals_data() -> List[dict]:
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to read pandal data: {str(e)}")
+        logger.error("Failed to read pandal data: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 @lru_cache(maxsize=1)
 def load_central_pandals_data() -> List[dict]:
@@ -607,7 +649,8 @@ def load_central_pandals_data() -> List[dict]:
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to read pandal data: {str(e)}")
+        logger.error("Failed to read pandal data: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 
 @app.get("/api/pandals/north")
@@ -641,7 +684,8 @@ def load_bonedi_pandals_data() -> List[dict]:
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to read pandal data: {str(e)}")
+        logger.error("Failed to read pandal data: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 @app.get("/api/pandals/bonedi")
 def get_bonedi_pandals():
@@ -677,7 +721,8 @@ def load_north_eateries_data() -> List[dict]:
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to read eateries data: {str(e)}")
+        logger.error("Failed to read eateries data: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 @app.get("/api/eateries/north")
 def get_north_eateries():
@@ -695,7 +740,8 @@ def load_north_facilities_data() -> List[dict]:
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to read facilities data: {str(e)}")
+        logger.error("Failed to read facilities data: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 @app.get("/api/facilities/north")
 def get_north_facilities():
@@ -713,7 +759,8 @@ def load_metros_data() -> List[dict]:
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading metros data: {str(e)}")
+        logger.error("Error loading metros data: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 @app.get("/api/metro-stations")
 def get_valid_metro_stations():
@@ -727,7 +774,8 @@ def get_valid_metro_stations():
             valid = [m for m in metros if m.get("lat") and m.get("lon")]
             return ORJSONResponse(content=valid)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error loading metro stations data: {str(e)}")
+        logger.error("Error loading metro stations data: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 # --- Route Planner Logic ---
 async def get_osrm_walking_route(lat1: float, lon1: float, lat2: float, lon2: float) -> tuple[float, float]:
@@ -1235,9 +1283,13 @@ def generate_map_html(q: str, selected: str = "") -> str:
 </script>
 """
 
+    # F4: Safely encode user-controlled `selected` param for JavaScript string injection.
+    # json.dumps handles: quotes, backslashes, control chars.
+    # Unicode-escaping < and > prevents </script> HTML-breakout attacks.
+    safe_selected = json.dumps(selected)[1:-1].replace("<", "\\u003c").replace(">", "\\u003e")
     rendered_js = (js_template.replace("{{PANDALS_JSON}}", pandals_json)
                                .replace("{{FACILITIES_JSON}}", facilities_json)
-                               .replace("{{SELECTED_NAME}}", selected.replace('"', '\\"')))
+                               .replace("{{SELECTED_NAME}}", safe_selected))
 
     m.get_root().html.add_child(Element(rendered_js))
 
@@ -1275,7 +1327,8 @@ def get_north_pandal_distances():
             data = json.load(f)
             return data
     except Exception as e:
-        return {"error": f"Failed to load distance data: {e}"}
+        logger.error("Failed to load distance data: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 
 if __name__ == "__main__":

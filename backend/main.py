@@ -275,7 +275,9 @@ def read_root(request: Request):
             "central": f"{render_base}/api/pandals/central",
             "bonedi": f"{render_base}/api/pandals/bonedi",
             "north_eateries": f"{render_base}/api/eateries/north",
+            "south_eateries": f"{render_base}/api/eateries/south",
             "north_facilities": f"{render_base}/api/facilities/north",
+            "south_facilities": f"{render_base}/api/facilities/south",
             "map": f"{render_base}/api/map",
             "launch_date": f"{render_base}/api/launch-date",
             "metro_stations": f"{render_base}/api/metro-stations",
@@ -598,7 +600,9 @@ def get_data_overview(request: Request, _ = Depends(verify_admin)):
         ("Central Pandals", "central_kolkata.json", "/api/pandals/central", load_central_pandals_data),
         ("Bonedi Pandals", "bonedi_kolkata.json", "/api/pandals/bonedi", load_bonedi_pandals_data),
         ("North Eateries", "north_eateries.json", "/api/eateries/north", load_north_eateries_data),
+        ("South Eateries", "south_eateries.json", "/api/eateries/south", load_south_eateries_data),
         ("North Facilities", "north_other_facilities.json", "/api/facilities/north", load_north_facilities_data),
+        ("South Facilities", "south_other_facilites.json", "/api/facilities/south", load_south_facilities_data),
         ("Metro Stations", "metros.json", "/api/metros", load_metros_data),
     ]
     for label, filename, endpoint, loader in data_loaders:
@@ -748,6 +752,25 @@ def get_north_eateries():
     return ORJSONResponse(content=load_north_eateries_data(), headers=headers)
 
 @lru_cache(maxsize=1)
+def load_south_eateries_data() -> List[dict]:
+    file_path = os.path.join(os.path.dirname(__file__), "data", "south_eateries.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="South eateries data file not found")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        logger.error("Failed to read south eateries data: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
+
+@app.get("/api/eateries/south")
+def get_south_eateries():
+    headers = {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    }
+    return ORJSONResponse(content=load_south_eateries_data(), headers=headers)
+
+@lru_cache(maxsize=1)
 def load_north_facilities_data() -> List[dict]:
     file_path = os.path.join(os.path.dirname(__file__), "data", "north_other_facilities.json")
     if not os.path.exists(file_path):
@@ -765,6 +788,25 @@ def get_north_facilities():
         "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
     }
     return ORJSONResponse(content=load_north_facilities_data(), headers=headers)
+
+@lru_cache(maxsize=1)
+def load_south_facilities_data() -> List[dict]:
+    file_path = os.path.join(os.path.dirname(__file__), "data", "south_other_facilites.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="South other facilities data file not found")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        logger.error("Failed to read south facilities data: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
+
+@app.get("/api/facilities/south")
+def get_south_facilities():
+    headers = {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    }
+    return ORJSONResponse(content=load_south_facilities_data(), headers=headers)
 
 @lru_cache(maxsize=1)
 def load_metros_data() -> List[dict]:

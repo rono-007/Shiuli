@@ -5,10 +5,33 @@ let loadPromise: Promise<[any[], any[]]> | null = null;
 export async function preloadFacilitiesData(): Promise<[any[], any[]]> {
   if (facilitiesCache && metrosCache) return [facilitiesCache, metrosCache];
   if (!loadPromise) {
-    loadPromise = Promise.all([
-      import('../data/north_other_facilities.json').then(m => m.default || m),
-      import('../data/metros.json').then(m => m.default || m)
-    ]);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
+    loadPromise = (async () => {
+      try {
+        const [northFRes, southFRes, mRes] = await Promise.all([
+          fetch(`${baseUrl}/api/facilities/north`),
+          fetch(`${baseUrl}/api/facilities/south`),
+          fetch(`${baseUrl}/api/metro-stations`)
+        ]);
+        if (northFRes.ok && southFRes.ok && mRes.ok) {
+          const northF = await northFRes.json();
+          const southF = await southFRes.json();
+          const mData = await mRes.json();
+          if (Array.isArray(northF) && Array.isArray(southF) && Array.isArray(mData)) {
+            return [[...northF, ...southF], mData] as [any[], any[]];
+          }
+        }
+        throw new Error('API response invalid');
+      } catch (err) {
+        console.warn('Backend facilities fetch failed, loading local JSON fallbacks:', err);
+        const [northF, southF, mData] = await Promise.all([
+          import('../data/north_other_facilities.json').then(m => ((m.default || m) as any[])).catch(() => []),
+          import('../data/south_other_facilities.json').then(m => ((m.default || m) as any[])).catch(() => []),
+          import('../data/metros.json').then(m => m.default || m).catch(() => [])
+        ]);
+        return [[...northF, ...southF], mData] as [any[], any[]];
+      }
+    })();
   }
   const [fData, mData] = await loadPromise;
   facilitiesCache = fData;

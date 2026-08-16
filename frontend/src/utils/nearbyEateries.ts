@@ -4,10 +4,30 @@ let eateriesPromise: Promise<any[]> | null = null;
 export async function getEateriesData(): Promise<any[]> {
   if (eateriesCache) return eateriesCache;
   if (!eateriesPromise) {
-    eateriesPromise = Promise.all([
-      import('../data/north_eateries.json').then(m => ((m.default || m) as any[])).catch(() => []),
-      import('../data/south_eateries.json').then(m => ((m.default || m) as any[])).catch(() => [])
-    ]).then(([north, south]) => [...north, ...south]);
+    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
+    eateriesPromise = (async () => {
+      try {
+        const [northRes, southRes] = await Promise.all([
+          fetch(`${baseUrl}/api/eateries/north`),
+          fetch(`${baseUrl}/api/eateries/south`)
+        ]);
+        if (northRes.ok && southRes.ok) {
+          const north = await northRes.json();
+          const south = await southRes.json();
+          if (Array.isArray(north) && Array.isArray(south)) {
+            return [...north, ...south];
+          }
+        }
+        throw new Error('API response invalid');
+      } catch (err) {
+        console.warn('Backend eateries fetch failed, loading local JSON fallbacks:', err);
+        const [north, south] = await Promise.all([
+          import('../data/north_eateries.json').then(m => ((m.default || m) as any[])).catch(() => []),
+          import('../data/south_eateries.json').then(m => ((m.default || m) as any[])).catch(() => [])
+        ]);
+        return [...north, ...south];
+      }
+    })();
   }
   eateriesCache = await eateriesPromise;
   return eateriesCache || [];

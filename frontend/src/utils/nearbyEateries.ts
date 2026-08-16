@@ -5,8 +5,8 @@ export async function getEateriesData(): Promise<any[]> {
   if (eateriesCache) return eateriesCache;
   if (!eateriesPromise) {
     eateriesPromise = Promise.all([
-      import('../data/north_eateries.json').then(m => m.default || m).catch(() => []),
-      import('../data/south_eateries.json').then(m => m.default || m).catch(() => [])
+      import('../data/north_eateries.json').then(m => ((m.default || m) as any[])).catch(() => []),
+      import('../data/south_eateries.json').then(m => ((m.default || m) as any[])).catch(() => [])
     ]).then(([north, south]) => [...north, ...south]);
   }
   eateriesCache = await eateriesPromise;

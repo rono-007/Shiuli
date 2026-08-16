@@ -59,8 +59,8 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
   const [selectedZone, setSelectedZone] = useState<'all' | 'north' | 'south'>('all');
 
   const eateriesList = useMemo(() => {
-    const north = (northEateries as Eatery[]).map(item => ({ ...item, zone: 'north' as const }));
-    const south = (southEateries as Eatery[]).map(item => ({ ...item, zone: 'south' as const }));
+    const north = ((northEateries as unknown) as Eatery[]).map(item => ({ ...item, zone: 'north' as const }));
+    const south = ((southEateries as unknown) as Eatery[]).map(item => ({ ...item, zone: 'south' as const }));
     if (selectedZone === 'north') return north;
     if (selectedZone === 'south') return south;
     return [...north, ...south];

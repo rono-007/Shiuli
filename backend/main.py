@@ -278,6 +278,7 @@ def read_root(request: Request):
             "south_eateries": f"{render_base}/api/eateries/south",
             "north_facilities": f"{render_base}/api/facilities/north",
             "south_facilities": f"{render_base}/api/facilities/south",
+            "medical_facilities": f"{render_base}/api/medical-facilities",
             "map": f"{render_base}/api/map",
             "launch_date": f"{render_base}/api/launch-date",
             "metro_stations": f"{render_base}/api/metro-stations",
@@ -807,6 +808,109 @@ def get_south_facilities():
         "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
     }
     return ORJSONResponse(content=load_south_facilities_data(), headers=headers)
+
+@lru_cache(maxsize=1)
+def load_medical_facilities_data() -> dict:
+    north_raw = load_north_facilities_data()
+    south_raw = load_south_facilities_data()
+
+    # Official Verified Police Stations & Helplines (Kolkata Police)
+    official_helplines = [
+        {
+            "title": "Kolkata Police Emergency Control Room (Lalbazar)",
+            "subTitle": "24x7 Central Emergency Control Room",
+            "categoryName": "Police & Emergency Control",
+            "type": "Police & Helpline",
+            "address": "Lalbazar Street, Bowbazar, Kolkata, West Bengal 700001",
+            "phone": "100 / 033-2214-3024",
+            "location": {"lat": 22.5732, "lng": 88.3533},
+            "url": "https://www.google.com/maps/search/?api=1&query=22.5732,88.3533"
+        },
+        {
+            "title": "Kolkata Police Women Helpline",
+            "subTitle": "24x7 Dedicated Women Safety Support",
+            "categoryName": "Women Helpline",
+            "type": "Police & Helpline",
+            "address": "Lalbazar Headquarters, Kolkata, West Bengal 700001",
+            "phone": "1091 / 033-2214-1913",
+            "location": {"lat": 22.5732, "lng": 88.3533},
+            "url": "https://www.google.com/maps/search/?api=1&query=22.5732,88.3533"
+        },
+        {
+            "title": "West Bengal Emergency Ambulance Service",
+            "subTitle": "State Medical Emergency & Care Support",
+            "categoryName": "Ambulance & Care Support",
+            "type": "Ambulance & Care",
+            "address": "Swasthya Bhawan, Salt Lake, Kolkata, West Bengal 700091",
+            "phone": "102 / 033-2286-0000",
+            "location": {"lat": 22.5726, "lng": 88.4312},
+            "url": "https://www.google.com/maps/search/?api=1&query=22.5726,88.4312"
+        },
+        {
+            "title": "Kolkata Fire Brigade Control Room",
+            "subTitle": "24x7 Fire & Disaster Emergency",
+            "categoryName": "Fire Brigade",
+            "type": "Police & Helpline",
+            "address": "13D, Mirza Ghalib St, Esplanade, Kolkata, West Bengal 700016",
+            "phone": "101 / 033-2252-1165",
+            "location": {"lat": 22.5552, "lng": 88.3551},
+            "url": "https://www.google.com/maps/search/?api=1&query=22.5552,88.3551"
+        }
+    ]
+
+    def filter_facilities(dataset: List[dict]) -> List[dict]:
+        items = []
+        for item in dataset:
+            if not item or not item.get("location"):
+                continue
+            cat = (item.get("categoryName") || "").lower()
+            title = (item.get("title") || "").lower()
+            raw_cats = item.get("categories")
+            categories_str = " ".join(raw_cats).lower() if isinstance(raw_cats, list) else str(raw_cats or "").lower()
+            blob = f"{title} {cat} {categories_str}"
+            
+            is_hospital = any(k in blob for k in ["hospital", "nursing", "clinic", "emergency", "medical", "স্বাস্থ্য", "হাসপাতাল", "নার্সিং"])
+            is_pharmacy = any(k in blob for k in ["pharmacy", "chemist", "drug", "medicine", "medico", "ফার্মেসি", "ওষুধ", "মেডিসিন"])
+            is_police = any(k in blob for k in ["police station", "police", "থানা", "পুলিশ"])
+            is_ambulance = any(k in blob for k in ["ambulance", "অ্যাম্বুলেন্স"])
+
+            if is_hospital or is_pharmacy or is_police or is_ambulance:
+                if is_hospital:
+                    med_type = "Hospital & Nursing Home"
+                elif is_pharmacy:
+                    med_type = "Pharmacy & Medical Store"
+                elif is_police:
+                    med_type = "Police & Helpline"
+                else:
+                    med_type = "Ambulance & Care"
+
+                items.append({
+                    "title": item.get("title"),
+                    "subTitle": item.get("subTitle"),
+                    "categoryName": item.get("categoryName") or med_type,
+                    "type": med_type,
+                    "address": item.get("address"),
+                    "phone": item.get("phone"),
+                    "location": item.get("location"),
+                    "url": item.get("url") or f"https://www.google.com/maps/search/?api=1&query={item['location']['lat']},{item['location']['lng']}"
+                })
+        return items
+
+    north_list = official_helplines + filter_facilities(north_raw)
+    south_list = official_helplines + filter_facilities(south_raw)
+
+    return {
+        "north": north_list,
+        "south": south_list
+    }
+
+@app.get("/api/medical-facilities")
+def get_medical_facilities():
+    headers = {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    }
+    return ORJSONResponse(content=load_medical_facilities_data(), headers=headers)
+
 
 @lru_cache(maxsize=1)
 def load_metros_data() -> List[dict]:

@@ -19,9 +19,10 @@ import { EssentialInfoModal } from './EssentialInfoModal';
 interface PujaGuideSectionProps {
   onSelectRoutePlanner?: () => void;
   onSelectFacilities?: () => void;
+  onSelectMedical?: () => void;
 }
 
-export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRoutePlanner, onSelectFacilities }) => {
+export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRoutePlanner, onSelectFacilities, onSelectMedical }) => {
   const { t, language } = useLanguage();
   const [isEssentialModalOpen, setIsEssentialModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -83,7 +84,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       id: 'safety',
       title: isBn ? 'সহায়তার গাইড' : 'Help & Safety Guide',
       subtitle: isBn ? 'জরুরি তথ্য, নিরাপদ থাকুন' : 'Emergency info, stay safe',
-      isUnderDev: true,
+      isUnderDev: false,
       items: isBn ? [
         'হাসপাতাল ও স্বাস্থ্যকেন্দ্র',
         'পুলিশ ও জরুরি হেল্পলাইন',
@@ -96,7 +97,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       icon: <BriefcaseMedical className="w-5 h-5 text-[#4D8357]" />,
       badgeBg: 'bg-[#EEF5ED]',
       badgeBorder: 'border-[#CCE2CB]',
-      btnBg: 'bg-[#FAF6ED] hover:bg-[#F3EBE0] text-[#8C7A6B] border border-[#E5D5C5]',
+      btnBg: 'bg-[#E3F2E6] hover:bg-[#D2E9D6] text-[#2D5A36]',
       watermark: <Ambulance className="w-24 h-24 text-[#4D8357]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
       accentColor: '#4D8357'
     },
@@ -246,6 +247,8 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
                   onClick={() => {
                     if (card.id === 'food') {
                       onSelectFacilities?.();
+                    } else if (card.id === 'safety') {
+                      onSelectMedical?.();
                     } else if (card.id === 'emergency') {
                       setIsEssentialModalOpen(true);
                     } else {

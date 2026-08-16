@@ -17,6 +17,7 @@ const FacilitiesSection = lazy(() => import('./components/FacilitiesSection'));
 const AdminPanel = lazy(() => import('./components/AdminPanel'));
 const StorySection = lazy(() => import('./components/StorySection'));
 const RoutePlanner = lazy(() => import('./components/RoutePlanner'));
+const MedicalFacilitiesSection = lazy(() => import('./components/MedicalFacilitiesSection'));
 
 function SectionLoader() {
   return (
@@ -35,9 +36,9 @@ function SectionLoader() {
   );
 }
 
-type ViewType = 'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities' | 'route-planner' | 'admin';
+type ViewType = 'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities' | 'route-planner' | 'medical' | 'admin';
 
-const VALID_VIEWS: ViewType[] = ['home', 'north', 'south', 'central', 'bonedi', 'facilities', 'route-planner', 'admin'];
+const VALID_VIEWS: ViewType[] = ['home', 'north', 'south', 'central', 'bonedi', 'facilities', 'route-planner', 'medical', 'admin'];
 
 function AppContent() {
   const [view, setViewState] = useState<ViewType>(() => {
@@ -191,6 +192,8 @@ function AppContent() {
               <FacilitiesSection onBack={handleBack} />
             ) : view === 'route-planner' ? (
               <RoutePlanner onBack={handleBack} />
+            ) : view === 'medical' ? (
+              <MedicalFacilitiesSection onBack={handleBack} />
             ) : (
               <>
                 <HeroSection
@@ -208,6 +211,7 @@ function AppContent() {
                   <PujaGuideSection 
                     onSelectRoutePlanner={() => changeView('route-planner')} 
                     onSelectFacilities={() => changeView('facilities')}
+                    onSelectMedical={() => changeView('medical')}
                   />
 
                   <StorySection />

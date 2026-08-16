@@ -4,7 +4,10 @@ let eateriesPromise: Promise<any[]> | null = null;
 export async function getEateriesData(): Promise<any[]> {
   if (eateriesCache) return eateriesCache;
   if (!eateriesPromise) {
-    eateriesPromise = import('../data/north_eateries.json').then(m => m.default || m);
+    eateriesPromise = Promise.all([
+      import('../data/north_eateries.json').then(m => m.default || m).catch(() => []),
+      import('../data/south_eateries.json').then(m => m.default || m).catch(() => [])
+    ]).then(([north, south]) => [...north, ...south]);
   }
   eateriesCache = await eateriesPromise;
   return eateriesCache || [];

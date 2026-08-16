@@ -94,9 +94,6 @@ function AppContent() {
                 alt="Shiuli Logo" 
                 className="h-12 sm:h-16 md:h-20 w-auto object-contain transition-transform group-hover:scale-105 drop-shadow-md" 
               />
-              <span className="px-2 py-0.5 rounded-md bg-[#941F28] text-white text-[10px] font-mono font-bold tracking-widest uppercase border border-[#DFB86C]/40 shadow-xs">
-                BETA
-              </span>
             </div>
 
             {/* Center: Year & City */}

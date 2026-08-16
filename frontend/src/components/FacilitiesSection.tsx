@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, Star, Phone, Clock, MessageSquare } from 'lucide-react';
 import northEateries from '../data/north_eateries.json';
+import southEateries from '../data/south_eateries.json';
 
 interface EateryLocation {
   lat: number;
@@ -32,6 +33,7 @@ interface Eatery {
   url?: string | null;
   openingHours?: OpeningHour[] | null;
   permanentlyClosed?: boolean;
+  zone?: 'north' | 'south';
 }
 
 interface FacilitiesSectionProps {
@@ -54,8 +56,15 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [minRating, setMinRating] = useState<number>(0);
+  const [selectedZone, setSelectedZone] = useState<'all' | 'north' | 'south'>('all');
 
-  const eateriesList = northEateries as Eatery[];
+  const eateriesList = useMemo(() => {
+    const north = (northEateries as Eatery[]).map(item => ({ ...item, zone: 'north' as const }));
+    const south = (southEateries as Eatery[]).map(item => ({ ...item, zone: 'south' as const }));
+    if (selectedZone === 'north') return north;
+    if (selectedZone === 'south') return south;
+    return [...north, ...south];
+  }, [selectedZone]);
 
   const filteredEateries = useMemo(() => {
     return eateriesList.filter(item => {
@@ -117,13 +126,13 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
         {/* Page Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
           <span className="text-[10px] font-mono tracking-[0.4em] uppercase text-ink/40">
-            গুগল ম্যাপস যাচাইকৃত • ১,০০০ টি স্থান
+            গুগল ম্যাপস যাচাইকৃত • ১,০০০+ টি স্থান
           </span>
           <h1 className="text-4xl md:text-6xl font-serif text-ink italic font-normal">
-            উত্তর কলকাতার রেস্তোরাঁ ডিরেক্টরি
+            কলকাতার রেস্তোরাঁ ডিরেক্টরি
           </h1>
           <p className="text-sm font-serif italic text-ink/60 max-w-xl mx-auto">
-            শ্যামবাজার, শোভাবাজার, হাতিবাগান, কলেজ স্ট্রিট ও সল্টলেকের ঐতিহ্যবাহী ক্যাফে, কাটলেট শপ ও সুস্বাদু খাবারের ঠিকানা।
+            উত্তর ও দক্ষিণ কলকাতার ঐতিহ্যবাহী ক্যাফে, কাটলেট শপ, মিষ্টির দোকান ও সুস্বাদু খাবারের ঠিকানা।
           </p>
         </div>
 
@@ -151,6 +160,40 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
                 Clear
               </button>
             )}
+          </div>
+
+          {/* Zone Selection Pills */}
+          <div className="flex items-center justify-center gap-2 pb-2">
+            <button
+              onClick={() => setSelectedZone('all')}
+              className={`px-4 py-1.5 rounded-full text-xs font-serif font-bold transition-all ${
+                selectedZone === 'all'
+                  ? 'bg-bengali-red text-paper shadow-md'
+                  : 'bg-paper/80 text-ink/70 hover:bg-paper border border-ink/15'
+              }`}
+            >
+              🌟 সকল রেস্তোরাঁ (All Kolkata)
+            </button>
+            <button
+              onClick={() => setSelectedZone('north')}
+              className={`px-4 py-1.5 rounded-full text-xs font-serif font-bold transition-all ${
+                selectedZone === 'north'
+                  ? 'bg-bengali-red text-paper shadow-md'
+                  : 'bg-paper/80 text-ink/70 hover:bg-paper border border-ink/15'
+              }`}
+            >
+              🏛️ উত্তর কলকাতা (North)
+            </button>
+            <button
+              onClick={() => setSelectedZone('south')}
+              className={`px-4 py-1.5 rounded-full text-xs font-serif font-bold transition-all ${
+                selectedZone === 'south'
+                  ? 'bg-bengali-red text-paper shadow-md'
+                  : 'bg-paper/80 text-ink/70 hover:bg-paper border border-ink/15'
+              }`}
+            >
+              🌳 দক্ষিণ কলকাতা (South)
+            </button>
           </div>
 
           {/* Filter Options */}

@@ -54,7 +54,11 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
         const parsed = JSON.parse(cachedData);
         if (Array.isArray(parsed) && parsed.length > 0) {
           setPandals(parsed);
-          setDataSource('fastapi');
+          const cachedSource = localStorage.getItem('pujopath_south_pandals_cache_source') as 'fastapi' | 'fallback' || 'fastapi';
+          setDataSource(cachedSource);
+          if (cachedSource === 'fallback') {
+            setErrorInfo('ব্যাকএন্ড সার্ভার অফলাইন, লোকাল ডাটা ব্যবহৃত হচ্ছে');
+          }
           setLoading(false);
           return;
         }
@@ -78,18 +82,25 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
         try {
           localStorage.setItem(CACHE_KEY, JSON.stringify(data));
           localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+          localStorage.setItem('pujopath_south_pandals_cache_source', 'fastapi');
         } catch (err) {
           console.warn('Failed to save to localStorage cache:', err);
         }
       } else {
         setPandals(fallbackData as Pandal[]);
         setDataSource('fallback');
+        localStorage.setItem('pujopath_south_pandals_cache_source', 'fallback');
       }
     } catch (e: any) {
       console.warn('FastAPI backend not reachable, using local fallback:', e);
       setPandals(fallbackData as Pandal[]);
       setDataSource('fallback');
       setErrorInfo('ব্যাকএন্ড সার্ভার অফলাইন, লোকাল ডাটা ব্যবহৃত হচ্ছে');
+      try {
+        localStorage.setItem(CACHE_KEY, JSON.stringify(fallbackData));
+        localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+        localStorage.setItem('pujopath_south_pandals_cache_source', 'fallback');
+      } catch (err) {}
     } finally {
       setLoading(false);
     }

@@ -35,23 +35,80 @@ function SectionLoader() {
   );
 }
 
+type ViewType = 'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities' | 'route-planner' | 'admin';
+
+const VALID_VIEWS: ViewType[] = ['home', 'north', 'south', 'central', 'bonedi', 'facilities', 'route-planner', 'admin'];
+
 function AppContent() {
-  const [view, setView] = useState<'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities' | 'route-planner' | 'admin'>(() => {
+  const [view, setViewState] = useState<ViewType>(() => {
     const params = new URLSearchParams(window.location.search);
-    return params.has('admin') ? 'admin' : 'home';
+    if (params.has('admin')) return 'admin';
+    const v = params.get('view') as ViewType;
+    return v && VALID_VIEWS.includes(v) ? v : 'home';
   });
   const [_searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  // Navigate to a new view & push state to browser history
+  const changeView = (newView: ViewType, replace = false) => {
+    if (newView === view && !replace) return;
+    setViewState(newView);
+    const searchParams = new URLSearchParams(window.location.search);
+    if (newView === 'home') {
+      searchParams.delete('view');
+    } else {
+      searchParams.set('view', newView);
+    }
+    const newSearch = searchParams.toString();
+    const newUrl = newSearch ? `${window.location.pathname}?${newSearch}` : window.location.pathname;
+
+    if (replace) {
+      window.history.replaceState({ view: newView }, '', newUrl);
+    } else {
+      window.history.pushState({ view: newView }, '', newUrl);
+    }
+  };
+
+  // Handle Back button action (pops browser history or returns home)
+  const handleBack = () => {
+    if (window.history.state && window.history.state.view && window.history.state.view !== 'home') {
+      window.history.back();
+    } else {
+      changeView('home');
+    }
+  };
 
   useEffect(() => {
     const handleOnline = () => setIsOffline(false);
     const handleOffline = () => setIsOffline(true);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
+
+    // Initialize window history state if missing
+    const searchParams = new URLSearchParams(window.location.search);
+    const currentView = (searchParams.get('view') as ViewType) || (searchParams.has('admin') ? 'admin' : 'home');
+    if (!window.history.state) {
+      window.history.replaceState({ view: currentView }, '', window.location.href);
+    }
+
+    // Listen to browser Back & Forward button events (popstate)
+    const handlePopState = (e: PopStateEvent) => {
+      if (e.state && e.state.view && VALID_VIEWS.includes(e.state.view)) {
+        setViewState(e.state.view);
+      } else {
+        const params = new URLSearchParams(window.location.search);
+        const v = params.get('view') as ViewType;
+        setViewState(v && VALID_VIEWS.includes(v) ? v : 'home');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('popstate', handlePopState);
     };
   }, []);
 
@@ -84,9 +141,9 @@ function AppContent() {
           {/* Global Subtle Navigation Overlay */}
           <nav className="fixed top-0 left-0 right-0 p-6 md:p-8 z-40 flex justify-between items-start pointer-events-none text-paper">
 
-            {/* Left: Brand Logo (Transparent background, only logo shown) */}
+            {/* Left: Brand Logo */}
             <div 
-              onClick={() => setView('home')}
+              onClick={() => changeView('home')}
               className="pointer-events-auto cursor-pointer group flex items-center gap-2"
             >
               <img 
@@ -106,7 +163,7 @@ function AppContent() {
               <LanguageToggle />
               {view !== 'home' && (
                 <button
-                  onClick={() => setView('home')}
+                  onClick={handleBack}
                   className="bg-[#FAF6ED]/95 hover:bg-white text-[#7A1F26] border border-[#7A1F26]/30 px-3.5 py-1.5 rounded-full text-xs font-serif font-bold shadow-md transition-all active:scale-95 cursor-pointer"
                 >
                   হোম &rarr;
@@ -119,39 +176,29 @@ function AppContent() {
 
       <Suspense fallback={<SectionLoader />}>
         {view === 'admin' ? (
-          <AdminPanel onBack={() => { setView('home'); window.history.replaceState({}, '', window.location.pathname); }} />
+          <AdminPanel onBack={handleBack} />
         ) : (
           <main className="w-full relative">
             {view === 'north' ? (
-              <NorthCalcuttaSection onBack={() => setView('home')} />
+              <NorthCalcuttaSection onBack={handleBack} />
             ) : view === 'south' ? (
-              <SouthCalcuttaSection onBack={() => setView('home')} />
+              <SouthCalcuttaSection onBack={handleBack} />
             ) : view === 'central' ? (
-              <CentralCalcuttaSection onBack={() => setView('home')} />
+              <CentralCalcuttaSection onBack={handleBack} />
             ) : view === 'bonedi' ? (
-              <BonediCalcuttaSection onBack={() => setView('home')} />
+              <BonediCalcuttaSection onBack={handleBack} />
             ) : view === 'facilities' ? (
-              <FacilitiesSection onBack={() => setView('home')} />
+              <FacilitiesSection onBack={handleBack} />
             ) : view === 'route-planner' ? (
-              <RoutePlanner onBack={() => setView('home')} />
+              <RoutePlanner onBack={handleBack} />
             ) : (
               <>
                 <HeroSection
                   onSearch={setSearchQuery}
                   onFilterChange={setActiveFilter}
                   activeFilter={activeFilter}
-                  onSelectZone={(zone) => {
-                    if (zone === 'north') {
-                      setView('north');
-                    } else if (zone === 'south') {
-                      setView('south');
-                    } else if (zone === 'central') {
-                      setView('central');
-                    } else if (zone === 'bonedi') {
-                      setView('bonedi');
-                    }
-                  }}
-                  onSelectFacilities={() => setView('facilities')}
+                  onSelectZone={(zone) => changeView(zone as ViewType)}
+                  onSelectFacilities={() => changeView('facilities')}
                 />
 
                 <SectionDivider />
@@ -159,8 +206,8 @@ function AppContent() {
                 {/* CONTENT SECTION */}
                 <div className="w-full">
                   <PujaGuideSection 
-                    onSelectRoutePlanner={() => setView('route-planner')} 
-                    onSelectFacilities={() => setView('facilities')}
+                    onSelectRoutePlanner={() => changeView('route-planner')} 
+                    onSelectFacilities={() => changeView('facilities')}
                   />
 
                   <StorySection />

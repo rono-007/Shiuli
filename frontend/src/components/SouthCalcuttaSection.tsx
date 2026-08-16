@@ -56,6 +56,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
         if (Array.isArray(parsed) && parsed.length > 0) {
           setPandals(parsed);
           setDataSource('fastapi');
+          setErrorInfo(null);
           setLoading(false);
           return;
         }
@@ -74,6 +75,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
       if (Array.isArray(data) && data.length > 0) {
         setPandals(data);
         setDataSource('fastapi');
+        setErrorInfo(null);
 
         // Save to localStorage cache
         try {
@@ -86,6 +88,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
       } else {
         setPandals(fallbackData as Pandal[]);
         setDataSource('fallback');
+        setErrorInfo('ব্যাকএন্ড ডাটা খালি, লোকাল ডাটা ব্যবহৃত হচ্ছে');
         localStorage.setItem('pujopath_south_pandals_cache_source', 'fallback');
       }
     } catch (e: any) {
@@ -94,8 +97,6 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
       setDataSource('fallback');
       setErrorInfo('ব্যাকএন্ড সার্ভার অফলাইন, লোকাল ডাটা ব্যবহৃত হচ্ছে');
       try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(fallbackData));
-        localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
         localStorage.setItem('pujopath_south_pandals_cache_source', 'fallback');
       } catch (err) {}
     } finally {

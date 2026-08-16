@@ -112,6 +112,29 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
     return [...data.north, ...data.south];
   }, [data, selectedZone]);
 
+  // Dynamically extract top category tags for the currently selected zone (North / South / All)
+  const dynamicCategoryTags = useMemo(() => {
+    const counts: Record<string, number> = {};
+    eateriesList.forEach(item => {
+      if (item.categoryName && !item.permanentlyClosed) {
+        const cat = item.categoryName.trim();
+        counts[cat] = (counts[cat] || 0) + 1;
+      }
+    });
+
+    const sortedCats = Object.entries(counts)
+      .sort((a, b) => b[1] - a[1])
+      .map(([cat]) => cat);
+
+    // Pick top 12 categories for current zone, starting with 'All'
+    return ['All', ...sortedCats.slice(0, 12)];
+  }, [eateriesList]);
+
+  const handleZoneChange = (zone: 'all' | 'north' | 'south') => {
+    setSelectedZone(zone);
+    setSelectedCategory('All');
+  };
+
   const filteredEateries = useMemo(() => {
     return eateriesList.filter(item => {
       if (item.permanentlyClosed) return false;
@@ -190,7 +213,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
         <div className="flex items-center justify-center gap-3 mb-10">
           <div className="bg-[#FAF6ED]/95 backdrop-blur-md p-1.5 rounded-2xl border-2 border-ink/15 shadow-md flex items-center gap-1.5 sm:gap-2">
             <button
-              onClick={() => setSelectedZone('all')}
+              onClick={() => handleZoneChange('all')}
               className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 selectedZone === 'all'
                   ? 'bg-bengali-red text-white shadow-lg scale-[1.02] border border-[#DFB86C]/40'
@@ -201,7 +224,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
               <span className="text-[10px] font-mono opacity-80 px-1.5 py-0.5 rounded-md bg-black/10">All</span>
             </button>
             <button
-              onClick={() => setSelectedZone('north')}
+              onClick={() => handleZoneChange('north')}
               className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 selectedZone === 'north'
                   ? 'bg-bengali-red text-white shadow-lg scale-[1.02] border border-[#DFB86C]/40'
@@ -212,7 +235,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
               <span className="text-[10px] font-mono opacity-80 px-1.5 py-0.5 rounded-md bg-black/10">North</span>
             </button>
             <button
-              onClick={() => setSelectedZone('south')}
+              onClick={() => handleZoneChange('south')}
               className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 selectedZone === 'south'
                   ? 'bg-bengali-red text-white shadow-lg scale-[1.02] border border-[#DFB86C]/40'
@@ -260,9 +283,9 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
           {/* Filter Options */}
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-ink/10 pt-3">
             
-            {/* Category Badges */}
+            {/* Category Badges (Dynamically loaded per zone) */}
             <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
-              {CATEGORY_TAGS.map(cat => (
+              {dynamicCategoryTags.map(cat => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}

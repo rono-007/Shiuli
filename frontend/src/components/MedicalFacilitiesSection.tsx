@@ -7,13 +7,11 @@ import {
   MapPin, 
   Search, 
   Loader2, 
-  Navigation, 
   AlertCircle, 
   RefreshCw, 
   Layers,
   ArrowRight,
   ShieldAlert,
-  SlidersHorizontal,
   Map as MapIcon,
   List as ListIcon
 } from 'lucide-react';
@@ -452,7 +450,6 @@ const MedicalFacilitiesSection: React.FC<MedicalFacilitiesSectionProps> = ({ onB
                 ) : (
                   filteredItems.map((item, idx) => {
                     const isHospital = item.type.includes('Hospital');
-                    const isPharmacy = item.type.includes('Pharmacy');
                     const isPolice = item.type.includes('Police');
                     const isAmbulance = item.type.includes('Ambulance');
                     const isSelected = selectedFacility?.title === item.title;

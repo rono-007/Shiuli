@@ -39,17 +39,6 @@ interface FacilitiesSectionProps {
   onBack?: () => void;
 }
 
-const CATEGORY_TAGS = [
-  'All',
-  'Bengali restaurant',
-  'Biryani restaurant',
-  'Fast food restaurant',
-  'Coffee shop',
-  'Bakery',
-  'North Indian restaurant',
-  'Chinese restaurant',
-  'Sweet shop'
-];
 
 // Module-level in-memory cache to guarantee 0ms instant reload
 let cachedNorthEateries: Eatery[] | null = null;

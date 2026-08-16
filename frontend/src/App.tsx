@@ -267,7 +267,7 @@ function AppContent() {
                       দ্রুত লিঙ্ক
                     </h3>
                     <ul className="space-y-2.5 text-xs sm:text-sm text-[#F7F2E7]/80 font-serif">
-                      <li><button onClick={() => setView('home')} className="hover:text-[#E5B05C] transition-colors">হোম</button></li>
+                      <li><button onClick={() => changeView('home')} className="hover:text-[#E5B05C] transition-colors">হোম</button></li>
                       <li><a href="#pujaparba" className="hover:text-[#E5B05C] transition-colors">পুজোপার্ব</a></li>
                       <li><a href="#stories" className="hover:text-[#E5B05C] transition-colors">কলকাতার গল্প</a></li>
                       <li><a href="#search" className="hover:text-[#E5B05C] transition-colors">সন্ধান</a></li>

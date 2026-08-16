@@ -19,12 +19,12 @@ interface NorthCalcuttaSectionProps {
 }
 
 const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) => {
-  const [pandals, setPandals] = useState<Pandal[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [pandals, setPandals] = useState<Pandal[]>(fallbackData as Pandal[]);
+  const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<'cards' | 'map'>('cards');
   const [selectedPandalName, setSelectedPandalName] = useState<string | null>(null);
-  const [dataSource, setDataSource] = useState<'fastapi' | 'fallback' | null>(null);
+  const [dataSource, setDataSource] = useState<'fastapi' | 'fallback' | null>('fallback');
   const [errorInfo, setErrorInfo] = useState<string | null>(null);
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
   const [expandedPandalIdx, setExpandedPandalIdx] = useState<number | null>(null);
@@ -51,10 +51,13 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
       const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
       
       if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
-        setPandals(JSON.parse(cachedData));
-        setDataSource('fastapi');
-        setLoading(false);
-        return;
+        const parsed = JSON.parse(cachedData);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setPandals(parsed);
+          setDataSource('fastapi');
+          setLoading(false);
+          return;
+        }
       }
     } catch (err) {
       console.warn('Failed to read from localStorage cache:', err);
@@ -67,15 +70,20 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setPandals(data);
-      setDataSource('fastapi');
+      if (Array.isArray(data) && data.length > 0) {
+        setPandals(data);
+        setDataSource('fastapi');
 
-      // Save to localStorage cache
-      try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-        localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
-      } catch (err) {
-        console.warn('Failed to save to localStorage cache:', err);
+        // Save to localStorage cache
+        try {
+          localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+          localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+        } catch (err) {
+          console.warn('Failed to save to localStorage cache:', err);
+        }
+      } else {
+        setPandals(fallbackData as Pandal[]);
+        setDataSource('fallback');
       }
     } catch (e: any) {
       console.warn('FastAPI backend not reachable, using local fallback:', e);

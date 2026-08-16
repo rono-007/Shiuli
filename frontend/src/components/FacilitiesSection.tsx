@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, Star, Phone, Clock, Loader2 } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 interface EateryLocation {
   lat: number;
@@ -80,6 +81,7 @@ function loadEateriesDatasets() {
 loadEateriesDatasets().catch(() => {});
 
 const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
+  const { t } = useLanguage();
   const [data, setData] = useState<{ north: Eatery[]; south: Eatery[] }>({
     north: cachedNorthEateries || [],
     south: cachedSouthEateries || []
@@ -188,11 +190,11 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
               className="inline-flex items-center gap-2 text-xs font-mono tracking-widest uppercase text-ink/60 hover:text-bengali-red transition-colors group cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              <span>হোমে ফিরুন (Back to Home)</span>
+              <span>{t.backToHome}</span>
             </button>
           )}
           <span className="text-[10px] font-mono tracking-[0.3em] uppercase text-bengali-red font-bold">
-            কলকাতার খাঁটি রেস্তোরাঁ ও ক্যাফে ডিরেক্টরি
+            {t.foodTitle}
           </span>
         </div>
 
@@ -202,10 +204,10 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
             গুগল ম্যাপস যাচাইকৃত • ১,০০০+ টি স্থান
           </span>
           <h1 className="text-4xl md:text-6xl font-serif text-ink italic font-normal">
-            কলকাতার রেস্তোরাঁ ডিরেক্টরি
+            {t.foodTitle}
           </h1>
           <p className="text-sm font-serif italic text-ink/60 max-w-xl mx-auto">
-            উত্তর ও দক্ষিণ কলকাতার ঐতিহ্যবাহী ক্যাফে, কাটলেট শপ, মিষ্টির দোকান ও সুস্বাদু খাবারের ঠিকানা।
+            {t.foodSubtitle}
           </p>
         </div>
 
@@ -220,7 +222,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
                   : 'text-ink/70 hover:text-ink hover:bg-ink/5'
               }`}
             >
-              <span>🌟 সমগ্র কলকাতা</span>
+              <span>🌟 {t.allKolkataTab}</span>
               <span className="text-[10px] font-mono opacity-80 px-1.5 py-0.5 rounded-md bg-black/10">All</span>
             </button>
             <button
@@ -231,7 +233,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
                   : 'text-ink/70 hover:text-ink hover:bg-ink/5'
               }`}
             >
-              <span>🏛️ উত্তর কলকাতা</span>
+              <span>🏛️ {t.northKolkataTab}</span>
               <span className="text-[10px] font-mono opacity-80 px-1.5 py-0.5 rounded-md bg-black/10">North</span>
             </button>
             <button
@@ -242,7 +244,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
                   : 'text-ink/70 hover:text-ink hover:bg-ink/5'
               }`}
             >
-              <span>🌳 দক্ষিণ কলকাতা</span>
+              <span>🌳 {t.southKolkataTab}</span>
               <span className="text-[10px] font-mono opacity-80 px-1.5 py-0.5 rounded-md bg-black/10">South</span>
             </button>
           </div>
@@ -263,10 +265,10 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={
                 selectedZone === 'north'
-                  ? "উত্তর কলকাতার খাবারের স্থান খুঁজুন (যেমন: মিত্র ক্যাফে, শ্যামবাজার, কলেজ স্ট্রিট...)"
+                  ? t.searchPlaceholderNorth
                   : selectedZone === 'south'
-                  ? "দক্ষিণ কলকাতার খাবারের স্থান খুঁজুন (যেমন: গড়িয়াহাট, পার্ক স্ট্রিট, গলপার্ক...)"
-                  : "খাবারের স্থান, ক্যাফে বা এলাকা দিয়ে খুঁজুন (যেমন: মিত্র ক্যাফে, গড়িয়াহাট, পার্ক স্ট্রিট...)"
+                  ? t.searchPlaceholderSouth
+                  : t.searchPlaceholderAll
               }
               className="w-full bg-paper/95 backdrop-blur-xs border border-ink/15 rounded-xl pl-11 pr-4 py-2.5 text-xs sm:text-sm font-serif text-ink placeholder:text-ink/40 focus:outline-none focus:border-bengali-red/50 transition-colors shadow-xs"
             />
@@ -295,14 +297,14 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
                       : 'bg-paper/90 backdrop-blur-xs text-ink/70 border-ink/10 hover:border-ink/30'
                   }`}
                 >
-                  {cat === 'All' ? 'সবকিছু (All)' : cat}
+                  {cat === 'All' ? t.allCategoryTag : cat}
                 </button>
               ))}
             </div>
 
             {/* Min Rating Filter */}
             <div className="flex items-center gap-1.5 flex-shrink-0">
-              <span className="text-[11px] font-mono text-ink/50 uppercase">রেটিং:</span>
+              <span className="text-[11px] font-mono text-ink/50 uppercase">{t.ratingLabel}</span>
               {[0, 4.0, 4.2, 4.5].map(r => (
                 <button
                   key={r}
@@ -323,7 +325,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
         {/* RESULTS HEADER */}
         <div className="flex justify-between items-center mb-6 px-2">
           <div className="text-xs font-mono text-ink/60 uppercase tracking-wider">
-            দেখাচ্ছে: <span className="font-bold text-bengali-red">{visibleEateries.length}</span> / <span className="font-bold text-ink">{filteredEateries.length}</span> টি রেস্তোরাঁ ও ক্যাফে
+            {t.showingCount} <span className="font-bold text-bengali-red">{visibleEateries.length}</span> / <span className="font-bold text-ink">{filteredEateries.length}</span>
           </div>
           {(searchQuery || selectedCategory !== 'All' || minRating > 0) && (
             <button
@@ -334,7 +336,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
               }}
               className="text-xs font-mono text-bengali-red hover:underline cursor-pointer"
             >
-              রিসেট করুন (Reset)
+              {t.resetBtn}
             </button>
           )}
         </div>
@@ -343,7 +345,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
         {loading ? (
           <div className="bg-[#FAF6ED] border border-ink/10 rounded-2xl p-16 text-center space-y-4">
             <Loader2 className="w-8 h-8 text-bengali-red animate-spin mx-auto" />
-            <p className="text-xs font-mono text-ink/60">রেস্তোরাঁ ডিরেক্টরি ক্যাশ থেকে লোড হচ্ছে...</p>
+            <p className="text-xs font-mono text-ink/60">{t.loadingText}</p>
           </div>
         ) : filteredEateries.length > 0 ? (
           <>
@@ -477,7 +479,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
                       className="w-full inline-flex items-center justify-center gap-1.5 bg-bengali-red text-paper hover:bg-[#721724] px-3 py-1.5 rounded-lg text-[11px] font-serif font-bold transition-all shadow-sm group-hover:shadow"
                     >
                       <ExternalLink className="w-3 h-3" />
-                      <span>Google Maps নির্দেশ</span>
+                      <span>{t.googleMapsDir}</span>
                     </a>
                   </div>
 
@@ -492,7 +494,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
                   onClick={() => setDisplayLimit(prev => prev + 32)}
                   className="px-8 py-3 bg-bengali-red text-white text-xs font-serif font-bold rounded-2xl hover:bg-[#721724] transition-all shadow-md hover:shadow-lg cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
                 >
-                  আরো দেখান (Load More Eateries - Showing {visibleEateries.length} of {filteredEateries.length})
+                  {t.loadMoreBtn} ({visibleEateries.length} / {filteredEateries.length})
                 </button>
               </div>
             )}
@@ -502,9 +504,9 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
             <div className="w-12 h-12 rounded-full bg-bengali-red/10 text-bengali-red mx-auto flex items-center justify-center">
               <Search className="w-6 h-6" />
             </div>
-            <h3 className="text-xl font-serif font-bold text-ink">কোনো স্থান পাওয়া যায়নি</h3>
+            <h3 className="text-xl font-serif font-bold text-ink">{t.noPlacesFound}</h3>
             <p className="text-xs font-serif italic text-ink/50 max-w-sm mx-auto">
-              আপনার খোঁজার সাথে মেলে এমন কোনো রেস্তোরাঁ পাওয়া যায়নি। অন্য কীওয়ার্ড দিয়ে চেষ্টা করুন।
+              {t.noPlacesFoundDesc}
             </p>
             <button
               onClick={() => {
@@ -514,7 +516,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
               }}
               className="px-5 py-2.5 bg-bengali-red text-paper text-xs font-serif font-bold rounded-xl hover:bg-[#721724] transition-colors cursor-pointer"
             >
-              ফিল্টার রিসেট করুন (Reset)
+              {t.resetBtn}
             </button>
           </div>
         )}

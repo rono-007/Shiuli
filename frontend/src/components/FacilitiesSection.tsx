@@ -124,7 +124,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
         </div>
 
         {/* Page Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
+        <div className="text-center max-w-3xl mx-auto space-y-4 mb-8">
           <span className="text-[10px] font-mono tracking-[0.4em] uppercase text-ink/40">
             গুগল ম্যাপস যাচাইকৃত • ১,০০০+ টি স্থান
           </span>
@@ -134,6 +134,45 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
           <p className="text-sm font-serif italic text-ink/60 max-w-xl mx-auto">
             উত্তর ও দক্ষিণ কলকাতার ঐতিহ্যবাহী ক্যাফে, কাটলেট শপ, মিষ্টির দোকান ও সুস্বাদু খাবারের ঠিকানা।
           </p>
+        </div>
+
+        {/* PROMINENT REGION SELECTOR TABS (North / South / All Kolkata) */}
+        <div className="flex items-center justify-center gap-3 mb-10">
+          <div className="bg-[#FAF6ED]/95 backdrop-blur-md p-1.5 rounded-2xl border-2 border-ink/15 shadow-md flex items-center gap-1.5 sm:gap-2">
+            <button
+              onClick={() => setSelectedZone('all')}
+              className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                selectedZone === 'all'
+                  ? 'bg-bengali-red text-white shadow-lg scale-[1.02] border border-[#DFB86C]/40'
+                  : 'text-ink/70 hover:text-ink hover:bg-ink/5'
+              }`}
+            >
+              <span>🌟 সমগ্র কলকাতা</span>
+              <span className="text-[10px] font-mono opacity-80 px-1.5 py-0.5 rounded-md bg-black/10">All</span>
+            </button>
+            <button
+              onClick={() => setSelectedZone('north')}
+              className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                selectedZone === 'north'
+                  ? 'bg-bengali-red text-white shadow-lg scale-[1.02] border border-[#DFB86C]/40'
+                  : 'text-ink/70 hover:text-ink hover:bg-ink/5'
+              }`}
+            >
+              <span>🏛️ উত্তর কলকাতা</span>
+              <span className="text-[10px] font-mono opacity-80 px-1.5 py-0.5 rounded-md bg-black/10">North</span>
+            </button>
+            <button
+              onClick={() => setSelectedZone('south')}
+              className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                selectedZone === 'south'
+                  ? 'bg-bengali-red text-white shadow-lg scale-[1.02] border border-[#DFB86C]/40'
+                  : 'text-ink/70 hover:text-ink hover:bg-ink/5'
+              }`}
+            >
+              <span>🌳 দক্ষিণ কলকাতা</span>
+              <span className="text-[10px] font-mono opacity-80 px-1.5 py-0.5 rounded-md bg-black/10">South</span>
+            </button>
+          </div>
         </div>
 
         {/* SEARCH & FILTERS CONTAINER */}
@@ -149,7 +188,13 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="খাবারের স্থান, ক্যাফে বা এলাকা দিয়ে খুঁজুন (যেমন: মিত্র ক্যাফে, বিরিয়ানি, শ্যামবাজার, সল্টলেক...)"
+              placeholder={
+                selectedZone === 'north'
+                  ? "উত্তর কলকাতার খাবারের স্থান খুঁজুন (যেমন: মিত্র ক্যাফে, শ্যামবাজার, কলেজ স্ট্রিট...)"
+                  : selectedZone === 'south'
+                  ? "দক্ষিণ কলকাতার খাবারের স্থান খুঁজুন (যেমন: গড়িয়াহাট, পার্ক স্ট্রিট, গলপার্ক...)"
+                  : "খাবারের স্থান, ক্যাফে বা এলাকা দিয়ে খুঁজুন (যেমন: মিত্র ক্যাফে, গড়িয়াহাট, পার্ক স্ট্রিট...)"
+              }
               className="w-full bg-paper/95 backdrop-blur-xs border border-ink/15 rounded-xl pl-11 pr-4 py-2.5 text-xs sm:text-sm font-serif text-ink placeholder:text-ink/40 focus:outline-none focus:border-bengali-red/50 transition-colors shadow-xs"
             />
             {searchQuery && (
@@ -160,40 +205,6 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
                 Clear
               </button>
             )}
-          </div>
-
-          {/* Zone Selection Pills */}
-          <div className="flex items-center justify-center gap-2 pb-2">
-            <button
-              onClick={() => setSelectedZone('all')}
-              className={`px-4 py-1.5 rounded-full text-xs font-serif font-bold transition-all ${
-                selectedZone === 'all'
-                  ? 'bg-bengali-red text-paper shadow-md'
-                  : 'bg-paper/80 text-ink/70 hover:bg-paper border border-ink/15'
-              }`}
-            >
-              🌟 সকল রেস্তোরাঁ (All Kolkata)
-            </button>
-            <button
-              onClick={() => setSelectedZone('north')}
-              className={`px-4 py-1.5 rounded-full text-xs font-serif font-bold transition-all ${
-                selectedZone === 'north'
-                  ? 'bg-bengali-red text-paper shadow-md'
-                  : 'bg-paper/80 text-ink/70 hover:bg-paper border border-ink/15'
-              }`}
-            >
-              🏛️ উত্তর কলকাতা (North)
-            </button>
-            <button
-              onClick={() => setSelectedZone('south')}
-              className={`px-4 py-1.5 rounded-full text-xs font-serif font-bold transition-all ${
-                selectedZone === 'south'
-                  ? 'bg-bengali-red text-paper shadow-md'
-                  : 'bg-paper/80 text-ink/70 hover:bg-paper border border-ink/15'
-              }`}
-            >
-              🌳 দক্ষিণ কলকাতা (South)
-            </button>
           </div>
 
           {/* Filter Options */}

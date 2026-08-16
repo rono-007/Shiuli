@@ -49,16 +49,13 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
     try {
       const cachedData = localStorage.getItem(CACHE_KEY);
       const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+      const cachedSource = localStorage.getItem('pujopath_south_pandals_cache_source');
       
-      if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
+      if (cachedSource === 'fastapi' && cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
         const parsed = JSON.parse(cachedData);
         if (Array.isArray(parsed) && parsed.length > 0) {
           setPandals(parsed);
-          const cachedSource = localStorage.getItem('pujopath_south_pandals_cache_source') as 'fastapi' | 'fallback' || 'fastapi';
-          setDataSource(cachedSource);
-          if (cachedSource === 'fallback') {
-            setErrorInfo('ব্যাকএন্ড সার্ভার অফলাইন, লোকাল ডাটা ব্যবহৃত হচ্ছে');
-          }
+          setDataSource('fastapi');
           setLoading(false);
           return;
         }

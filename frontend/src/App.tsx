@@ -3,7 +3,7 @@ import HeroSection from './components/HeroSection';
 import PujaGuideSection from './components/PujaGuideSection';
 import SectionDivider from './components/SectionDivider';
 
-import { Heart, WifiOff, Mail, MapPin, Send, CheckCircle2, HelpCircle, Bug, Star, LogOut, User, ChevronDown, ChevronUp } from 'lucide-react';
+import { WifiOff, Mail, MapPin, Send, CheckCircle2, HelpCircle, Bug, Star, LogOut, User, ChevronDown, ChevronUp } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { InitialLanguageModal } from './components/InitialLanguageModal';
 import { LanguageToggle } from './components/LanguageToggle';

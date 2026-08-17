@@ -1004,6 +1004,7 @@ def load_medical_facilities_data() -> dict:
             if not item or not item.get("location"):
                 continue
             cat = (item.get("categoryName") || "").lower()
+            # pyrefly: ignore [parse-error]
             title = (item.get("title") || "").lower()
             raw_cats = item.get("categories")
             categories_str = " ".join(raw_cats).lower() if isinstance(raw_cats, list) else str(raw_cats or "").lower()

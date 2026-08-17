@@ -50,7 +50,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
       const cachedData = localStorage.getItem(CACHE_KEY);
       const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
       const cachedSource = localStorage.getItem('pujopath_south_pandals_cache_source');
-      
+
       if (cachedSource === 'fastapi' && cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
         const parsed = JSON.parse(cachedData);
         if (Array.isArray(parsed) && parsed.length > 0) {
@@ -98,7 +98,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
       setErrorInfo('ব্যাকএন্ড সার্ভার অফলাইন, লোকাল ডাটা ব্যবহৃত হচ্ছে');
       try {
         localStorage.setItem('pujopath_south_pandals_cache_source', 'fallback');
-      } catch (err) {}
+      } catch (err) { }
     } finally {
       setLoading(false);
     }
@@ -162,7 +162,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
 
         {/* Content: Two Column Layout */}
         <div className="flex flex-col lg:flex-row">
-          
+
           {/* LEFT: Pandal Info + Map Link */}
           <div className="w-full lg:w-2/5 p-6 lg:p-8 border-r border-ink/10 flex flex-col gap-5">
 
@@ -331,7 +331,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
 
           {/* RIGHT: Nearby Eateries */}
           <div className="w-full lg:w-3/5 p-6 lg:p-8 bg-gradient-to-b from-[#FAF6ED] to-paper">
-            
+
             {/* Eateries Header */}
             <div className="flex items-center justify-between mb-5">
               <h4 className="text-base font-serif font-bold text-ink flex items-center gap-2">
@@ -340,11 +340,10 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
                 </span>
                 কাছাকাছি রেস্তোরাঁ ও ক্যাফে
               </h4>
-              <span className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold ${
-                hasEateries 
-                  ? 'bg-emerald-500/10 text-emerald-800 border border-emerald-500/20' 
+              <span className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold ${hasEateries
+                  ? 'bg-emerald-500/10 text-emerald-800 border border-emerald-500/20'
                   : 'bg-amber-500/10 text-amber-800 border border-amber-500/20'
-              }`}>
+                }`}>
                 {hasEateries ? `${within1km.length} টি (≤১ km)` : `দূরবর্তী ${relativelyFar.length} টি`}
               </span>
             </div>
@@ -360,7 +359,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
             {/* Eateries Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto pr-1 custom-scrollbar">
               {eateriesToShow.map((eatery, eIdx) => (
-                <div 
+                <div
                   key={eIdx}
                   className="bg-paper p-4 rounded-2xl border border-ink/8 hover:border-bengali-red/30 hover:shadow-md transition-all group flex flex-col justify-between"
                 >
@@ -369,11 +368,10 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
                       <h5 className="text-sm font-serif font-bold text-ink group-hover:text-bengali-red transition-colors leading-snug">
                         {eatery.title}
                       </h5>
-                      <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold ${
-                        hasEateries
+                      <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold ${hasEateries
                           ? 'bg-emerald-500/10 text-emerald-800 border border-emerald-500/20'
                           : 'bg-amber-500/10 text-amber-800 border border-amber-500/20'
-                      }`}>
+                        }`}>
                         {hasEateries ? `${eatery.distanceMeters}m` : `${(eatery.distanceMeters / 1000).toFixed(1)}km`}
                       </span>
                     </div>
@@ -409,25 +407,25 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
   };
 
   return (
-    <section 
+    <section
       className="min-h-screen bg-cover bg-center bg-fixed bg-no-repeat bg-[#FAF6ED] text-ink pt-32 pb-24 px-6 md:px-12 relative"
     >
       {/* Heavy Noise Overlay for Vintage Print Feel */}
       <div className="pointer-events-none fixed inset-0 z-50 opacity-[0.05] mix-blend-multiply bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        
+
         {/* Navigation / Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-16 border-b border-ink/10 pb-8">
           <div className="space-y-4">
-            <button 
+            <button
               onClick={onBack}
               className="flex items-center gap-2 group text-xs font-mono uppercase tracking-widest text-bengali-red hover:text-ink transition-colors focus:outline-none"
             >
               <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
               <span>ফিরে যান</span>
             </button>
-            
+
             <div className="space-y-2">
               <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-ink/40">III • পরিক্রমা সূচী</span>
               <h2 className="text-4xl md:text-5xl font-serif text-ink italic font-normal tracking-wide">
@@ -458,8 +456,8 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
               )}
             </div>
 
-            <button 
-              onClick={fetchData} 
+            <button
+              onClick={fetchData}
               disabled={loading}
               className="flex items-center gap-2 bg-night text-[#FAF6ED] px-4 py-2 hover:bg-night/90 text-xs font-mono uppercase tracking-widest transition-colors disabled:opacity-50"
             >
@@ -471,7 +469,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
 
         {/* Search & Stats Bar */}
         <div className="bg-[#FAF6ED] border border-ink/10 p-6 md:p-8 rounded-3xl mb-12 flex flex-col md:flex-row gap-6 justify-between items-center shadow-sm">
-          
+
           {/* Stats */}
           <div className="flex items-center gap-4 text-ink/70">
             <Layers className="w-5 h-5 text-bengali-red/60" />
@@ -484,22 +482,20 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
           <div className="flex bg-ink/5 p-1 rounded-full border border-ink/10">
             <button
               onClick={() => { setViewMode('cards'); setSelectedPandalName(null); }}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all ${
-                viewMode === 'cards'
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all ${viewMode === 'cards'
                   ? 'bg-night text-[#FAF6ED] shadow-sm'
                   : 'text-ink/60 hover:text-ink'
-              }`}
+                }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" />
               <span>তালিকা (Cards)</span>
             </button>
             <button
               onClick={() => setViewMode('map')}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all ${
-                viewMode === 'map'
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all ${viewMode === 'map'
                   ? 'bg-night text-[#FAF6ED] shadow-sm'
                   : 'text-ink/60 hover:text-ink'
-              }`}
+                }`}
             >
               <Map className="w-3.5 h-3.5" />
               <span>মানচিত্র (Map)</span>
@@ -511,15 +507,15 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
             <div className="absolute inset-0 bg-night/5 rounded-full pointer-events-none border border-ink/5 transition-all duration-300 group-focus-within:border-bengali-red/30"></div>
             <div className="relative flex items-center px-4 py-2">
               <Search className="w-4 h-4 text-ink/40 mr-2" />
-              <input 
-                type="text" 
+              <input
+                type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="মণ্ডপের নাম বা ঠিকানা খুঁজুন..."
                 className="w-full bg-transparent text-sm font-sans placeholder-ink/40 focus:outline-none"
               />
               {searchQuery && (
-                <button 
+                <button
                   onClick={() => setSearchQuery('')}
                   className="text-ink/40 hover:text-bengali-red text-sm font-bold"
                 >
@@ -555,13 +551,12 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
                 return (
                   <React.Fragment key={idx}>
                     {/* Compact Pandal Card */}
-                    <div 
+                    <div
                       onClick={() => setExpandedPandalIdx(isExpanded ? null : idx)}
-                      className={`bg-paper border rounded-2xl p-4 shadow-sm hover:shadow-lg transition-all cursor-pointer group relative overflow-hidden ${
-                        isExpanded 
-                          ? 'border-bengali-red/40 ring-2 ring-bengali-red/20 shadow-lg' 
+                      className={`bg-paper border rounded-2xl p-4 shadow-sm hover:shadow-lg transition-all cursor-pointer group relative overflow-hidden ${isExpanded
+                          ? 'border-bengali-red/40 ring-2 ring-bengali-red/20 shadow-lg'
                           : 'border-ink/10 hover:border-bengali-red/20'
-                      }`}
+                        }`}
                     >
                       {/* Accent top bar when selected */}
                       {isExpanded && (
@@ -597,9 +592,8 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
                       </div>
 
                       {/* Pandal Title & Address */}
-                      <h3 className={`text-base font-serif font-bold leading-snug transition-colors ${
-                        isExpanded ? 'text-bengali-red' : 'text-ink group-hover:text-bengali-red'
-                      }`}>
+                      <h3 className={`text-base font-serif font-bold leading-snug transition-colors ${isExpanded ? 'text-bengali-red' : 'text-ink group-hover:text-bengali-red'
+                        }`}>
                         {pandal.name}
                       </h3>
                       <p className="text-xs font-sans text-ink/60 mt-1 flex items-start gap-1">
@@ -624,8 +618,8 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
             <p className="text-xs font-sans text-ink/40 mt-1">
               অন্য কোনো মণ্ডপ বা ঠিকানা দিয়ে অনুসন্ধান করার চেষ্টা করুন।
             </p>
-            <button 
-              onClick={() => setSearchQuery('')} 
+            <button
+              onClick={() => setSearchQuery('')}
               className="mt-4 text-xs font-sans text-bengali-red underline hover:text-ink transition-colors font-semibold"
             >
               অনুসন্ধান মুছুন

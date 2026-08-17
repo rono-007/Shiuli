@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, ArrowUp } from 'lucide-react';
 import PandalMap from './PandalMap';
 import fallbackData from '../data/bonedi_kolkata.json';
+import { secureGetItem, secureSetItem } from '../utils/storage';
 
 interface Pandal {
   name: string;
@@ -43,11 +44,11 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
 
     // Check localStorage cache first
     try {
-      const cachedData = localStorage.getItem(CACHE_KEY);
+      const cachedData = secureGetItem<Pandal[]>(CACHE_KEY);
       const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
       
       if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
-        setPandals(JSON.parse(cachedData));
+        setPandals(cachedData);
         setDataSource('fastapi');
         setLoading(false);
         return;
@@ -68,7 +69,7 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
 
       // Save to localStorage cache
       try {
-        localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+        secureSetItem(CACHE_KEY, data);
         localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
       } catch (err) {
         console.warn('Failed to save to localStorage cache:', err);

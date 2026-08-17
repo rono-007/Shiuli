@@ -45,7 +45,7 @@ const VALID_VIEWS: ViewType[] = ['home', 'north', 'south', 'central', 'bonedi', 
 // Sequential Modal Controller: Language Choice -> Beta Access Code -> Beta Phase Notice
 function ModalSequenceController({ showBetaNotice, onNoticeClosed }: { showBetaNotice: boolean; onNoticeClosed: () => void }) {
   const { showLanguageModal } = useLanguage();
-  
+
   const [accessDone, setAccessDone] = useState<boolean>(() => {
     return localStorage.getItem('shiuli_beta_verified') === 'true';
   });
@@ -193,7 +193,7 @@ function FooterFeedbackCard() {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-3.5 text-left font-sans">
-          
+
           {/* Category Selector Pills */}
           <div className="flex items-center justify-center gap-2 flex-wrap">
             {[
@@ -208,11 +208,10 @@ function FooterFeedbackCard() {
                   key={tab.id}
                   type="button"
                   onClick={() => setCategory(tab.id as 'query' | 'bug' | 'review')}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-serif font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
-                    active
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-serif font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${active
                       ? 'bg-[#E5B05C] text-[#2A090C] shadow-md font-bold'
                       : 'bg-[#1A0507] border border-[#581318] text-[#F7F2E7]/70 hover:border-[#E5B05C]/40 hover:text-[#F7F2E7]'
-                  }`}
+                    }`}
                 >
                   <Icon className="w-3.5 h-3.5" />
                   <span>{tab.label}</span>
@@ -233,9 +232,8 @@ function FooterFeedbackCard() {
                   aria-label={`Rate ${star} stars`}
                 >
                   <Star
-                    className={`w-5 h-5 ${
-                      star <= rating ? 'fill-[#E5B05C] text-[#E5B05C]' : 'text-[#F7F2E7]/30'
-                    }`}
+                    className={`w-5 h-5 ${star <= rating ? 'fill-[#E5B05C] text-[#E5B05C]' : 'text-[#F7F2E7]/30'
+                      }`}
                   />
                 </button>
               ))}
@@ -265,8 +263,8 @@ function FooterFeedbackCard() {
                 category === 'bug'
                   ? (isBn ? 'কোথায় এবং কী সমস্যা হচ্ছে সংক্ষেপে লিখুন...' : 'Describe the bug or issue you encountered...')
                   : category === 'review'
-                  ? (isBn ? 'আপনার অভিজ্ঞতা ও মতামত লিখুন...' : 'Share your thoughts and review about Shiuli...')
-                  : (isBn ? 'আপনার প্রশ্ন বা জিজ্ঞাস্য লিখুন...' : 'Write your query or question...')
+                    ? (isBn ? 'আপনার অভিজ্ঞতা ও মতামত লিখুন...' : 'Share your thoughts and review about Shiuli...')
+                    : (isBn ? 'আপনার প্রশ্ন বা জিজ্ঞাস্য লিখুন...' : 'Write your query or question...')
               }
               className="w-full bg-[#1A0507] border border-[#581318] text-[#F7F2E7] text-xs sm:text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-[#E5B05C] font-serif placeholder:text-[#F7F2E7]/40 shadow-inner resize-none"
             />
@@ -287,8 +285,8 @@ function FooterFeedbackCard() {
                   {category === 'bug'
                     ? (isBn ? 'বাগ রিপোর্ট পাঠান' : 'Submit Bug Report')
                     : category === 'review'
-                    ? (isBn ? 'রিভিউ জমা দিন' : 'Submit Review')
-                    : (isBn ? 'বার্তা পাঠান' : 'Send Query')}
+                      ? (isBn ? 'রিভিউ জমা দিন' : 'Submit Review')
+                      : (isBn ? 'বার্তা পাঠান' : 'Send Query')}
                 </span>
               </>
             )}
@@ -392,13 +390,13 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink">
-      <ModalSequenceController 
-        showBetaNotice={showBetaNotice} 
-        onNoticeClosed={() => setShowBetaNotice(false)} 
+      <ModalSequenceController
+        showBetaNotice={showBetaNotice}
+        onNoticeClosed={() => setShowBetaNotice(false)}
       />
 
       {/* Sticky Floating Beta Badge */}
-      <button 
+      <button
         onClick={() => {
           setShowBetaNotice(true);
         }}
@@ -445,7 +443,7 @@ function AppContent() {
             {/* Right: Language Selector & Navigation */}
             <div className="flex items-center gap-3 pointer-events-auto">
               <LanguageToggle />
-              
+
               {/* Profile Dropdown */}
               <div className="relative">
                 <button
@@ -455,7 +453,7 @@ function AppContent() {
                 >
                   <User className="w-4 h-4" />
                 </button>
-                
+
                 {showProfile && (
                   <div className="absolute right-0 mt-2.5 w-56 rounded-2xl bg-[#FAF6ED] border-2 border-[#D4A24C]/60 p-4 shadow-xl z-50 text-left font-sans text-[#3D0D11]">
                     <div className="mb-3 pb-2 border-b border-[#D4A24C]/20">
@@ -467,7 +465,7 @@ function AppContent() {
                         {localStorage.getItem('shiuli_beta_email') || ''}
                       </p>
                     </div>
-                    
+
                     <button
                       onClick={() => {
                         localStorage.removeItem('shiuli_beta_verified');

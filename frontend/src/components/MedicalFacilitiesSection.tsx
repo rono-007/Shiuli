@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { MedicalMap } from './MedicalMap';
+import { secureGetItem, secureSetItem } from '../utils/storage';
 
 export interface MedicalFacility {
   title: string;
@@ -69,10 +70,9 @@ const MedicalFacilitiesSection: React.FC<MedicalFacilitiesSectionProps> = ({ onB
 
     // 1. Check valid localStorage cache first
     try {
-      const cachedStr = localStorage.getItem(CACHE_KEY);
-      if (cachedStr) {
-        const cached = JSON.parse(cachedStr);
-        if (cached && cached.data && (Date.now() - cached.timestamp < CACHE_TTL)) {
+      const cached = secureGetItem<{ timestamp: number; data: any }>(CACHE_KEY);
+      if (cached) {
+        if (cached.data && (Date.now() - cached.timestamp < CACHE_TTL)) {
           if (Array.isArray(cached.data.north) && Array.isArray(cached.data.south)) {
             setData(cached.data);
             setLoading(false);
@@ -98,7 +98,7 @@ const MedicalFacilitiesSection: React.FC<MedicalFacilitiesSectionProps> = ({ onB
       const result = await res.json();
       if (result && Array.isArray(result.north) && Array.isArray(result.south)) {
         setData(result);
-        localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data: result }));
+        secureSetItem(CACHE_KEY, { timestamp: Date.now(), data: result });
         if (!isBackground) setLoading(false);
         return;
       }

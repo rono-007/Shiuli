@@ -4,6 +4,7 @@ import PandalMap from './PandalMap';
 import fallbackData from '../data/south_kolkata.json';
 import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
 import { getNearestFacilities } from '../utils/nearbyFacilities';
+import { secureGetItem, secureSetItem } from '../utils/storage';
 
 interface Pandal {
   name: string;
@@ -47,14 +48,13 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
 
     // Check localStorage cache first
     try {
-      const cachedData = localStorage.getItem(CACHE_KEY);
+      const cachedData = secureGetItem<Pandal[]>(CACHE_KEY);
       const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
       const cachedSource = localStorage.getItem('pujopath_south_pandals_cache_source');
 
       if (cachedSource === 'fastapi' && cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
-        const parsed = JSON.parse(cachedData);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setPandals(parsed);
+        if (Array.isArray(cachedData) && cachedData.length > 0) {
+          setPandals(cachedData);
           setDataSource('fastapi');
           setErrorInfo(null);
           setLoading(false);
@@ -79,7 +79,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
 
         // Save to localStorage cache
         try {
-          localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+          secureSetItem(CACHE_KEY, data);
           localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
           localStorage.setItem('pujopath_south_pandals_cache_source', 'fastapi');
         } catch (err) {

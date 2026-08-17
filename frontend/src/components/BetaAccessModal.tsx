@@ -21,7 +21,7 @@ export const BetaAccessModal: React.FC<BetaAccessModalProps> = ({ onVerified }) 
 
   const handleCodeChange = (index: number, value: string) => {
     if (!/^[0-9]*$/.test(value)) return;
-    
+
     const newCode = [...code];
     newCode[index] = value.slice(-1);
     setCode(newCode);
@@ -40,10 +40,10 @@ export const BetaAccessModal: React.FC<BetaAccessModalProps> = ({ onVerified }) 
   const handleVerifySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const finalCode = code.join('');
-    
+
     setErrorMessage('');
     setSuccessMessage('');
-    
+
     if (!email || finalCode.length < 5) {
       setErrorMessage(isBn ? 'অনুগ্রহ করে সঠিক ইমেল ও ৫-সংখ্যার কোড দিন' : 'Please enter valid email & 5-digit code');
       return;
@@ -75,14 +75,14 @@ export const BetaAccessModal: React.FC<BetaAccessModalProps> = ({ onVerified }) 
 
   return (
     <div className="fixed inset-0 z-[500] flex items-center justify-center bg-[#150507]/90 backdrop-blur-2xl p-4 sm:p-6 font-serif select-none animate-in fade-in duration-300">
-      
+
       {/* Background Ambient Lights */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#8B1E2D]/20 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[#D4A24C]/15 rounded-full blur-[120px] pointer-events-none" />
 
       {/* Main Luxury Modal Card */}
       <div className="relative w-full max-w-md bg-gradient-to-b from-[#FDFBF7] via-[#FAF6ED] to-[#F5EDE1] text-[#3D0D11] rounded-[2.5rem] p-7 sm:p-9 shadow-[0_25px_70px_rgba(0,0,0,0.6),0_0_0_1px_rgba(212,162,76,0.35)] border-2 border-[#D4A24C]/60 overflow-hidden text-center animate-in zoom-in-95 duration-300">
-        
+
         {/* Ornate Corner Accents */}
         <div className="absolute top-3 left-3 w-6 h-6 border-t-2 border-l-2 border-[#D4A24C]/70 rounded-tl-xl pointer-events-none" />
         <div className="absolute top-3 right-3 w-6 h-6 border-t-2 border-r-2 border-[#D4A24C]/70 rounded-tr-xl pointer-events-none" />
@@ -94,14 +94,14 @@ export const BetaAccessModal: React.FC<BetaAccessModalProps> = ({ onVerified }) 
 
         {/* Shiuli Flower Centerpiece & Brand Title */}
         <div className="relative z-10 flex flex-col items-center mb-6">
-          
+
           {/* Glowing Emblem */}
           <div className="relative mb-3 group">
             <div className="absolute -inset-2 bg-gradient-to-r from-[#D4A24C]/30 via-[#941F28]/20 to-[#D4A24C]/30 rounded-full blur-md opacity-80 group-hover:opacity-100 transition-opacity" />
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-[#FAF6ED] to-[#F1E4D0] border-2 border-[#D4A24C] shadow-lg flex items-center justify-center p-3">
-              <img 
-                src="/shiuli2.png" 
-                alt="Shiuli Emblem" 
+              <img
+                src="/shiuli2.png"
+                alt="Shiuli Emblem"
                 className="w-full h-full object-contain filter drop-shadow-md transition-transform duration-500 hover:rotate-45"
               />
             </div>
@@ -130,7 +130,7 @@ export const BetaAccessModal: React.FC<BetaAccessModalProps> = ({ onVerified }) 
 
         {/* Verification Form */}
         <form onSubmit={handleVerifySubmit} className="relative z-10 space-y-5 font-sans text-left">
-          
+
           {/* Email Input Field */}
           <div>
             <label className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-[#8B1E2D] mb-1.5 font-serif">
@@ -160,7 +160,7 @@ export const BetaAccessModal: React.FC<BetaAccessModalProps> = ({ onVerified }) 
                 <Lock className="w-2.5 h-2.5" /> {isBn ? 'গোপন কি' : 'secret key'}
               </span>
             </label>
-            
+
             <div className="grid grid-cols-5 gap-2 sm:gap-2.5">
               {code.map((digit, idx) => (
                 <input
@@ -175,13 +175,12 @@ export const BetaAccessModal: React.FC<BetaAccessModalProps> = ({ onVerified }) 
                   disabled={!!successMessage}
                   onChange={(e) => handleCodeChange(idx, e.target.value)}
                   onKeyDown={(e) => handleKeyDown(idx, e)}
-                  className={`aspect-square w-full rounded-2xl text-center text-2xl sm:text-3xl font-mono font-bold transition-all duration-300 ${
-                    successMessage
+                  className={`aspect-square w-full rounded-2xl text-center text-2xl sm:text-3xl font-mono font-bold transition-all duration-300 ${successMessage
                       ? 'border-2 border-emerald-500 text-emerald-600 bg-emerald-50 shadow-[0_0_20px_rgba(16,185,129,0.35)] scale-105'
                       : errorMessage
-                      ? 'border-2 border-rose-400 bg-rose-50/50 text-rose-700'
-                      : 'bg-white border-2 border-[#D4A24C]/40 text-[#8B1E2D] shadow-[0_3px_10px_rgba(212,162,76,0.12),inset_0_2px_4px_rgba(0,0,0,0.02)] hover:border-[#D4A24C] focus:border-[#8B1E2D] focus:ring-4 focus:ring-[#8B1E2D]/15 focus:scale-105 focus:outline-none'
-                  }`}
+                        ? 'border-2 border-rose-400 bg-rose-50/50 text-rose-700'
+                        : 'bg-white border-2 border-[#D4A24C]/40 text-[#8B1E2D] shadow-[0_3px_10px_rgba(212,162,76,0.12),inset_0_2px_4px_rgba(0,0,0,0.02)] hover:border-[#D4A24C] focus:border-[#8B1E2D] focus:ring-4 focus:ring-[#8B1E2D]/15 focus:scale-105 focus:outline-none'
+                    }`}
                 />
               ))}
             </div>

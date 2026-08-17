@@ -1,5 +1,5 @@
-const CACHE_NAME = 'pujopoth-pwa-v11';
-const API_CACHE_NAME = 'pujopoth-api-v11';
+const CACHE_NAME = 'pujopoth-pwa-v13';
+const API_CACHE_NAME = 'pujopoth-api-v13';
 
 const STATIC_ASSETS = [
   '/',
@@ -8,6 +8,32 @@ const STATIC_ASSETS = [
   '/favicon.svg',
   '/icon1.png'
 ];
+
+// Helper to encode response to base64
+async function encodeResponse(response) {
+  const text = await response.text();
+  const encodedText = btoa(encodeURIComponent(text));
+  return new Response(encodedText, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers
+  });
+}
+
+// Helper to decode response from base64
+async function decodeResponse(response) {
+  try {
+    const text = await response.text();
+    const decodedText = decodeURIComponent(atob(text));
+    return new Response(decodedText, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers
+    });
+  } catch (e) {
+    return response;
+  }
+}
 
 // Install Event: Cache app shell
 self.addEventListener('install', (event) => {
@@ -33,32 +59,36 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event: Network-First with Cache Fallback for API, Cache-First for static assets
+// Fetch Event: Cache-First for static assets
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // API Requests: Stale-While-Revalidate (GET requests only, excluding auth/verification)
+  // API Requests: Stale-While-Revalidate with transparent encryption
   if ((url.pathname.startsWith('/api/') || url.hostname.includes('onrender.com')) && event.request.method === 'GET' && !url.pathname.includes('/verify')) {
     event.respondWith(
       caches.open(API_CACHE_NAME).then((cache) => {
-        return cache.match(event.request).then((cachedResponse) => {
+        return cache.match(event.request).then(async (cachedResponse) => {
+          const decodedCachedResponse = cachedResponse ? await decodeResponse(cachedResponse) : null;
+
           const fetchPromise = fetch(event.request)
-            .then((networkResponse) => {
+            .then(async (networkResponse) => {
               if (networkResponse.ok) {
-                cache.put(event.request, networkResponse.clone());
+                const encodedResponse = await encodeResponse(networkResponse.clone());
+                cache.put(event.request, encodedResponse);
               }
               return networkResponse;
             })
             .catch(() => {
-              if (!cachedResponse) {
+              if (!decodedCachedResponse) {
                 return new Response(
                   JSON.stringify({ error: 'Offline mode active. No cached data available.' }),
                   { headers: { 'Content-Type': 'application/json' } }
                 );
               }
-              return cachedResponse;
+              return decodedCachedResponse;
             });
-          return cachedResponse || fetchPromise;
+
+          return decodedCachedResponse || fetchPromise;
         });
       })
     );

@@ -147,7 +147,17 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
   ];
 
   return (
-    <section className="w-full bg-[#FAF5EC] bg-[url('/guidline.png')] bg-[length:100%_auto] md:bg-cover bg-top -mt-[2px] pt-14 sm:pt-20 pb-20 px-4 sm:px-8 relative overflow-hidden flex flex-col items-center border-none">
+    <section className="w-full bg-[#FAF5EC] -mt-[2px] pt-14 sm:pt-20 pb-20 px-4 sm:px-8 relative z-10 flex flex-col items-center border-none">
+      
+      {/* Background Image with Ultra-Smooth Alpha Gradient Mask Fading */}
+      <div 
+        className="absolute inset-0 bg-[url('/guidline.png')] bg-[length:100%_auto] md:bg-cover bg-top pointer-events-none z-0"
+        style={{
+          WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+          maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
+        }}
+      />
+
       {/* Toast Notification for Under Development */}
       {toastMessage && (
         <div className="fixed bottom-6 right-6 z-[200] bg-[#3D1418] text-[#FAF5EC] px-5 py-3 rounded-2xl shadow-2xl border border-[#DFB86C]/40 flex items-center gap-3 animate-in fade-in slide-in-from-bottom-4 duration-300 font-serif text-xs sm:text-sm">
@@ -155,9 +165,6 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
           <span>{toastMessage}</span>
         </div>
       )}
-
-      {/* Top Gradient Feathering Overlay */}
-      <div className="absolute top-0 inset-x-0 h-24 sm:h-28 bg-gradient-to-b from-[#FAF5EC] via-[#FAF5EC]/85 to-transparent pointer-events-none z-[1]" />
       
       <div className="w-full max-w-[1340px] mx-auto flex flex-col items-center relative z-10">
         

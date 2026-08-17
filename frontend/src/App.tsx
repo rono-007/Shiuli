@@ -223,11 +223,13 @@ function AppContent() {
             )}
 
             {/* Footer Design - Mobile & Desktop Responsive Backgrounds */}
-            <footer 
-              className="bg-[#3D0D11] text-[#F7F2E7] pt-36 sm:pt-44 md:pt-48 lg:pt-56 pb-12 sm:pb-16 relative z-20 font-serif bg-top bg-no-repeat bg-[url('/footer-mobile.png')] md:bg-[url('/footer.png')] min-h-[180vw] md:min-h-[52.6vw]"
+            <footer
+              className="bg-[#3D0D11] text-[#F7F2E7] -mt-12 sm:-mt-16 md:-mt-20 pt-36 sm:pt-44 md:pt-48 lg:pt-56 pb-12 sm:pb-16 relative z-20 font-serif bg-top bg-no-repeat bg-[url('/footer-mobile.png')] md:bg-[url('/footer.png')] min-h-[180vw] md:min-h-[52.6vw]"
               style={{
                 backgroundColor: '#3D0D11',
                 backgroundSize: '100% auto',
+                WebkitMaskImage: 'linear-gradient(to bottom, transparent 0px, black 30px)',
+                maskImage: 'linear-gradient(to bottom, transparent 0px, black 30px)',
               }}
             >
               <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-4 sm:pt-6">
@@ -254,8 +256,8 @@ function AppContent() {
                     </div>
 
                     <p className="text-xs sm:text-sm text-[#F7F2E7]/85 leading-relaxed max-w-xs font-serif">
-                      {isBn 
-                        ? 'কলকাতার ঐতিহ্যবাহী দুর্গাপুজো পরিক্রমা, প্যান্ডেল গাইড ও সেরা রুট প্ল্যানিংয়ের ডিজিটাল মাধ্যম।' 
+                      {isBn
+                        ? 'কলকাতার ঐতিহ্যবাহী দুর্গাপুজো পরিক্রমা, প্যান্ডেল গাইড ও সেরা রুট প্ল্যানিংয়ের ডিজিটাল মাধ্যম।'
                         : 'Digital companion for exploring historic Durga Pujas, pandal guides, and smart route planning in Kolkata.'}
                     </p>
                   </div>
@@ -283,13 +285,13 @@ function AppContent() {
                       <li><button onClick={() => changeView('medical')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'জরুরি চিকিৎসা সেবা' : 'Emergency Medical Services'}</button></li>
                       <li><button onClick={() => changeView('facilities')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'রেস্তোরাঁ ও সুবিধা' : 'Food & Amenities'}</button></li>
                       <li>
-                        <button 
+                        <button
                           onClick={() => {
                             changeView('home');
                             setTimeout(() => {
                               document.getElementById('stories')?.scrollIntoView({ behavior: 'smooth' });
                             }, 100);
-                          }} 
+                          }}
                           className="hover:text-[#E5B05C] transition-colors text-left"
                         >
                           {isBn ? 'কলকাতার পুজো ইতিহাস' : 'Kolkata Puja History'}
@@ -324,20 +326,20 @@ function AppContent() {
                         {isBn ? 'সোশ্যাল মিডিয়া:' : 'Follow Me:'}
                       </p>
                       <div className="flex items-center gap-3">
-                        <a 
-                          href="https://www.facebook.com/share/1DTxLYsnmc/" 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#2A090C] hover:bg-[#581318] flex items-center justify-center text-[#F7F2E7] transition-all border border-[#581318] hover:border-[#E5B05C]/60 active:scale-95" 
+                        <a
+                          href="https://www.facebook.com/share/1DTxLYsnmc/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#2A090C] hover:bg-[#581318] flex items-center justify-center text-[#F7F2E7] transition-all border border-[#581318] hover:border-[#E5B05C]/60 active:scale-95"
                           aria-label="Facebook"
                         >
                           <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
                         </a>
-                        <a 
-                          href="https://instagram.com/monoc_" 
-                          target="_blank" 
-                          rel="noopener noreferrer" 
-                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#2A090C] hover:bg-[#581318] flex items-center justify-center text-[#F7F2E7] transition-all border border-[#581318] hover:border-[#E5B05C]/60 active:scale-95" 
+                        <a
+                          href="https://instagram.com/monoc_"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#2A090C] hover:bg-[#581318] flex items-center justify-center text-[#F7F2E7] transition-all border border-[#581318] hover:border-[#E5B05C]/60 active:scale-95"
                           aria-label="Instagram"
                         >
                           <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg>
@@ -356,13 +358,13 @@ function AppContent() {
                     <span>❁</span>
                   </h4>
                   <p className="text-xs text-[#F7F2E7]/80 mb-3.5 font-serif">
-                    {isBn 
-                      ? 'কলকাতার সেরা পুজো গাইড, ট্রাফিক ও আরতি পরিক্রমার সব খবর সরাসরি আপনার ইমেইলে' 
+                    {isBn
+                      ? 'কলকাতার সেরা পুজো গাইড, ট্রাফিক ও আরতি পরিক্রমার সব খবর সরাসরি আপনার ইমেইলে'
                       : 'Get the latest pandal guides, traffic updates, and cultural stories directly in your inbox'}
                   </p>
                   <div className="flex items-center justify-center gap-2 max-w-md mx-auto">
-                    <input 
-                      type="email" 
+                    <input
+                      type="email"
                       placeholder={isBn ? 'আপনার ইমেইল ঠিকানা...' : 'Your email address...'}
                       className="bg-[#1A0507] border border-[#581318] text-[#F7F2E7] text-xs sm:text-sm px-3.5 py-2 rounded-lg focus:outline-none focus:border-[#E5B05C] w-full font-serif placeholder:text-[#F7F2E7]/40 shadow-inner"
                     />
@@ -390,8 +392,8 @@ function AppContent() {
                       { name: isBn ? 'মুদিয়ালি ক্লাব' : 'Mudiali Club', view: 'south' },
                       { name: isBn ? 'বালিগঞ্জ কালচারাল' : 'Ballygunge Cultural', view: 'south' },
                     ].map((puja, idx) => (
-                      <button 
-                        key={idx} 
+                      <button
+                        key={idx}
                         onClick={() => changeView(puja.view as ViewType)}
                         className="bg-[#2A090C]/80 hover:bg-[#581318] hover:text-[#E5B05C] border border-[#581318] px-2.5 py-1 rounded-full text-[11px] transition-colors text-left cursor-pointer"
                       >
@@ -404,7 +406,7 @@ function AppContent() {
                 {/* Bottom Copyright & Credits - Positioned below the gold line of footer artwork */}
                 <div className="mt-[16vw] sm:mt-[14vw] md:mt-[12vw] lg:mt-[10vw] pt-2 pb-2 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F7F2E7]/85 font-serif">
                   <div>
-                    {isBn ? '© 2026 শিউলি | সর্বস্বত্ব সংরক্ষিত' : '© 2026 Shiuli | All Rights Reserved'}
+                    {isBn ? '© 2024 শিউলি | সর্বস্বত্ব সংরক্ষিত' : '© 2024 Shiuli | All Rights Reserved'}
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span>{isBn ? 'ডিজাইন ও ডেভেলপ করা হয়েছে' : 'Designed & Developed with'}</span>

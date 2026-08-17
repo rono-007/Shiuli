@@ -1,5 +1,5 @@
-const CACHE_NAME = 'pujopoth-pwa-v10';
-const API_CACHE_NAME = 'pujopoth-api-v10';
+const CACHE_NAME = 'pujopoth-pwa-v11';
+const API_CACHE_NAME = 'pujopoth-api-v11';
 
 const STATIC_ASSETS = [
   '/',
@@ -37,29 +37,30 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // API Requests: Network-First with Cache Fallback (GET requests only, excluding auth/verification)
+  // API Requests: Stale-While-Revalidate (GET requests only, excluding auth/verification)
   if ((url.pathname.startsWith('/api/') || url.hostname.includes('onrender.com')) && event.request.method === 'GET' && !url.pathname.includes('/verify')) {
     event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          if (response.ok) {
-            const clonedResponse = response.clone();
-            caches.open(API_CACHE_NAME).then((cache) => {
-              cache.put(event.request, clonedResponse);
+      caches.open(API_CACHE_NAME).then((cache) => {
+        return cache.match(event.request).then((cachedResponse) => {
+          const fetchPromise = fetch(event.request)
+            .then((networkResponse) => {
+              if (networkResponse.ok) {
+                cache.put(event.request, networkResponse.clone());
+              }
+              return networkResponse;
+            })
+            .catch(() => {
+              if (!cachedResponse) {
+                return new Response(
+                  JSON.stringify({ error: 'Offline mode active. No cached data available.' }),
+                  { headers: { 'Content-Type': 'application/json' } }
+                );
+              }
+              return cachedResponse;
             });
-          }
-          return response;
-        })
-        .catch(async () => {
-          const cachedResponse = await caches.match(event.request);
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          return new Response(
-            JSON.stringify({ error: 'Offline mode active. Using cached data.' }),
-            { headers: { 'Content-Type': 'application/json' } }
-          );
-        })
+          return cachedResponse || fetchPromise;
+        });
+      })
     );
     return;
   }

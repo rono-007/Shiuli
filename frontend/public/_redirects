@@ -1,5 +1,2 @@
-# Cloudflare Pages / SPA Client-side Routing & API Rewrites
-
-/api/*    https://shiuli-backend.onrender.com/api/:splat    200
-/admin/*  https://shiuli-backend.onrender.com/admin/:splat  200
-/*        /index.html                                        200
+# Cloudflare SPA Routing
+/*    /index.html    200

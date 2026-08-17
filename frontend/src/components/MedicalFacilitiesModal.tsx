@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Hospital, Pill, Phone, MapPin, Search, ExternalLink, Loader2, Navigation, AlertCircle } from 'lucide-react';
+import { X, Hospital, Pill, Phone, MapPin, Search, Loader2, Navigation, AlertCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 interface MedicalFacility {

@@ -3,7 +3,7 @@ import HeroSection from './components/HeroSection';
 import PujaGuideSection from './components/PujaGuideSection';
 import SectionDivider from './components/SectionDivider';
 
-import { Heart, WifiOff, Mail, MapPin, Send, CheckCircle2, HelpCircle, Bug, Star } from 'lucide-react';
+import { Heart, WifiOff, Mail, MapPin, Send, CheckCircle2, HelpCircle, Bug, Star, LogOut } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { InitialLanguageModal } from './components/InitialLanguageModal';
 import { LanguageToggle } from './components/LanguageToggle';
@@ -444,6 +444,19 @@ function AppContent() {
             {/* Right: Language Selector & Navigation */}
             <div className="flex items-center gap-3 pointer-events-auto">
               <LanguageToggle />
+              <button
+                onClick={() => {
+                  localStorage.removeItem('shiuli_beta_verified');
+                  localStorage.removeItem('shiuli_beta_email');
+                  localStorage.removeItem('shiuli_beta_code');
+                  window.location.reload();
+                }}
+                className="bg-[#8B1E2D]/95 hover:bg-[#A82531] text-[#FAF6ED] border border-[#D4A24C]/40 px-3 py-1.5 rounded-full text-xs font-serif font-bold shadow-md transition-all active:scale-95 cursor-pointer flex items-center gap-1"
+                title={isBn ? 'লগআউট' : 'Logout'}
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>{isBn ? 'লগআউট' : 'Logout'}</span>
+              </button>
               {view !== 'home' && (
                 <button
                   onClick={handleBack}

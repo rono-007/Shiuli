@@ -1,5 +1,5 @@
-const CACHE_NAME = 'pujopoth-pwa-v9';
-const API_CACHE_NAME = 'pujopoth-api-v9';
+const CACHE_NAME = 'pujopoth-pwa-v10';
+const API_CACHE_NAME = 'pujopoth-api-v10';
 
 const STATIC_ASSETS = [
   '/',
@@ -37,8 +37,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // API Requests: Network-First with Cache Fallback
-  if (url.pathname.startsWith('/api/') || url.hostname.includes('onrender.com')) {
+  // API Requests: Network-First with Cache Fallback (GET requests only, excluding auth/verification)
+  if ((url.pathname.startsWith('/api/') || url.hostname.includes('onrender.com')) && event.request.method === 'GET' && !url.pathname.includes('/verify')) {
     event.respondWith(
       fetch(event.request)
         .then((response) => {

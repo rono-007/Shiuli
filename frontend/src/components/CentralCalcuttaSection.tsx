@@ -23,8 +23,6 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<'cards' | 'map'>('cards');
   const [selectedPandalName, setSelectedPandalName] = useState<string | null>(null);
-  const [dataSource, setDataSource] = useState<'fastapi' | 'fallback' | null>(null);
-  const [errorInfo, setErrorInfo] = useState<string | null>(null);
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
 
   useEffect(() => {
@@ -36,7 +34,6 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
 
   const fetchData = async () => {
     setLoading(true);
-    setErrorInfo(null);
 
     const CACHE_KEY = 'pujopath_central_pandals_cache';
     const CACHE_TIME_KEY = 'pujopath_central_pandals_cache_time';
@@ -49,7 +46,6 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
       
       if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
         setPandals(cachedData);
-        setDataSource('fastapi');
         setLoading(false);
         return;
       }
@@ -65,7 +61,6 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
       }
       const data = await response.json();
       setPandals(data);
-      setDataSource('fastapi');
 
       // Save to localStorage cache
       try {
@@ -77,8 +72,6 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
     } catch (e: any) {
       console.warn('FastAPI backend not reachable, using local fallback:', e);
       setPandals(fallbackData as Pandal[]);
-      setDataSource('fallback');
-      setErrorInfo('ব্যাকএন্ড সার্ভার অফলাইন, লোকাল ডাটা ব্যবহৃত হচ্ছে');
     } finally {
       setLoading(false);
     }

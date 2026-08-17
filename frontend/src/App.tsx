@@ -3,7 +3,7 @@ import HeroSection from './components/HeroSection';
 import PujaGuideSection from './components/PujaGuideSection';
 import SectionDivider from './components/SectionDivider';
 
-import { Heart, WifiOff, Mail, MapPin, Send, CheckCircle2, HelpCircle, Bug, Star, LogOut, User } from 'lucide-react';
+import { Heart, WifiOff, Mail, MapPin, Send, CheckCircle2, HelpCircle, Bug, Star, LogOut, User, ChevronDown, ChevronUp } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { InitialLanguageModal } from './components/InitialLanguageModal';
 import { LanguageToggle } from './components/LanguageToggle';
@@ -87,6 +87,7 @@ function FooterFeedbackCard() {
   const { language } = useLanguage();
   const isBn = language === 'bn';
 
+  const [isExpanded, setIsExpanded] = useState(false);
   const [category, setCategory] = useState<'query' | 'bug' | 'review'>('query');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -155,143 +156,158 @@ function FooterFeedbackCard() {
   };
 
   return (
-    <div className="my-8 max-w-xl mx-auto text-center bg-[#2A090C]/95 border border-[#E5B05C]/35 p-6 sm:p-7 rounded-3xl shadow-2xl backdrop-blur-md">
-      <h4 className="text-base sm:text-lg font-bold text-[#E5B05C] mb-1.5 font-serif flex items-center justify-center gap-2">
-        <span>❁</span>
-        <span>
-          {isBn
-            ? 'প্রশ্ন, বাগ রিপোর্ট বা রিভিউ পাঠান'
-            : 'Queries, Bug Reports & Reviews'}
-        </span>
-        <span>❁</span>
-      </h4>
-
-      <p className="text-xs sm:text-sm text-[#F7F2E7]/80 mb-5 font-serif max-w-md mx-auto leading-relaxed">
-        {isBn
-          ? 'কোনো প্রশ্ন, অ্যাপের কোনো ত্রুটি (Bug) বা আপনার মূল্যবান মতামত আমাদের সরাসরি জানান।'
-          : 'Have any questions, found a bug, or want to share your review? Let me know below!'}
-      </p>
-
-      {isSubmitted ? (
-        <div className="bg-emerald-950/60 border border-emerald-500/50 rounded-2xl p-5 text-center animate-in zoom-in-95 duration-200">
-          <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
-          <h5 className="text-sm font-bold text-emerald-200 font-serif mb-1">
-            {isBn ? 'আপনার বার্তা সফলভাবে গৃহীত হয়েছে!' : 'Thank You! Message Received'}
-          </h5>
-          <p className="text-xs text-emerald-300/80 mb-4 font-sans">
+    <div className="my-8 max-w-xl mx-auto text-center bg-[#2A090C]/95 border border-[#E5B05C]/35 rounded-3xl shadow-2xl backdrop-blur-md overflow-hidden transition-all duration-300">
+      {/* Header / Toggle Button */}
+      <button 
+        onClick={() => setIsExpanded(!isExpanded)}
+        className="w-full flex flex-col items-center justify-center p-6 sm:p-7 hover:bg-[#3D0D11]/50 transition-colors cursor-pointer"
+      >
+        <h4 className="text-base sm:text-lg font-bold text-[#E5B05C] mb-1.5 font-serif flex items-center justify-center gap-2">
+          <span>❁</span>
+          <span>
             {isBn
-              ? 'আমরা শীঘ্রই আপনার বার্তার পর্যালোচনা করে প্রয়োজনীয় ব্যবস্থা গ্রহণ করব।'
-              : 'Our team will review your feedback and get back to you if needed.'}
-          </p>
-          <button
-            type="button"
-            onClick={() => setIsSubmitted(false)}
-            className="text-xs text-[#E5B05C] underline hover:text-white font-serif transition-colors cursor-pointer"
-          >
-            {isBn ? 'আরেকটি বার্তা পাঠান' : 'Send another response'}
-          </button>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-3.5 text-left font-sans">
+              ? 'প্রশ্ন, বাগ রিপোর্ট বা রিভিউ পাঠান'
+              : 'Queries, Bug Reports & Reviews'}
+          </span>
+          <span>❁</span>
+        </h4>
+        <p className="text-xs sm:text-sm text-[#F7F2E7]/80 mb-2 font-serif max-w-md mx-auto leading-relaxed">
+          {isBn
+            ? 'কোনো প্রশ্ন, অ্যাপের কোনো ত্রুটি (Bug) বা আপনার মূল্যবান মতামত আমাদের সরাসরি জানান।'
+            : 'Have any questions, found a bug, or want to share your review? Let me know below!'}
+        </p>
+        {isExpanded ? (
+          <ChevronUp className="w-5 h-5 text-[#E5B05C]/70" />
+        ) : (
+          <ChevronDown className="w-5 h-5 text-[#E5B05C]/70" />
+        )}
+      </button>
 
-          {/* Category Selector Pills */}
-          <div className="flex items-center justify-center gap-2 flex-wrap">
-            {[
-              { id: 'query', label: isBn ? 'প্রশ্ন (Query)' : 'Query', icon: HelpCircle },
-              { id: 'bug', label: isBn ? 'বাগ রিপোর্ট' : 'Bug Report', icon: Bug },
-              { id: 'review', label: isBn ? 'রিভিউ ও রেটিং' : 'Review', icon: Star }
-            ].map((tab) => {
-              const Icon = tab.icon;
-              const active = category === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setCategory(tab.id as 'query' | 'bug' | 'review')}
-                  className={`px-3.5 py-1.5 rounded-full text-xs font-serif font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${active
-                      ? 'bg-[#E5B05C] text-[#2A090C] shadow-md font-bold'
-                      : 'bg-[#1A0507] border border-[#581318] text-[#F7F2E7]/70 hover:border-[#E5B05C]/40 hover:text-[#F7F2E7]'
-                    }`}
-                >
-                  <Icon className="w-3.5 h-3.5" />
-                  <span>{tab.label}</span>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Star Rating if Review is selected */}
-          {category === 'review' && (
-            <div className="flex items-center justify-center gap-1.5 py-1">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <button
-                  key={star}
-                  type="button"
-                  onClick={() => setRating(star)}
-                  className="p-1 cursor-pointer transition-transform hover:scale-125"
-                  aria-label={`Rate ${star} stars`}
-                >
-                  <Star
-                    className={`w-5 h-5 ${star <= rating ? 'fill-[#E5B05C] text-[#E5B05C]' : 'text-[#F7F2E7]/30'
-                      }`}
-                  />
-                </button>
-              ))}
+      {/* Expanded Content */}
+      {isExpanded && (
+        <div className="px-6 sm:px-7 pb-6 sm:pb-7 animate-in slide-in-from-top-2 fade-in duration-200">
+          {isSubmitted ? (
+            <div className="bg-emerald-950/60 border border-emerald-500/50 rounded-2xl p-5 text-center animate-in zoom-in-95 duration-200">
+              <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
+              <h5 className="text-sm font-bold text-emerald-200 font-serif mb-1">
+                {isBn ? 'আপনার বার্তা সফলভাবে গৃহীত হয়েছে!' : 'Thank You! Message Received'}
+              </h5>
+              <p className="text-xs text-emerald-300/80 mb-4 font-sans">
+                {isBn
+                  ? 'আমরা শীঘ্রই আপনার বার্তার পর্যালোচনা করে প্রয়োজনীয় ব্যবস্থা গ্রহণ করব।'
+                  : 'Our team will review your feedback and get back to you if needed.'}
+              </p>
+              <button
+                type="button"
+                onClick={() => setIsSubmitted(false)}
+                className="text-xs text-[#E5B05C] underline hover:text-white font-serif transition-colors cursor-pointer"
+              >
+                {isBn ? 'আরেকটি বার্তা পাঠান' : 'Send another response'}
+              </button>
             </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-3.5 text-left font-sans mt-2">
+
+              {/* Category Selector Pills */}
+              <div className="flex items-center justify-center gap-2 flex-wrap">
+                {[
+                  { id: 'query', label: isBn ? 'প্রশ্ন (Query)' : 'Query', icon: HelpCircle },
+                  { id: 'bug', label: isBn ? 'বাগ রিপোর্ট' : 'Bug Report', icon: Bug },
+                  { id: 'review', label: isBn ? 'রিভিউ ও রেটিং' : 'Review', icon: Star }
+                ].map((tab) => {
+                  const Icon = tab.icon;
+                  const active = category === tab.id;
+                  return (
+                    <button
+                      key={tab.id}
+                      type="button"
+                      onClick={() => setCategory(tab.id as 'query' | 'bug' | 'review')}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-serif font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${active
+                        ? 'bg-[#E5B05C] text-[#2A090C] shadow-md font-bold'
+                        : 'bg-[#1A0507] border border-[#581318] text-[#F7F2E7]/70 hover:border-[#E5B05C]/40 hover:text-[#F7F2E7]'
+                        }`}
+                    >
+                      <Icon className="w-3.5 h-3.5" />
+                      <span>{tab.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Star Rating if Review is selected */}
+              {category === 'review' && (
+                <div className="flex items-center justify-center gap-1.5 py-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setRating(star)}
+                      className="p-1 cursor-pointer transition-transform hover:scale-125"
+                      aria-label={`Rate ${star} stars`}
+                    >
+                      <Star
+                        className={`w-5 h-5 ${star <= rating ? 'fill-[#E5B05C] text-[#E5B05C]' : 'text-[#F7F2E7]/30'
+                          }`}
+                      />
+                    </button>
+                  ))}
+                </div>
+              )}
+
+              {/* Email Input */}
+              <div>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={isBn ? 'আপনার ইমেইল আইডি...' : 'Your email address...'}
+                  className="w-full bg-[#1A0507] border border-[#581318] text-[#F7F2E7] text-xs sm:text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-[#E5B05C] font-serif placeholder:text-[#F7F2E7]/40 shadow-inner"
+                />
+              </div>
+
+              {/* Message Textarea */}
+              <div>
+                <textarea
+                  required
+                  rows={3}
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder={
+                    category === 'bug'
+                      ? (isBn ? 'কোথায় এবং কী সমস্যা হচ্ছে সংক্ষেপে লিখুন...' : 'Describe the bug or issue you encountered...')
+                      : category === 'review'
+                        ? (isBn ? 'আপনার অভিজ্ঞতা ও মতামত লিখুন...' : 'Share your thoughts and review about Shiuli...')
+                        : (isBn ? 'আপনার প্রশ্ন বা জিজ্ঞাস্য লিখুন...' : 'Write your query or question...')
+                  }
+                  className="w-full bg-[#1A0507] border border-[#581318] text-[#F7F2E7] text-xs sm:text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-[#E5B05C] font-serif placeholder:text-[#F7F2E7]/40 shadow-inner resize-none"
+                />
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full py-3 px-5 rounded-xl bg-[#7A1F26] hover:bg-[#941F28] border border-[#E5B05C]/50 text-[#FAF6ED] font-serif font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
+              >
+                {isSubmitting ? (
+                  <span>{isBn ? 'পাঠানো হচ্ছে...' : 'Sending...'}</span>
+                ) : (
+                  <>
+                    <Send className="w-3.5 h-3.5" />
+                    <span>
+                      {category === 'bug'
+                        ? (isBn ? 'বাগ রিপোর্ট পাঠান' : 'Submit Bug Report')
+                        : category === 'review'
+                          ? (isBn ? 'রিভিউ জমা দিন' : 'Submit Review')
+                          : (isBn ? 'বার্তা পাঠান' : 'Send Query')}
+                    </span>
+                  </>
+                )}
+              </button>
+            </form>
           )}
-
-          {/* Email Input */}
-          <div>
-            <input
-              type="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder={isBn ? 'আপনার ইমেইল আইডি...' : 'Your email address...'}
-              className="w-full bg-[#1A0507] border border-[#581318] text-[#F7F2E7] text-xs sm:text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-[#E5B05C] font-serif placeholder:text-[#F7F2E7]/40 shadow-inner"
-            />
-          </div>
-
-          {/* Message Textarea */}
-          <div>
-            <textarea
-              required
-              rows={3}
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              placeholder={
-                category === 'bug'
-                  ? (isBn ? 'কোথায় এবং কী সমস্যা হচ্ছে সংক্ষেপে লিখুন...' : 'Describe the bug or issue you encountered...')
-                  : category === 'review'
-                    ? (isBn ? 'আপনার অভিজ্ঞতা ও মতামত লিখুন...' : 'Share your thoughts and review about Shiuli...')
-                    : (isBn ? 'আপনার প্রশ্ন বা জিজ্ঞাস্য লিখুন...' : 'Write your query or question...')
-              }
-              className="w-full bg-[#1A0507] border border-[#581318] text-[#F7F2E7] text-xs sm:text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-[#E5B05C] font-serif placeholder:text-[#F7F2E7]/40 shadow-inner resize-none"
-            />
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 px-5 rounded-xl bg-[#7A1F26] hover:bg-[#941F28] border border-[#E5B05C]/50 text-[#FAF6ED] font-serif font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
-          >
-            {isSubmitting ? (
-              <span>{isBn ? 'পাঠানো হচ্ছে...' : 'Sending...'}</span>
-            ) : (
-              <>
-                <Send className="w-3.5 h-3.5" />
-                <span>
-                  {category === 'bug'
-                    ? (isBn ? 'বাগ রিপোর্ট পাঠান' : 'Submit Bug Report')
-                    : category === 'review'
-                      ? (isBn ? 'রিভিউ জমা দিন' : 'Submit Review')
-                      : (isBn ? 'বার্তা পাঠান' : 'Send Query')}
-                </span>
-              </>
-            )}
-          </button>
-        </form>
+        </div>
       )}
     </div>
   );
@@ -389,7 +405,7 @@ function AppContent() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink">
+    <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink overflow-x-hidden">
       <ModalSequenceController
         showBetaNotice={showBetaNotice}
         onNoticeClosed={() => setShowBetaNotice(false)}
@@ -542,7 +558,7 @@ function AppContent() {
 
             {/* Footer Design - Mobile & Desktop Responsive Backgrounds */}
             <footer
-              className="bg-[#3D0D11] text-[#F7F2E7] -mt-12 sm:-mt-16 md:-mt-20 pt-36 sm:pt-44 md:pt-48 lg:pt-56 pb-12 sm:pb-16 relative z-20 font-serif bg-top bg-no-repeat bg-[url('/footer-mobile.png')] md:bg-[url('/footer.png')] min-h-[180vw] md:min-h-[52.6vw]"
+              className="bg-[#3D0D11] text-[#F7F2E7] -mt-12 sm:-mt-16 md:-mt-20 pt-36 sm:pt-44 md:pt-48 lg:pt-56 pb-6 sm:pb-8 relative z-20 font-serif bg-top bg-no-repeat bg-[url('/footer-mobile.png')] md:bg-[url('/footer.png')]"
               style={{
                 backgroundColor: '#3D0D11',
                 backgroundSize: '100% auto',
@@ -672,7 +688,7 @@ function AppContent() {
                 <FooterFeedbackCard />
 
                 {/* Popular Pujas Chips Row */}
-                <div className="border-t border-[#581318] pt-6 mb-8">
+                <div className="border-t border-[#581318] pt-6 mt-4">
                   <p className="text-xs font-bold text-[#E5B05C] mb-3 font-serif">
                     {isBn ? 'জনপ্রিয় পুজো পরিক্রমা:' : 'Popular Puja Tours:'}
                   </p>
@@ -697,18 +713,6 @@ function AppContent() {
                         ❁ {puja.name}
                       </button>
                     ))}
-                  </div>
-                </div>
-
-                {/* Bottom Copyright & Credits - Positioned below the gold line of footer artwork */}
-                <div className="mt-[16vw] sm:mt-[14vw] md:mt-[12vw] lg:mt-[10vw] pt-2 pb-2 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F7F2E7]/85 font-serif">
-                  <div>
-                    {isBn ? '© 2024 শিউলি | সর্বস্বত্ব সংরক্ষিত' : '© 2024 Shiuli | All Rights Reserved'}
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span>{isBn ? 'ডিজাইন ও ডেভেলপ করা হয়েছে' : 'Designed & Developed with'}</span>
-                    <Heart className="w-3.5 h-3.5 fill-[#C86040] text-[#C86040] inline mx-0.5" />
-                    <span>{isBn ? 'কলকাতার জন্য' : 'for Kolkata'}</span>
                   </div>
                 </div>
 

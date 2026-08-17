@@ -25,8 +25,6 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<'cards' | 'map'>('cards');
   const [selectedPandalName, setSelectedPandalName] = useState<string | null>(null);
-  const [dataSource, setDataSource] = useState<'fastapi' | 'fallback' | null>('fallback');
-  const [errorInfo, setErrorInfo] = useState<string | null>(null);
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
   const [expandedPandalIdx, setExpandedPandalIdx] = useState<number | null>(null);
   const detailRef = useRef<HTMLDivElement>(null);
@@ -40,7 +38,6 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
 
   const fetchData = async () => {
     setLoading(true);
-    setErrorInfo(null);
 
     const CACHE_KEY = 'pujopath_south_pandals_cache';
     const CACHE_TIME_KEY = 'pujopath_south_pandals_cache_time';
@@ -55,8 +52,6 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
       if (cachedSource === 'fastapi' && cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
         if (Array.isArray(cachedData) && cachedData.length > 0) {
           setPandals(cachedData);
-          setDataSource('fastapi');
-          setErrorInfo(null);
           setLoading(false);
           return;
         }
@@ -74,8 +69,6 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
       const data = await response.json();
       if (Array.isArray(data) && data.length > 0) {
         setPandals(data);
-        setDataSource('fastapi');
-        setErrorInfo(null);
 
         // Save to localStorage cache
         try {
@@ -87,15 +80,11 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
         }
       } else {
         setPandals(fallbackData as Pandal[]);
-        setDataSource('fallback');
-        setErrorInfo('ব্যাকএন্ড ডাটা খালি, লোকাল ডাটা ব্যবহৃত হচ্ছে');
         localStorage.setItem('pujopath_south_pandals_cache_source', 'fallback');
       }
     } catch (e: any) {
       console.warn('FastAPI backend not reachable, using local fallback:', e);
       setPandals(fallbackData as Pandal[]);
-      setDataSource('fallback');
-      setErrorInfo('ব্যাকএন্ড সার্ভার অফলাইন, লোকাল ডাটা ব্যবহৃত হচ্ছে');
       try {
         localStorage.setItem('pujopath_south_pandals_cache_source', 'fallback');
       } catch (err) { }

@@ -439,23 +439,6 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
 
           {/* Source Indicator / Refresh */}
           <div className="flex flex-col items-start md:items-end gap-3">
-            <div className="flex items-center gap-2">
-              <span className="text-[9px] font-mono tracking-wider uppercase text-ink/40">উৎস:</span>
-              {loading ? (
-                <span className="h-2 w-2 rounded-full bg-lamp animate-pulse"></span>
-              ) : dataSource === 'fastapi' ? (
-                <span className="flex items-center gap-1.5 bg-emerald-500/10 text-emerald-700 px-2 py-0.5 border border-emerald-500/20 text-[9px] font-mono rounded-full">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
-                  FastAPI backend (সচল)
-                </span>
-              ) : (
-                <span className="flex items-center gap-1.5 bg-[#8B1E2D]/5 text-bengali-red px-2 py-0.5 border border-bengali-red/20 text-[9px] font-mono rounded-full" title={errorInfo || ''}>
-                  <span className="h-1.5 w-1.5 rounded-full bg-bengali-red animate-pulse"></span>
-                  লোকাল ডাটা (অফলাইন)
-                </span>
-              )}
-            </div>
-
             <button
               onClick={fetchData}
               disabled={loading}

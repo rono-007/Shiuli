@@ -169,7 +169,7 @@ function FooterFeedbackCard() {
       <p className="text-xs sm:text-sm text-[#F7F2E7]/80 mb-5 font-serif max-w-md mx-auto leading-relaxed">
         {isBn
           ? 'কোনো প্রশ্ন, অ্যাপের কোনো ত্রুটি (Bug) বা আপনার মূল্যবান মতামত আমাদের সরাসরি জানান।'
-          : 'Have any questions, found a bug, or want to share your review? Let us know below!'}
+          : 'Have any questions, found a bug, or want to share your review? Let me know below!'}
       </p>
 
       {isSubmitted ? (
@@ -623,7 +623,7 @@ function AppContent() {
                   {/* Column 4: যোগাযোগ & সোশ্যাল লিঙ্ক */}
                   <div className="space-y-4 sm:col-span-2 lg:col-span-1">
                     <h3 className="text-sm sm:text-base font-bold text-[#E5B05C] tracking-wide font-serif">
-                      {isBn ? 'যোগাযোগ' : 'Contact Us'}
+                      {isBn ? 'যোগাযোগ' : 'Contact Me'}
                     </h3>
                     <ul className="space-y-2.5 text-xs sm:text-sm text-[#F7F2E7]/85 font-serif">
                       <li className="flex items-center gap-2.5">

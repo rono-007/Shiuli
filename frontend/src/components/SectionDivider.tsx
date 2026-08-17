@@ -12,6 +12,7 @@ const SectionDivider: React.FC = () => {
         padding: 0,
         // Ensure the container height matches the image height
         display: 'flex',
+        transform: 'translateY(-2px)',
       }}
     >
       {/* 

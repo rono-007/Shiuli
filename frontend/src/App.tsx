@@ -4,7 +4,7 @@ import PujaGuideSection from './components/PujaGuideSection';
 import SectionDivider from './components/SectionDivider';
 
 import { Heart, WifiOff, Mail, Phone, MapPin } from 'lucide-react';
-import { LanguageProvider } from './context/LanguageContext';
+import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { InitialLanguageModal } from './components/InitialLanguageModal';
 import { LanguageToggle } from './components/LanguageToggle';
 import BetaModal from './components/BetaModal';
@@ -22,9 +22,9 @@ const MedicalFacilitiesSection = lazy(() => import('./components/MedicalFaciliti
 function SectionLoader() {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center bg-[#FAF6ED] font-serif">
-      <img 
-        src="/shiuli2.png" 
-        alt="Loading" 
+      <img
+        src="/shiuli2.png"
+        alt="Loading"
         className="h-16 w-16 object-contain mb-4"
         style={{
           animation: 'shiuli-spin 1.5s linear infinite',
@@ -41,6 +41,9 @@ type ViewType = 'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities'
 const VALID_VIEWS: ViewType[] = ['home', 'north', 'south', 'central', 'bonedi', 'facilities', 'route-planner', 'medical', 'admin'];
 
 function AppContent() {
+  const { language } = useLanguage();
+  const isBn = language === 'bn';
+
   const [view, setViewState] = useState<ViewType>(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.has('admin')) return 'admin';
@@ -118,7 +121,7 @@ function AppContent() {
     <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink">
       <InitialLanguageModal />
       <BetaModal />
-      
+
       {/* Sticky Floating Beta Badge */}
       <div className="fixed bottom-4 right-4 z-40 bg-[#7A1F26]/95 text-[#FAF6ED] border border-[#D4A24C]/40 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold shadow-xl flex items-center gap-2 backdrop-blur-md select-none pointer-events-auto">
         <span className="flex h-2 w-2 relative">
@@ -143,14 +146,14 @@ function AppContent() {
           <nav className="fixed top-0 left-0 right-0 p-6 md:p-8 z-40 flex justify-between items-start pointer-events-none text-paper">
 
             {/* Left: Brand Logo */}
-            <div 
+            <div
               onClick={() => changeView('home')}
               className="pointer-events-auto cursor-pointer group flex items-center gap-2"
             >
-              <img 
-                src="/logo-shiuli.png" 
-                alt="Shiuli Logo" 
-                className="h-12 sm:h-16 md:h-20 w-auto object-contain transition-transform group-hover:scale-105 drop-shadow-md" 
+              <img
+                src="/logo-shiuli.png"
+                alt="Shiuli Logo"
+                className="h-12 sm:h-16 md:h-20 w-auto object-contain transition-transform group-hover:scale-105 drop-shadow-md"
               />
             </div>
 
@@ -208,8 +211,8 @@ function AppContent() {
 
                 {/* CONTENT SECTION */}
                 <div className="w-full">
-                  <PujaGuideSection 
-                    onSelectRoutePlanner={() => changeView('route-planner')} 
+                  <PujaGuideSection
+                    onSelectRoutePlanner={() => changeView('route-planner')}
                     onSelectFacilities={() => changeView('facilities')}
                     onSelectMedical={() => changeView('medical')}
                   />
@@ -219,115 +222,194 @@ function AppContent() {
               </>
             )}
 
-            {/* Footer Design - Exact Match to Screenshot */}
-            <footer className="bg-[#3D0D11] border-t border-[#6B181E] text-[#F7F2E7] pt-14 pb-8 relative z-10 font-serif">
-              <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
-                
+            {/* Footer Design - Mobile & Desktop Responsive Backgrounds */}
+            <footer 
+              className="bg-[#3D0D11] text-[#F7F2E7] pt-36 sm:pt-44 md:pt-48 lg:pt-56 pb-12 sm:pb-16 relative z-20 font-serif bg-top bg-no-repeat bg-[url('/footer-mobile.png')] md:bg-[url('/footer.png')] min-h-[180vw] md:min-h-[52.6vw]"
+              style={{
+                backgroundColor: '#3D0D11',
+                backgroundSize: '100% auto',
+              }}
+            >
+              <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 pt-4 sm:pt-6">
+
                 {/* Main 4-Column Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-10 items-start">
-                  
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12 mb-10 items-start">
+
                   {/* Column 1: Brand Logo & Tagline */}
-                  <div className="space-y-5">
+                  <div className="space-y-4 sm:col-span-2 lg:col-span-1">
                     <div className="flex items-center gap-3">
-                      <img 
-                        src="/logo-shiuli.png" 
-                        alt="Shiuli Logo" 
-                        className="h-14 sm:h-16 w-auto object-contain" 
+                      <img
+                        src="/logo-shiuli.png"
+                        alt="Shiuli Logo"
+                        className="h-12 sm:h-16 w-auto object-contain"
                       />
                       <div>
-                        <h2 className="text-2xl font-bold text-[#FFFFFF] tracking-tight leading-none mb-1 font-serif">
-                          শিউলি
+                        <h2 className="text-xl sm:text-2xl font-bold text-[#FFFFFF] tracking-tight leading-none mb-1 font-serif">
+                          {isBn ? 'শিউলি' : 'Shiuli'}
                         </h2>
-                        <p className="text-xs text-[#E5B05C] font-medium font-serif">
-                          কলকাতার পুজো সঙ্গী
+                        <p className="text-[11px] sm:text-xs text-[#E5B05C] font-medium font-serif">
+                          {isBn ? 'কলকাতার পুজো সঙ্গী' : 'Kolkata Puja Companion'}
                         </p>
                       </div>
                     </div>
 
                     <p className="text-xs sm:text-sm text-[#F7F2E7]/85 leading-relaxed max-w-xs font-serif">
-                      কলকাতার পুজোকে আরও কাছে থেকে আনতে ও জানতে আমাদের সাথে থাকুন।
+                      {isBn 
+                        ? 'কলকাতার ঐতিহ্যবাহী দুর্গাপুজো পরিক্রমা, প্যান্ডেল গাইড ও সেরা রুট প্ল্যানিংয়ের ডিজিটাল মাধ্যম।' 
+                        : 'Digital companion for exploring historic Durga Pujas, pandal guides, and smart route planning in Kolkata.'}
                     </p>
-
-                    {/* Social Icons */}
-                    <div className="flex items-center gap-3 pt-1">
-                      <a href="#" className="w-9 h-9 rounded-full bg-[#2A090C] hover:bg-[#581318] flex items-center justify-center text-[#F7F2E7] transition-all border border-[#581318]" aria-label="Facebook">
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
-                      </a>
-                      <a href="#" className="w-9 h-9 rounded-full bg-[#2A090C] hover:bg-[#581318] flex items-center justify-center text-[#F7F2E7] transition-all border border-[#581318]" aria-label="Instagram">
-                        <svg className="w-4 h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-                      </a>
-                      <a href="#" className="w-9 h-9 rounded-full bg-[#2A090C] hover:bg-[#581318] flex items-center justify-center text-[#F7F2E7] transition-all border border-[#581318]" aria-label="YouTube">
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"/><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" fill="#2A090C"/></svg>
-                      </a>
-                      <a href="#" className="w-9 h-9 rounded-full bg-[#2A090C] hover:bg-[#581318] flex items-center justify-center text-[#F7F2E7] transition-all border border-[#581318]" aria-label="Twitter">
-                        <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"/></svg>
-                      </a>
-                    </div>
                   </div>
 
-                  {/* Column 2: দ্রুত লিঙ্ক */}
-                  <div className="space-y-4">
-                    <h3 className="text-base font-bold text-[#FFFFFF] tracking-wide font-serif">
-                      দ্রুত লিঙ্ক
+                  {/* Column 2: পুজো অঞ্চল গাইড */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm sm:text-base font-bold text-[#E5B05C] tracking-wide font-serif">
+                      {isBn ? 'পুজো অঞ্চল গাইড' : 'Puja Zone Guide'}
                     </h3>
-                    <ul className="space-y-2.5 text-xs sm:text-sm text-[#F7F2E7]/80 font-serif">
-                      <li><button onClick={() => changeView('home')} className="hover:text-[#E5B05C] transition-colors">হোম</button></li>
-                      <li><a href="#pujaparba" className="hover:text-[#E5B05C] transition-colors">পুজোপার্ব</a></li>
-                      <li><a href="#stories" className="hover:text-[#E5B05C] transition-colors">কলকাতার গল্প</a></li>
-                      <li><a href="#search" className="hover:text-[#E5B05C] transition-colors">সন্ধান</a></li>
-                      <li><a href="#gallery" className="hover:text-[#E5B05C] transition-colors">গ্যালারি</a></li>
-                      <li><a href="#contact" className="hover:text-[#E5B05C] transition-colors">যোগাযোগ</a></li>
+                    <ul className="space-y-2 text-xs sm:text-sm text-[#F7F2E7]/85 font-serif">
+                      <li><button onClick={() => changeView('north')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'উত্তর কলকাতা পরিক্রমা' : 'North Kolkata Tour'}</button></li>
+                      <li><button onClick={() => changeView('south')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'দক্ষিণ কলকাতা পরিক্রমা' : 'South Kolkata Tour'}</button></li>
+                      <li><button onClick={() => changeView('central')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'মধ্য কলকাতা পরিক্রমা' : 'Central Kolkata Tour'}</button></li>
+                      <li><button onClick={() => changeView('bonedi')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'ঐতিহ্যবাহী বনেদি বাড়ির পুজো' : 'Traditional Bonedi Bari Pujas'}</button></li>
+                      <li><button onClick={() => changeView('route-planner')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'স্মার্ট রুট প্ল্যানার' : 'Smart Route Planner'}</button></li>
                     </ul>
                   </div>
 
-                  {/* Column 3: গুরুত্বপূর্ণ লিঙ্ক */}
-                  <div className="space-y-4">
-                    <h3 className="text-base font-bold text-[#FFFFFF] tracking-wide font-serif">
-                      গুরুত্বপূর্ণ লিঙ্ক
+                  {/* Column 3: সেবা ও সহায়িকা */}
+                  <div className="space-y-3">
+                    <h3 className="text-sm sm:text-base font-bold text-[#E5B05C] tracking-wide font-serif">
+                      {isBn ? 'সেবা ও সহায়িকা' : 'Services & Guide'}
                     </h3>
-                    <ul className="space-y-2.5 text-xs sm:text-sm text-[#F7F2E7]/80 font-serif">
-                      <li><a href="#" className="hover:text-[#E5B05C] transition-colors">প্রাইভেসি পলিসি</a></li>
-                      <li><a href="#" className="hover:text-[#E5B05C] transition-colors">টার্মস & কন্ডিশনস</a></li>
-                      <li><a href="#" className="hover:text-[#E5B05C] transition-colors">FAQ</a></li>
-                      <li><a href="#" className="hover:text-[#E5B05C] transition-colors">সাইট ম্যাপ</a></li>
+                    <ul className="space-y-2 text-xs sm:text-sm text-[#F7F2E7]/85 font-serif">
+                      <li><button onClick={() => changeView('medical')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'জরুরি চিকিৎসা সেবা' : 'Emergency Medical Services'}</button></li>
+                      <li><button onClick={() => changeView('facilities')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'রেস্তোরাঁ ও সুবিধা' : 'Food & Amenities'}</button></li>
+                      <li>
+                        <button 
+                          onClick={() => {
+                            changeView('home');
+                            setTimeout(() => {
+                              document.getElementById('stories')?.scrollIntoView({ behavior: 'smooth' });
+                            }, 100);
+                          }} 
+                          className="hover:text-[#E5B05C] transition-colors text-left"
+                        >
+                          {isBn ? 'কলকাতার পুজো ইতিহাস' : 'Kolkata Puja History'}
+                        </button>
+                      </li>
+                      <li><a href="#" className="hover:text-[#E5B05C] transition-colors">{isBn ? 'প্রাইভেসি পলিসি' : 'Privacy Policy'}</a></li>
+                      <li><a href="#" className="hover:text-[#E5B05C] transition-colors">{isBn ? 'টার্মস & কন্ডিশনস' : 'Terms & Conditions'}</a></li>
                     </ul>
                   </div>
 
-                  {/* Column 4: যোগাযোগ */}
-                  <div className="space-y-4">
-                    <h3 className="text-base font-bold text-[#FFFFFF] tracking-wide font-serif">
-                      যোগাযোগ
+                  {/* Column 4: যোগাযোগ & সোশ্যাল লিঙ্ক */}
+                  <div className="space-y-4 sm:col-span-2 lg:col-span-1">
+                    <h3 className="text-sm sm:text-base font-bold text-[#E5B05C] tracking-wide font-serif">
+                      {isBn ? 'যোগাযোগ' : 'Contact Us'}
                     </h3>
-                    <ul className="space-y-3 text-xs sm:text-sm text-[#F7F2E7]/85 font-serif">
-                      <li className="flex items-center gap-3">
+                    <ul className="space-y-2.5 text-xs sm:text-sm text-[#F7F2E7]/85 font-serif">
+                      <li className="flex items-center gap-2.5">
                         <Mail className="w-4 h-4 text-[#E5B05C] flex-shrink-0" />
-                        <span className="font-sans">info@shiuli.in</span>
+                        <a href="mailto:officialronojoy03@gmail.com" className="hover:text-[#E5B05C] transition-colors font-sans truncate">
+                          officialronojoy03@gmail.com
+                        </a>
                       </li>
-                      <li className="flex items-center gap-3">
-                        <Phone className="w-4 h-4 text-[#E5B05C] flex-shrink-0" />
-                        <span className="font-sans">+91 98765 43210</span>
-                      </li>
-                      <li className="flex items-center gap-3">
+                      <li className="flex items-center gap-2.5">
                         <MapPin className="w-4 h-4 text-[#E5B05C] flex-shrink-0" />
-                        <span>কলকাতা, পশ্চিমবঙ্গ, ভারত</span>
+                        <span>{isBn ? 'কলকাতা, পশ্চিমবঙ্গ, ভারত' : 'Kolkata, West Bengal, India'}</span>
                       </li>
                     </ul>
+
+                    {/* Social Icons - Placed Under Contact Section */}
+                    <div className="pt-2">
+                      <p className="text-[11px] text-[#E5B05C] mb-2 font-serif font-medium">
+                        {isBn ? 'সোশ্যাল মিডিয়া:' : 'Follow Me:'}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <a 
+                          href="https://www.facebook.com/share/1DTxLYsnmc/" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#2A090C] hover:bg-[#581318] flex items-center justify-center text-[#F7F2E7] transition-all border border-[#581318] hover:border-[#E5B05C]/60 active:scale-95" 
+                          aria-label="Facebook"
+                        >
+                          <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" viewBox="0 0 24 24"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" /></svg>
+                        </a>
+                        <a 
+                          href="https://instagram.com/monoc_" 
+                          target="_blank" 
+                          rel="noopener noreferrer" 
+                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-[#2A090C] hover:bg-[#581318] flex items-center justify-center text-[#F7F2E7] transition-all border border-[#581318] hover:border-[#E5B05C]/60 active:scale-95" 
+                          aria-label="Instagram"
+                        >
+                          <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-none stroke-current stroke-2" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg>
+                        </a>
+                      </div>
+                    </div>
                   </div>
 
                 </div>
 
-                {/* Divider Line */}
-                <div className="w-full h-px bg-[#581318] my-6" />
+                {/* Centered Newsletter Subscription Box in Lower Portion */}
+                <div className="my-8 max-w-xl mx-auto text-center bg-[#2A090C]/90 border border-[#E5B05C]/30 p-5 sm:p-6 rounded-2xl shadow-xl backdrop-blur-md">
+                  <h4 className="text-sm sm:text-base font-bold text-[#E5B05C] mb-1.5 font-serif flex items-center justify-center gap-2">
+                    <span>❁</span>
+                    <span>{isBn ? 'পুজোর আপডেট পেতে সাবস্ক্রাইব করুন' : 'Subscribe for Durga Puja Updates'}</span>
+                    <span>❁</span>
+                  </h4>
+                  <p className="text-xs text-[#F7F2E7]/80 mb-3.5 font-serif">
+                    {isBn 
+                      ? 'কলকাতার সেরা পুজো গাইড, ট্রাফিক ও আরতি পরিক্রমার সব খবর সরাসরি আপনার ইমেইলে' 
+                      : 'Get the latest pandal guides, traffic updates, and cultural stories directly in your inbox'}
+                  </p>
+                  <div className="flex items-center justify-center gap-2 max-w-md mx-auto">
+                    <input 
+                      type="email" 
+                      placeholder={isBn ? 'আপনার ইমেইল ঠিকানা...' : 'Your email address...'}
+                      className="bg-[#1A0507] border border-[#581318] text-[#F7F2E7] text-xs sm:text-sm px-3.5 py-2 rounded-lg focus:outline-none focus:border-[#E5B05C] w-full font-serif placeholder:text-[#F7F2E7]/40 shadow-inner"
+                    />
+                    <button className="bg-[#7A1F26] hover:bg-[#A0353A] border border-[#E5B05C]/50 text-[#F7F2E7] text-xs sm:text-sm px-4 py-2 rounded-lg font-serif font-bold transition-all shrink-0 shadow-md active:scale-95 cursor-pointer">
+                      {isBn ? 'যুক্ত হন' : 'Subscribe'}
+                    </button>
+                  </div>
+                </div>
 
-                {/* Bottom Copyright & Credits */}
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F7F2E7]/75 font-serif">
+                {/* Popular Pujas Chips Row */}
+                <div className="border-t border-[#581318] pt-6 mb-8">
+                  <p className="text-xs font-bold text-[#E5B05C] mb-3 font-serif">
+                    {isBn ? 'জনপ্রিয় পুজো পরিক্রমা:' : 'Popular Puja Tours:'}
+                  </p>
+                  <div className="flex flex-wrap gap-2 text-xs font-serif text-[#F7F2E7]/80">
+                    {[
+                      { name: isBn ? 'বাগবাজার সার্বজনীন' : 'Bagbazar Sarbojanin', view: 'north' },
+                      { name: isBn ? 'একডালিয়া এভারগ্রীন' : 'Ekdalia Evergreen', view: 'south' },
+                      { name: isBn ? 'সুরুচি সংঘ' : 'Suruchi Sangha', view: 'south' },
+                      { name: isBn ? 'শ্রীভূমি স্পোর্টিং' : 'Sreebhumi Sporting', view: 'north' },
+                      { name: isBn ? 'চেতলা অগ্রণী' : 'Chetla Agrani', view: 'south' },
+                      { name: isBn ? 'ছাতুবাবু লাহা বাড়ি' : 'Chhatubabu Laha Bari', view: 'bonedi' },
+                      { name: isBn ? 'শোভাবাজার রাজবাড়ি' : 'Shovabazar Rajbari', view: 'bonedi' },
+                      { name: isBn ? 'মোহাম্মদ আলী পার্ক' : 'Mohammad Ali Park', view: 'central' },
+                      { name: isBn ? 'মুদিয়ালি ক্লাব' : 'Mudiali Club', view: 'south' },
+                      { name: isBn ? 'বালিগঞ্জ কালচারাল' : 'Ballygunge Cultural', view: 'south' },
+                    ].map((puja, idx) => (
+                      <button 
+                        key={idx} 
+                        onClick={() => changeView(puja.view as ViewType)}
+                        className="bg-[#2A090C]/80 hover:bg-[#581318] hover:text-[#E5B05C] border border-[#581318] px-2.5 py-1 rounded-full text-[11px] transition-colors text-left cursor-pointer"
+                      >
+                        ❁ {puja.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Bottom Copyright & Credits - Positioned below the gold line of footer artwork */}
+                <div className="mt-[16vw] sm:mt-[14vw] md:mt-[12vw] lg:mt-[10vw] pt-2 pb-2 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#F7F2E7]/85 font-serif">
                   <div>
-                    © 2024 শিউলি | সর্বস্বত্ব সংরক্ষিত
+                    {isBn ? '© 2026 শিউলি | সর্বস্বত্ব সংরক্ষিত' : '© 2026 Shiuli | All Rights Reserved'}
                   </div>
                   <div className="flex items-center gap-1.5">
-                    <span>ডিজাইন করা হয়েছে</span>
+                    <span>{isBn ? 'ডিজাইন ও ডেভেলপ করা হয়েছে' : 'Designed & Developed with'}</span>
                     <Heart className="w-3.5 h-3.5 fill-[#C86040] text-[#C86040] inline mx-0.5" />
-                    <span>কলকাতার জন্য</span>
+                    <span>{isBn ? 'কলকাতার জন্য' : 'for Kolkata'}</span>
                   </div>
                 </div>
 

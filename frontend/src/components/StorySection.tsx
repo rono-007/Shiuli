@@ -94,7 +94,7 @@ const StorySection: React.FC = () => {
   };
 
   return (
-    <section className="py-24 bg-[#F8F1E7] text-[#3D2C22] relative overflow-hidden" id="stories">
+    <section className="pt-24 pb-28 md:pb-36 bg-[#F8F1E7] text-[#3D2C22] relative overflow-hidden rounded-b-[2rem] sm:rounded-b-[3rem]" id="stories">
       
       {/* Toast Notification */}
       {toastMessage && (

@@ -23,7 +23,7 @@ export const translations = {
     heroSubtitle2: "আসুন, আমাদের সাথে ঘুরে দেখি সেরা প্যান্ডেল,",
     heroSubtitle3: "শুনি গল্প, জানি ইতিহাস, অনুভব করি এক অন্যরকম আবেগ।",
     heroCtaPrimary: "পুজোপরিক্রমা দেখুন",
-    heroCtaSecondary: "কলকাতার গল্প",
+    heroCtaSecondary: "ট্রেন্ডিং প্যান্ডেল",
     
     // Zone Selector Modal
     modalGuideTag: "ভ্রমণ নির্দেশিকা",
@@ -144,7 +144,7 @@ export const translations = {
     heroSubtitle2: "Join us to explore the finest pandals,",
     heroSubtitle3: "listen to historic tales, know the heritage, and feel the emotion.",
     heroCtaPrimary: "Explore Puja Tours",
-    heroCtaSecondary: "Kolkata Stories",
+    heroCtaSecondary: "Trending Pandals",
     
     // Zone Selector Modal
     modalGuideTag: "Tour Directory",

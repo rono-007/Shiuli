@@ -9,6 +9,10 @@ export const InitialLanguageModal: React.FC = () => {
 
   if (!showLanguageModal) return null;
 
+  const handleSelect = (lang: Language) => {
+    setSelected(lang);
+  };
+
   const handleConfirm = () => {
     setLanguage(selected);
   };
@@ -42,7 +46,7 @@ export const InitialLanguageModal: React.FC = () => {
           
           {/* Bengali Option */}
           <button
-            onClick={() => setSelected('bn')}
+            onClick={() => handleSelect('bn')}
             className={`group relative p-5 rounded-2xl border-2 text-left transition-all duration-300 flex flex-col justify-between cursor-pointer ${
               selected === 'bn'
                 ? 'border-[#7A1F26] bg-[#7A1F26]/10 shadow-lg scale-[1.02]'
@@ -72,7 +76,7 @@ export const InitialLanguageModal: React.FC = () => {
 
           {/* English Option */}
           <button
-            onClick={() => setSelected('en')}
+            onClick={() => handleSelect('en')}
             className={`group relative p-5 rounded-2xl border-2 text-left transition-all duration-300 flex flex-col justify-between cursor-pointer ${
               selected === 'en'
                 ? 'border-[#7A1F26] bg-[#7A1F26]/10 shadow-lg scale-[1.02]'
@@ -105,8 +109,8 @@ export const InitialLanguageModal: React.FC = () => {
         {/* Continue Button */}
         <div className="relative z-10 flex flex-col items-center gap-3">
           <button
-            onClick={handleConfirm}
-            className="w-full py-4 px-6 rounded-2xl bg-[#7A1F26] hover:bg-[#8B1E2D] text-[#FAF6ED] font-serif font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2 group"
+            onClick={() => handleConfirm()}
+            className="w-full py-4 px-6 rounded-2xl bg-[#7A1F26] hover:bg-[#8B1E2D] text-[#FAF6ED] font-serif font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2 group cursor-pointer"
           >
             <span>{selected === 'bn' ? 'এগিয়ে যান' : 'Explore Shiuli'}</span>
             <span className="group-hover:translate-x-1 transition-transform">→</span>

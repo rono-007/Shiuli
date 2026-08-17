@@ -3,11 +3,13 @@ import HeroSection from './components/HeroSection';
 import PujaGuideSection from './components/PujaGuideSection';
 import SectionDivider from './components/SectionDivider';
 
-import { Heart, WifiOff, Mail, MapPin } from 'lucide-react';
+import { Heart, WifiOff, Mail, MapPin, Send, CheckCircle2, HelpCircle, Bug, Star } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { InitialLanguageModal } from './components/InitialLanguageModal';
 import { LanguageToggle } from './components/LanguageToggle';
+import BetaAccessModal from './components/BetaAccessModal';
 import BetaModal from './components/BetaModal';
+import { verifyBetaAccessAsync } from './config/betaKeys';
 
 const NorthCalcuttaSection = lazy(() => import('./components/NorthCalcuttaSection'));
 const SouthCalcuttaSection = lazy(() => import('./components/SouthCalcuttaSection'));
@@ -40,9 +42,267 @@ type ViewType = 'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities'
 
 const VALID_VIEWS: ViewType[] = ['home', 'north', 'south', 'central', 'bonedi', 'facilities', 'route-planner', 'medical', 'admin'];
 
+// Sequential Modal Controller: Language Choice -> Beta Access Code -> Beta Phase Notice
+function ModalSequenceController({ showBetaNotice, onNoticeClosed }: { showBetaNotice: boolean; onNoticeClosed: () => void }) {
+  const { showLanguageModal } = useLanguage();
+  
+  const [accessDone, setAccessDone] = useState<boolean>(() => {
+    return localStorage.getItem('shiuli_beta_verified') === 'true';
+  });
+
+  const [betaNoticeDone, setBetaNoticeDone] = useState<boolean>(false);
+
+  // Step 1: Language selection modal first
+  if (showLanguageModal) {
+    return <InitialLanguageModal />;
+  }
+
+  // Step 2: Beta access verification modal second (Strict Security Gate)
+  if (!accessDone) {
+    return (
+      <BetaAccessModal
+        onVerified={() => {
+          setAccessDone(true);
+        }}
+      />
+    );
+  }
+
+  // Step 3: Beta phase notice modal third (either during first visit or when triggered via floating button)
+  if (!betaNoticeDone || showBetaNotice) {
+    return (
+      <BetaModal
+        onClose={() => {
+          setBetaNoticeDone(true);
+          onNoticeClosed();
+        }}
+      />
+    );
+  }
+
+  return null;
+}
+
+function FooterFeedbackCard() {
+  const { language } = useLanguage();
+  const isBn = language === 'bn';
+
+  const [category, setCategory] = useState<'query' | 'bug' | 'review'>('query');
+  const [email, setEmail] = useState('');
+  const [message, setMessage] = useState('');
+  const [rating, setRating] = useState(5);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !message) return;
+
+    setIsSubmitting(true);
+    const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
+
+    // 1. Store locally in browser for instant display in Admin Panel
+    try {
+      const existing = JSON.parse(localStorage.getItem('shiuli_user_feedbacks') || '[]');
+      const newEntry = {
+        id: 'msg_' + Date.now().toString(36),
+        category,
+        email: email.trim().toLowerCase(),
+        message: message.trim(),
+        rating: category === 'review' ? rating : undefined,
+        created_at: new Date().toISOString(),
+        status: 'unread'
+      };
+      existing.unshift(newEntry);
+      localStorage.setItem('shiuli_user_feedbacks', JSON.stringify(existing));
+    } catch {
+      // ignore
+    }
+
+    // 2. Google Apps Script Integration (Placeholder)
+    // TODO: Replace 'YOUR_GOOGLE_SCRIPT_URL' with your actual Google Apps Script web app URL
+    // fetch('YOUR_GOOGLE_SCRIPT_URL', {
+    //   method: 'POST',
+    //   headers: { 'Content-Type': 'application/json' },
+    //   body: JSON.stringify({
+    //     category,
+    //     email: email.trim().toLowerCase(),
+    //     message: message.trim(),
+    //     rating: category === 'review' ? rating : null,
+    //     submitted_at: new Date().toLocaleString()
+    //   })
+    // }).catch(err => console.warn("Google Apps Script error:", err));
+
+    // 3. Also post to our own Shiuli Backend /api/feedback
+    fetch(`${API_BASE_URL}/api/feedback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        category,
+        email: email.trim().toLowerCase(),
+        message: message.trim(),
+        rating: category === 'review' ? rating : null
+      })
+    }).catch(err => console.warn("Backend feedback endpoint offline or network issue, logged locally:", err));
+
+    // 4. Complete submission for user instantly
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      setEmail('');
+      setMessage('');
+    }, 600);
+  };
+
+  return (
+    <div className="my-8 max-w-xl mx-auto text-center bg-[#2A090C]/95 border border-[#E5B05C]/35 p-6 sm:p-7 rounded-3xl shadow-2xl backdrop-blur-md">
+      <h4 className="text-base sm:text-lg font-bold text-[#E5B05C] mb-1.5 font-serif flex items-center justify-center gap-2">
+        <span>❁</span>
+        <span>
+          {isBn
+            ? 'প্রশ্ন, বাগ রিপোর্ট বা রিভিউ পাঠান'
+            : 'Queries, Bug Reports & Reviews'}
+        </span>
+        <span>❁</span>
+      </h4>
+
+      <p className="text-xs sm:text-sm text-[#F7F2E7]/80 mb-5 font-serif max-w-md mx-auto leading-relaxed">
+        {isBn
+          ? 'কোনো প্রশ্ন, অ্যাপের কোনো ত্রুটি (Bug) বা আপনার মূল্যবান মতামত আমাদের সরাসরি জানান।'
+          : 'Have any questions, found a bug, or want to share your review? Let us know below!'}
+      </p>
+
+      {isSubmitted ? (
+        <div className="bg-emerald-950/60 border border-emerald-500/50 rounded-2xl p-5 text-center animate-in zoom-in-95 duration-200">
+          <CheckCircle2 className="w-8 h-8 text-emerald-400 mx-auto mb-2" />
+          <h5 className="text-sm font-bold text-emerald-200 font-serif mb-1">
+            {isBn ? 'আপনার বার্তা সফলভাবে গৃহীত হয়েছে!' : 'Thank You! Message Received'}
+          </h5>
+          <p className="text-xs text-emerald-300/80 mb-4 font-sans">
+            {isBn
+              ? 'আমরা শীঘ্রই আপনার বার্তার পর্যালোচনা করে প্রয়োজনীয় ব্যবস্থা গ্রহণ করব।'
+              : 'Our team will review your feedback and get back to you if needed.'}
+          </p>
+          <button
+            type="button"
+            onClick={() => setIsSubmitted(false)}
+            className="text-xs text-[#E5B05C] underline hover:text-white font-serif transition-colors cursor-pointer"
+          >
+            {isBn ? 'আরেকটি বার্তা পাঠান' : 'Send another response'}
+          </button>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-3.5 text-left font-sans">
+          
+          {/* Category Selector Pills */}
+          <div className="flex items-center justify-center gap-2 flex-wrap">
+            {[
+              { id: 'query', label: isBn ? 'প্রশ্ন (Query)' : 'Query', icon: HelpCircle },
+              { id: 'bug', label: isBn ? 'বাগ রিপোর্ট' : 'Bug Report', icon: Bug },
+              { id: 'review', label: isBn ? 'রিভিউ ও রেটিং' : 'Review', icon: Star }
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const active = category === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  type="button"
+                  onClick={() => setCategory(tab.id as 'query' | 'bug' | 'review')}
+                  className={`px-3.5 py-1.5 rounded-full text-xs font-serif font-semibold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    active
+                      ? 'bg-[#E5B05C] text-[#2A090C] shadow-md font-bold'
+                      : 'bg-[#1A0507] border border-[#581318] text-[#F7F2E7]/70 hover:border-[#E5B05C]/40 hover:text-[#F7F2E7]'
+                  }`}
+                >
+                  <Icon className="w-3.5 h-3.5" />
+                  <span>{tab.label}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Star Rating if Review is selected */}
+          {category === 'review' && (
+            <div className="flex items-center justify-center gap-1.5 py-1">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRating(star)}
+                  className="p-1 cursor-pointer transition-transform hover:scale-125"
+                  aria-label={`Rate ${star} stars`}
+                >
+                  <Star
+                    className={`w-5 h-5 ${
+                      star <= rating ? 'fill-[#E5B05C] text-[#E5B05C]' : 'text-[#F7F2E7]/30'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Email Input */}
+          <div>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder={isBn ? 'আপনার ইমেইল আইডি...' : 'Your email address...'}
+              className="w-full bg-[#1A0507] border border-[#581318] text-[#F7F2E7] text-xs sm:text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-[#E5B05C] font-serif placeholder:text-[#F7F2E7]/40 shadow-inner"
+            />
+          </div>
+
+          {/* Message Textarea */}
+          <div>
+            <textarea
+              required
+              rows={3}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder={
+                category === 'bug'
+                  ? (isBn ? 'কোথায় এবং কী সমস্যা হচ্ছে সংক্ষেপে লিখুন...' : 'Describe the bug or issue you encountered...')
+                  : category === 'review'
+                  ? (isBn ? 'আপনার অভিজ্ঞতা ও মতামত লিখুন...' : 'Share your thoughts and review about Shiuli...')
+                  : (isBn ? 'আপনার প্রশ্ন বা জিজ্ঞাস্য লিখুন...' : 'Write your query or question...')
+              }
+              className="w-full bg-[#1A0507] border border-[#581318] text-[#F7F2E7] text-xs sm:text-sm px-4 py-2.5 rounded-xl focus:outline-none focus:border-[#E5B05C] font-serif placeholder:text-[#F7F2E7]/40 shadow-inner resize-none"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="w-full py-3 px-5 rounded-xl bg-[#7A1F26] hover:bg-[#941F28] border border-[#E5B05C]/50 text-[#FAF6ED] font-serif font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all active:scale-[0.98] disabled:opacity-50 cursor-pointer"
+          >
+            {isSubmitting ? (
+              <span>{isBn ? 'পাঠানো হচ্ছে...' : 'Sending...'}</span>
+            ) : (
+              <>
+                <Send className="w-3.5 h-3.5" />
+                <span>
+                  {category === 'bug'
+                    ? (isBn ? 'বাগ রিপোর্ট পাঠান' : 'Submit Bug Report')
+                    : category === 'review'
+                    ? (isBn ? 'রিভিউ জমা দিন' : 'Submit Review')
+                    : (isBn ? 'বার্তা পাঠান' : 'Send Query')}
+                </span>
+              </>
+            )}
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 function AppContent() {
   const { language } = useLanguage();
   const isBn = language === 'bn';
+  const [showBetaNotice, setShowBetaNotice] = useState(false);
 
   const [view, setViewState] = useState<ViewType>(() => {
     const params = new URLSearchParams(window.location.search);
@@ -89,8 +349,21 @@ function AppContent() {
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Initialize window history state if missing
+    // Auto-verify if user clicks an invite link with ?code=70001&email=user@gmail.com
     const searchParams = new URLSearchParams(window.location.search);
+    const codeParam = searchParams.get('code') || searchParams.get('beta_code');
+    const emailParam = searchParams.get('email');
+    if (codeParam && emailParam) {
+      verifyBetaAccessAsync(emailParam, codeParam).then(res => {
+        if (res.success) {
+          localStorage.setItem('shiuli_beta_verified', 'true');
+          localStorage.setItem('shiuli_beta_email', emailParam.trim().toLowerCase());
+          localStorage.setItem('shiuli_beta_code', codeParam.trim());
+        }
+      });
+    }
+
+    // Initialize window history state if missing
     const currentView = (searchParams.get('view') as ViewType) || (searchParams.has('admin') ? 'admin' : 'home');
     if (!window.history.state) {
       window.history.replaceState({ view: currentView }, '', window.location.href);
@@ -116,20 +389,26 @@ function AppContent() {
     };
   }, []);
 
-
   return (
     <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink">
-      <InitialLanguageModal />
-      <BetaModal />
+      <ModalSequenceController 
+        showBetaNotice={showBetaNotice} 
+        onNoticeClosed={() => setShowBetaNotice(false)} 
+      />
 
       {/* Sticky Floating Beta Badge */}
-      <div className="fixed bottom-4 right-4 z-40 bg-[#7A1F26]/95 text-[#FAF6ED] border border-[#D4A24C]/40 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold shadow-xl flex items-center gap-2 backdrop-blur-md select-none pointer-events-auto">
+      <button 
+        onClick={() => {
+          setShowBetaNotice(true);
+        }}
+        className="fixed bottom-4 right-4 z-40 bg-[#7A1F26]/95 hover:bg-[#8B1E2D] text-[#FAF6ED] border border-[#D4A24C]/40 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold shadow-xl flex items-center gap-2 backdrop-blur-md select-none pointer-events-auto cursor-pointer transition-all active:scale-95"
+      >
         <span className="flex h-2 w-2 relative">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4A24C] opacity-75"></span>
           <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4A24C]"></span>
         </span>
         <span>BETA VERSION</span>
-      </div>
+      </button>
 
       {isOffline && (
         <div className="bg-[#8B1E2D] text-[#FAF6ED] text-xs font-serif font-bold py-2.5 px-4 text-center sticky top-0 z-50 flex items-center justify-center gap-2 shadow-md border-b border-[#E5B05C]/30">
@@ -350,29 +629,8 @@ function AppContent() {
 
                 </div>
 
-                {/* Centered Newsletter Subscription Box in Lower Portion */}
-                <div className="my-8 max-w-xl mx-auto text-center bg-[#2A090C]/90 border border-[#E5B05C]/30 p-5 sm:p-6 rounded-2xl shadow-xl backdrop-blur-md">
-                  <h4 className="text-sm sm:text-base font-bold text-[#E5B05C] mb-1.5 font-serif flex items-center justify-center gap-2">
-                    <span>❁</span>
-                    <span>{isBn ? 'পুজোর আপডেট পেতে সাবস্ক্রাইব করুন' : 'Subscribe for Durga Puja Updates'}</span>
-                    <span>❁</span>
-                  </h4>
-                  <p className="text-xs text-[#F7F2E7]/80 mb-3.5 font-serif">
-                    {isBn
-                      ? 'কলকাতার সেরা পুজো গাইড, ট্রাফিক ও আরতি পরিক্রমার সব খবর সরাসরি আপনার ইমেইলে'
-                      : 'Get the latest pandal guides, traffic updates, and cultural stories directly in your inbox'}
-                  </p>
-                  <div className="flex items-center justify-center gap-2 max-w-md mx-auto">
-                    <input
-                      type="email"
-                      placeholder={isBn ? 'আপনার ইমেইল ঠিকানা...' : 'Your email address...'}
-                      className="bg-[#1A0507] border border-[#581318] text-[#F7F2E7] text-xs sm:text-sm px-3.5 py-2 rounded-lg focus:outline-none focus:border-[#E5B05C] w-full font-serif placeholder:text-[#F7F2E7]/40 shadow-inner"
-                    />
-                    <button className="bg-[#7A1F26] hover:bg-[#A0353A] border border-[#E5B05C]/50 text-[#F7F2E7] text-xs sm:text-sm px-4 py-2 rounded-lg font-serif font-bold transition-all shrink-0 shadow-md active:scale-95 cursor-pointer">
-                      {isBn ? 'যুক্ত হন' : 'Subscribe'}
-                    </button>
-                  </div>
-                </div>
+                {/* Interactive Queries, Bug Reports & Reviews Form */}
+                <FooterFeedbackCard />
 
                 {/* Popular Pujas Chips Row */}
                 <div className="border-t border-[#581318] pt-6 mb-8">

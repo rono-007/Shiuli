@@ -355,7 +355,6 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
                           alt={item.title}
                           referrerPolicy="no-referrer"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          loading="lazy"
                           onError={(e) => {
                             const target = e.currentTarget;
                             target.onerror = null;

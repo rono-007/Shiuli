@@ -6,7 +6,7 @@ import {
   HardDrive, Users, TrendingUp, Search, X, Eye, ChevronDown,
   ChevronUp, BarChart3, Wifi, WifiOff, Smartphone, Monitor,
   Tablet, Bot, MapPin, ArrowUpRight, Filter, AlertOctagon,
-  Gauge, ArrowRight
+  Gauge, ArrowRight, MessageSquare, Star
 } from 'lucide-react';
 
 interface ErrorBoundaryProps {
@@ -208,9 +208,13 @@ function methodColor(method: string): string {
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
 
-async function adminFetch<T>(path: string, token: string): Promise<T> {
+async function adminFetch<T>(path: string, token: string, options?: RequestInit): Promise<T> {
   const res = await fetch(`${API_BASE}${path}`, {
-    headers: { 'x-admin-token': token },
+    ...options,
+    headers: {
+      'x-admin-token': token,
+      ...(options?.headers || {}),
+    },
   });
   if (!res.ok) {
     if (res.status === 401) throw new Error('UNAUTHORIZED');
@@ -222,23 +226,36 @@ async function adminFetch<T>(path: string, token: string): Promise<T> {
 // ─── Login Screen ─────────────────────────────────────────────────────────────
 
 function LoginScreen({ onLogin }: { onLogin: (token: string) => void }) {
-  const [token, setToken] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!token.trim()) return;
+    if (!password.trim()) return;
     setLoading(true);
     setError('');
+
+    const inputVal = password.trim();
+    const cleanUser = username.trim().toLowerCase();
+
+    // Reject emails for admin login
+    if (cleanUser.includes('@')) {
+      setError('Admin login requires an Admin Name (e.g. ronojoy), not an email address.');
+      setLoading(false);
+      return;
+    }
+
     try {
-      await adminFetch('/admin/stats', token.trim());
-      onLogin(token.trim());
+      await adminFetch('/admin/stats', inputVal);
+      onLogin(inputVal);
     } catch (err: unknown) {
       if (err instanceof Error && err.message === 'UNAUTHORIZED') {
-        setError('Invalid admin token');
+        setError('Invalid admin password or token');
       } else {
-        setError('Cannot reach server. Is the backend running?');
+        // Network error or other issue
+        setError('Connection failed. Please try again.');
       }
     } finally {
       setLoading(false);
@@ -252,33 +269,45 @@ function LoginScreen({ onLogin }: { onLogin: (token: string) => void }) {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-600/20 border border-amber-500/30 mb-4">
             <Shield className="w-8 h-8 text-amber-400" />
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight font-sans">PujoPoth Admin</h1>
-          <p className="text-sm text-slate-500 mt-1 font-sans">Enter your admin token to access real-time analytics</p>
+          <h1 className="text-2xl font-bold text-white tracking-tight font-sans">Shiuli Admin Dashboard</h1>
+          <p className="text-sm text-slate-500 mt-1 font-sans">Enter Admin Name and Master Password</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
+            <label className="block text-xs font-semibold text-slate-400 mb-1.5 font-sans">Admin Name (No Email)</label>
             <input
-              type="password"
-              value={token}
-              onChange={(e) => setToken(e.target.value)}
-              placeholder="Admin Token"
-              className="w-full px-4 py-3 bg-[#111827] border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 transition-all font-sans text-sm"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="e.g. ronojoy or admin_ronojoy"
+              className="w-full px-4 py-3 bg-[#111827] border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 transition-all font-sans text-sm mb-3"
               autoFocus
             />
+
+            <label className="block text-xs font-semibold text-slate-400 mb-1.5 font-sans">Admin Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter Admin Password"
+              className="w-full px-4 py-3 bg-[#111827] border border-slate-700/50 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/20 transition-all font-sans text-sm"
+            />
           </div>
+
           {error && (
             <div className="flex items-center gap-2 text-red-400 text-xs font-sans bg-red-500/10 border border-red-500/20 rounded-lg px-3 py-2">
               <AlertTriangle className="w-3.5 h-3.5 flex-shrink-0" />
               {error}
             </div>
           )}
+
           <button
             type="submit"
-            disabled={loading || !token.trim()}
-            className="w-full py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-xl font-sans text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-amber-500/10"
+            disabled={loading || !username.trim() || !password.trim()}
+            className="w-full py-3 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white rounded-xl font-sans text-sm font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-amber-500/10 cursor-pointer"
           >
-            {loading ? 'Authenticating...' : 'Sign In'}
+            {loading ? 'Authenticating...' : 'Sign In as Admin'}
           </button>
         </form>
       </div>
@@ -428,7 +457,18 @@ function LogDetailModal({ log, onClose }: { log: LogEntry; onClose: () => void }
 
 // ─── Main Admin Dashboard ─────────────────────────────────────────────────────
 
-type Tab = 'overview' | 'sources' | 'logs' | 'data';
+interface FeedbackItem {
+  id: string;
+  category: 'query' | 'bug' | 'review';
+  email: string;
+  message: string;
+  rating?: number;
+  created_at: string;
+  status: 'unread' | 'read' | 'resolved';
+  ip?: string;
+}
+
+type Tab = 'overview' | 'sources' | 'logs' | 'data' | 'feedback';
 
 function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => void }) {
   const [tab, setTab] = useState<Tab>('overview');
@@ -436,6 +476,8 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [logsTotal, setLogsTotal] = useState(0);
   const [dataOverview, setDataOverview] = useState<DataOverview | null>(null);
+  const [feedbackList, setFeedbackList] = useState<FeedbackItem[]>([]);
+  const [feedbackFilter, setFeedbackFilter] = useState<string>('all');
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [serverOnline, setServerOnline] = useState(true);
@@ -456,11 +498,12 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [statsData, logsData, overviewData, healthData] = await Promise.allSettled([
+      const [statsData, logsData, overviewData, healthData, feedbackData] = await Promise.allSettled([
         adminFetch<Stats>('/admin/stats', token),
         adminFetch<{ logs: LogEntry[]; total: number }>('/admin/logs?limit=500', token),
         adminFetch<DataOverview>('/admin/data-overview', token),
         fetch(`${API_BASE}/health`).then(r => r.json()),
+        adminFetch<FeedbackItem[]>('/admin/feedback', token),
       ]);
 
       if (statsData.status === 'fulfilled') {
@@ -486,6 +529,27 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
         setLogsTotal(logsData.value.total);
       }
       if (overviewData.status === 'fulfilled') setDataOverview(overviewData.value);
+
+      let localFeedbacks: FeedbackItem[] = [];
+      try {
+        localFeedbacks = JSON.parse(localStorage.getItem('shiuli_user_feedbacks') || '[]');
+      } catch {
+        // ignore
+      }
+
+      if (feedbackData.status === 'fulfilled' && Array.isArray(feedbackData.value) && feedbackData.value.length > 0) {
+        const remoteList = feedbackData.value;
+        const merged = [...remoteList];
+        for (const local of localFeedbacks) {
+          if (!merged.some(m => m.id === local.id || (m.email === local.email && m.message === local.message))) {
+            merged.push(local);
+          }
+        }
+        setFeedbackList(merged);
+      } else {
+        setFeedbackList(localFeedbacks);
+      }
+
       if (healthData.status === 'fulfilled') {
         setServerOnline(true);
       } else {
@@ -644,11 +708,57 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
         return res;
       })();
 
-  const tabs: { id: Tab; label: string; icon: React.ElementType }[] = [
+  const handleDeleteFeedback = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this message?')) return;
+    try {
+      await adminFetch(`/admin/feedback/${id}`, token, { method: 'DELETE' });
+    } catch {
+      // ignore
+    }
+    setFeedbackList(prev => prev.filter(f => f.id !== id));
+    try {
+      const local = JSON.parse(localStorage.getItem('shiuli_user_feedbacks') || '[]');
+      const updated = local.filter((f: any) => f.id !== id);
+      localStorage.setItem('shiuli_user_feedbacks', JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const handleToggleFeedbackStatus = async (id: string, currentStatus: string) => {
+    const nextStatus = currentStatus === 'unread' ? 'read' : currentStatus === 'read' ? 'resolved' : 'unread';
+    try {
+      await adminFetch(`/admin/feedback/${id}/status`, token, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: nextStatus })
+      });
+    } catch {
+      // ignore
+    }
+    setFeedbackList(prev => prev.map(f => f.id === id ? { ...f, status: nextStatus as 'unread' | 'read' | 'resolved' } : f));
+    try {
+      const local = JSON.parse(localStorage.getItem('shiuli_user_feedbacks') || '[]');
+      const updated = local.map((f: any) => f.id === id ? { ...f, status: nextStatus } : f);
+      localStorage.setItem('shiuli_user_feedbacks', JSON.stringify(updated));
+    } catch {
+      // ignore
+    }
+  };
+
+  const filteredFeedbacks = feedbackList.filter(f => {
+    if (feedbackFilter === 'all') return true;
+    return f.category === feedbackFilter;
+  });
+
+  const unreadFeedbackCount = feedbackList.filter(f => f.status === 'unread').length;
+
+  const tabs: { id: Tab; label: string; icon: React.ElementType; badge?: number }[] = [
     { id: 'overview', label: 'Overview & Charts', icon: BarChart3 },
     { id: 'sources', label: 'Request Origins (IPs)', icon: MapPin },
     { id: 'logs', label: 'Request Logs', icon: ScrollText },
     { id: 'data', label: 'Data Explorer', icon: Database },
+    { id: 'feedback', label: 'Queries & Feedback', icon: MessageSquare, badge: unreadFeedbackCount },
   ];
 
   const handleFilterByIP = (ip: string) => {
@@ -704,7 +814,12 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
               }`}
             >
               <t.icon className="w-3.5 h-3.5" />
-              {t.label}
+              <span>{t.label}</span>
+              {t.badge !== undefined && t.badge > 0 && (
+                <span className="px-1.5 py-0.5 text-[10px] font-bold rounded-full bg-amber-500 text-slate-950">
+                  {t.badge}
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -1254,6 +1369,116 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                 </div>
               ))}
             </div>
+          </div>
+        )}
+
+        {/* ─── QUERIES & FEEDBACK TAB ──────────────────────────────────── */}
+        {tab === 'feedback' && (
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-[#111827] border border-slate-700/40 p-4 rounded-2xl">
+              <div>
+                <h3 className="text-white font-semibold text-base flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5 text-amber-400" />
+                  User Queries, Bug Reports & Reviews ({feedbackList.length})
+                </h3>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Submissions received from users via the frontend footer feedback form
+                </p>
+              </div>
+
+              {/* Filter Buttons */}
+              <div className="flex items-center gap-1.5 flex-wrap">
+                {['all', 'query', 'bug', 'review'].map(f => (
+                  <button
+                    key={f}
+                    onClick={() => setFeedbackFilter(f)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold uppercase tracking-wider transition-all cursor-pointer ${
+                      feedbackFilter === f
+                        ? 'bg-amber-500 text-slate-950 shadow-md font-bold'
+                        : 'bg-slate-800 text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    {f === 'all' ? 'All Messages' : f === 'query' ? '💬 Queries' : f === 'bug' ? '🐛 Bugs' : '⭐ Reviews'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* List of Feedback Messages */}
+            {filteredFeedbacks.length === 0 ? (
+              <div className="bg-[#111827] border border-slate-700/40 rounded-2xl p-12 text-center">
+                <MessageSquare className="w-10 h-10 text-slate-600 mx-auto mb-3" />
+                <h4 className="text-slate-300 font-semibold text-sm">No Messages Found</h4>
+                <p className="text-slate-500 text-xs mt-1">When users submit questions, bugs, or reviews, they will show up here.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {filteredFeedbacks.map(item => (
+                  <div key={item.id} className={`bg-[#111827] border rounded-2xl p-5 space-y-3 transition-all ${
+                    item.status === 'unread' ? 'border-amber-500/50 shadow-lg shadow-amber-500/5' : 'border-slate-700/40'
+                  }`}>
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                            item.category === 'bug'
+                              ? 'bg-red-500/20 text-red-400 border border-red-500/30'
+                              : item.category === 'review'
+                              ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
+                              : 'bg-sky-500/20 text-sky-400 border border-sky-500/30'
+                          }`}>
+                            {item.category === 'bug' ? '🐛 Bug Report' : item.category === 'review' ? '⭐ Review' : '💬 Query'}
+                          </span>
+
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                            item.status === 'unread' ? 'bg-amber-400 text-slate-950 font-bold' : item.status === 'resolved' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-slate-800 text-slate-400'
+                          }`}>
+                            {item.status}
+                          </span>
+                        </div>
+
+                        <a href={`mailto:${item.email}`} className="text-sm font-semibold text-white hover:text-amber-400 transition-colors block">
+                          {item.email}
+                        </a>
+                      </div>
+
+                      <span className="text-[10px] text-slate-500 font-mono">
+                        {new Date(item.created_at).toLocaleString()}
+                      </span>
+                    </div>
+
+                    {item.rating && (
+                      <div className="flex items-center gap-1 text-amber-400">
+                        {Array.from({ length: 5 }).map((_, i) => (
+                          <Star key={i} className={`w-3.5 h-3.5 ${i < item.rating! ? 'fill-amber-400' : 'text-slate-700'}`} />
+                        ))}
+                        <span className="text-xs font-bold text-slate-300 ml-1">{item.rating}/5</span>
+                      </div>
+                    )}
+
+                    <div className="bg-[#0a0e17] border border-slate-800 rounded-xl p-3.5 text-xs text-slate-200 font-sans leading-relaxed whitespace-pre-wrap">
+                      {item.message}
+                    </div>
+
+                    <div className="flex items-center justify-between pt-1 text-xs">
+                      <button
+                        onClick={() => handleToggleFeedbackStatus(item.id, item.status)}
+                        className="text-xs text-slate-400 hover:text-amber-400 transition-colors underline cursor-pointer"
+                      >
+                        Mark as {item.status === 'unread' ? 'Read' : item.status === 'read' ? 'Resolved' : 'Unread'}
+                      </button>
+
+                      <button
+                        onClick={() => handleDeleteFeedback(item.id)}
+                        className="text-xs text-red-400/70 hover:text-red-400 transition-colors cursor-pointer"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </main>

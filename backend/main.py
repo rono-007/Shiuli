@@ -169,6 +169,7 @@ ALLOWED_ORIGINS = [
     "https://shiuli.online",
     "https://www.shiuli.online",
     "https://beta.shiuli.online",
+    "https://shiuli.vercel.app",
     "http://localhost:5173",   # Local dev only
     "http://localhost:4173",   # Vite preview
 ]

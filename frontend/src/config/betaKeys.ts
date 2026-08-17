@@ -6,7 +6,7 @@ const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BA
 /**
  * Verify if an Email ID and 5-digit code match correctly via backend API endpoint /api/beta/verify
  */
-export async function verifyBetaAccessAsync(email: string, code: string): Promise<{ success: boolean; message: string }> {
+export async function verifyBetaAccessAsync(email: string, code: string): Promise<{ success: boolean; message: string; name?: string }> {
   const cleanEmail = email.trim().toLowerCase();
   const cleanCode = code.trim();
 
@@ -20,7 +20,7 @@ export async function verifyBetaAccessAsync(email: string, code: string): Promis
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25 second timeout for Render cold starts
 
     const response = await fetch(`${API_BASE_URL}/api/beta/verify`, {
       method: 'POST',
@@ -34,7 +34,11 @@ export async function verifyBetaAccessAsync(email: string, code: string): Promis
     if (response.ok) {
       const data = await response.json();
       if (data.valid) {
-        return { success: true, message: 'বিটা অ্যাক্সেস সফল হয়েছে! (Beta Access Granted)' };
+        return { 
+          success: true, 
+          message: 'বিটা অ্যাক্সেস সফল হয়েছে! (Beta Access Granted)',
+          name: data.user?.name || 'Beta User'
+        };
       } else {
         return { success: false, message: data.message || 'ভুল ইমেল বা বিটা কোড। (Invalid email or 5-digit access code)' };
       }

@@ -56,6 +56,7 @@ export const BetaAccessModal: React.FC<BetaAccessModalProps> = ({ onVerified }) 
       if (res.success) {
         setSuccessMessage(res.message);
         localStorage.setItem('shiuli_beta_verified', 'true');
+        localStorage.setItem('shiuli_beta_name', res.name || 'Beta User');
         localStorage.setItem('shiuli_beta_email', email.trim().toLowerCase());
         localStorage.setItem('shiuli_beta_code', finalCode);
 

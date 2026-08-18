@@ -5,7 +5,13 @@ from email.mime.text import MIMEText
 from dotenv import load_dotenv
 
 def get_smtp_config():
-    load_dotenv(override=True)
+    backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    env_path = os.path.join(backend_dir, ".env")
+    if os.path.exists(env_path):
+        load_dotenv(dotenv_path=env_path, override=True)
+    else:
+        load_dotenv(override=True)
+
     return {
         "host": os.getenv("SMTP_HOST", "smtp.hostinger.com"),
         "port": int(os.getenv("SMTP_PORT", "465")),
@@ -47,14 +53,21 @@ def send_beta_email(to_email: str, name: str, pin: str) -> bool:
         msg = MIMEMultipart("alternative")
         msg["Subject"] = "Your Shiuli Beta Access PIN"
         msg["From"] = f"{config['from_name']} <{smtp_email}>"
-        msg["To"] = to_email
+        msg["Bcc"] = smtp_email
+        recipients = [to_email, smtp_email]
 
         html_content = render_email_template(name, pin, to_email)
         msg.attach(MIMEText(html_content, "html"))
 
-        with smtplib.SMTP_SSL(config["host"], config["port"], timeout=10) as server:
-            server.login(smtp_email, smtp_password)
-            server.sendmail(smtp_email, to_email, msg.as_string())
+        if config["port"] == 465:
+            with smtplib.SMTP_SSL(config["host"], config["port"], timeout=10) as server:
+                server.login(smtp_email, smtp_password)
+                server.sendmail(smtp_email, recipients, msg.as_string())
+        else:
+            with smtplib.SMTP(config["host"], config["port"], timeout=10) as server:
+                server.starttls()
+                server.login(smtp_email, smtp_password)
+                server.sendmail(smtp_email, recipients, msg.as_string())
             
         return True
     except Exception as e:

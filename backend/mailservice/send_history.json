@@ -1,0 +1,301 @@
+{
+  "history": [
+    {
+      "id": "7b8135af-3f54-428c-9685-f48e6d7f19a6",
+      "name": "Arunima Debnath",
+      "email": "arunimadebnath40@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:54:46.603727+00:00",
+      "error": null
+    },
+    {
+      "id": "a5710aa1-73d3-4639-b46f-73d3a1b5863e",
+      "name": "Shreya Pramanik",
+      "email": "shreyapramanik89@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:52:49.985655+00:00",
+      "error": null
+    },
+    {
+      "id": "d8ff3369-5cac-4c01-b2ea-f070f34049e0",
+      "name": "Saheli Das",
+      "email": "dsaheli92@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:52:15.822842+00:00",
+      "error": null
+    },
+    {
+      "id": "8272e899-a0da-4bc0-a117-5946e500598e",
+      "name": "Indrakshi Mondal",
+      "email": "indrakshimondal839@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:51:57.708049+00:00",
+      "error": null
+    },
+    {
+      "id": "ad27d0dc-ff0b-452f-b724-4c77da841d1d",
+      "name": "Bristi Ghosal",
+      "email": "bristighosal4@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:51:45.185665+00:00",
+      "error": null
+    },
+    {
+      "id": "22a6e571-04a2-49b1-809e-50f82deaa815",
+      "name": "Sweta Paul",
+      "email": "swetapaul9804@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:51:12.693668+00:00",
+      "error": null
+    },
+    {
+      "id": "e6c2f934-39ca-443c-a40b-9cfb9b42ec47",
+      "name": "Alisha Khatoon",
+      "email": "alisha22.khatoon@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:50:54.328730+00:00",
+      "error": null
+    },
+    {
+      "id": "7a0524fb-0fb3-4626-aa87-e441dd9de333",
+      "name": "Hiya Maity",
+      "email": "hiyamaity2007@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:50:39.928586+00:00",
+      "error": null
+    },
+    {
+      "id": "c4f72768-74d3-475a-86cb-8f9347d7eba3",
+      "name": "SUBHRADIP MONDAL",
+      "email": "iamsubhradipmondal@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:50:32.915375+00:00",
+      "error": null
+    },
+    {
+      "id": "b6c172a5-1c47-49cc-846e-7c6630f200f8",
+      "name": "Ankita Haldar",
+      "email": "ankitahladar004@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:50:13.441907+00:00",
+      "error": null
+    },
+    {
+      "id": "6512e7e0-5d82-4655-97c3-c5749f33879a",
+      "name": "Shourjaa Dalal",
+      "email": "shourjaadalal001@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:49:53.079359+00:00",
+      "error": null
+    },
+    {
+      "id": "bbef3057-ee0b-4915-9e1e-11143b5fd52b",
+      "name": "Pragya Biswas",
+      "email": "pragyabiswas.pb12@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:49:39.405687+00:00",
+      "error": null
+    },
+    {
+      "id": "1974ca96-173b-4b57-880e-3a461f7974a3",
+      "name": "Mrigakshi Chowdhury",
+      "email": "mrigakshichowdhury55@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:48:48.862399+00:00",
+      "error": null
+    },
+    {
+      "id": "f633ea23-4c72-4f9a-8f1b-86a18f376848",
+      "name": "Diya Bera",
+      "email": "thediyaa.effect@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:46:33.063024+00:00",
+      "error": null
+    },
+    {
+      "id": "d016b394-21ee-4d73-a458-001175f93d38",
+      "name": "Tanushree saha",
+      "email": "stanushree150@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T19:43:31.951693+00:00",
+      "error": null
+    },
+    {
+      "id": "93a90eea-fca8-4310-ae90-96a3390f1927",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "sent",
+      "action": "resend",
+      "timestamp": "2026-08-18T19:40:43.735049+00:00",
+      "error": null
+    },
+    {
+      "id": "a7223941-77fd-4ffe-93f4-07551f3cdc09",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T19:37:14.463367+00:00",
+      "error": "(535, b'5.7.8 Error: authentication failed: (reason unavailable)')"
+    },
+    {
+      "id": "ebbfda91-9cd1-4c84-8083-3c53bbad8b34",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T19:33:29.873125+00:00",
+      "error": "(535, b'5.7.8 Error: authentication failed: (reason unavailable)')"
+    },
+    {
+      "id": "24586adb-dab3-4d8e-957b-ab505f29e7cd",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T19:33:10.553924+00:00",
+      "error": "(535, b'5.7.8 Error: authentication failed: (reason unavailable)')"
+    },
+    {
+      "id": "632c45d5-ae90-4b67-a0fd-c94c29b564f6",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T18:17:25.855718+00:00",
+      "error": "(535, b'5.7.8 Error: authentication failed: (reason unavailable)')"
+    },
+    {
+      "id": "0f637b17-adfe-45fc-93af-87996dd0fcf3",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T18:13:50.854785+00:00",
+      "error": "(535, b'5.7.8 Error: authentication failed: (reason unavailable)')"
+    },
+    {
+      "id": "0fb739ab-6c7b-4d4f-8c31-00299103ce08",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T17:51:08.923557+00:00",
+      "error": "(535, b'5.7.8 Error: authentication failed: (reason unavailable)')"
+    },
+    {
+      "id": "96adae9f-5a6c-4ef3-afd6-3ef0498b98de",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T17:50:37.597382+00:00",
+      "error": "(535, b'5.7.8 Error: authentication failed: (reason unavailable)')"
+    },
+    {
+      "id": "3c19f2f6-ac16-4233-ad07-9e1fba642798",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T17:48:53.978871+00:00",
+      "error": "SMTP credentials (SMTP_EMAIL and SMTP_PASSWORD) are not configured in environment variables."
+    },
+    {
+      "id": "87695c2e-73e8-4568-8bc2-342e61076d09",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T17:48:20.958493+00:00",
+      "error": "SMTP credentials (SMTP_EMAIL and SMTP_PASSWORD) are not configured in environment variables."
+    },
+    {
+      "id": "2f09af14-5208-428e-8b5b-f6c14659e49a",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T17:48:11.811347+00:00",
+      "error": "SMTP credentials (SMTP_EMAIL and SMTP_PASSWORD) are not configured in environment variables."
+    },
+    {
+      "id": "ee75954f-3f5d-481e-a2b6-8accd0668571",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T17:48:00.673658+00:00",
+      "error": "SMTP credentials (SMTP_EMAIL and SMTP_PASSWORD) are not configured in environment variables."
+    },
+    {
+      "id": "79967e03-0245-4722-a7e5-b2055bead519",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T17:46:22.968468+00:00",
+      "error": "SMTP credentials (SMTP_EMAIL and SMTP_PASSWORD) are not configured in environment variables."
+    },
+    {
+      "id": "f0fb19ef-119a-4087-a633-dcd3eca33099",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T17:46:13.585208+00:00",
+      "error": "SMTP credentials (SMTP_EMAIL and SMTP_PASSWORD) are not configured in environment variables."
+    },
+    {
+      "id": "8c7e758a-eacd-49b6-a380-896363c3eb22",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T17:40:38.068725+00:00",
+      "error": "SMTP credentials (SMTP_EMAIL and SMTP_PASSWORD) are not configured in environment variables."
+    },
+    {
+      "id": "dbf924f7-d6f1-4f0f-89e0-b44fbe024717",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T17:38:52.003062+00:00",
+      "error": "SMTP credentials are not configured in environment variables."
+    },
+    {
+      "id": "a68045bd-2787-43dd-ad07-db01ed85876f",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "resend",
+      "timestamp": "2026-08-18T17:38:40.319607+00:00",
+      "error": "SMTP credentials are not configured in environment variables."
+    },
+    {
+      "id": "620deea6-916e-4c6b-b7be-1acfc93c873e",
+      "name": "Rochishnu Pyne",
+      "email": "rochishnu10@gmail.com",
+      "status": "failed",
+      "action": "send",
+      "timestamp": "2026-08-18T17:36:28.214236+00:00",
+      "error": "SMTP credentials are not configured in environment variables."
+    }
+  ]
+}

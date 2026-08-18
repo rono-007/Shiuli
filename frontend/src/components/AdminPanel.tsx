@@ -621,8 +621,6 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
 
   useEffect(() => {
     fetchAll();
-    const interval = setInterval(fetchAll, 15000); // 15s auto-refresh
-    return () => clearInterval(interval);
   }, [fetchAll]);
 
   useEffect(() => {

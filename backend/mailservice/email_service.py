@@ -13,7 +13,7 @@ SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
 FROM_NAME = os.getenv("FROM_NAME", "Shiuli")
 BETA_ACCESS_URL = os.getenv("BETA_ACCESS_URL", "https://beta.shiuli.online")
 
-def render_email_template(name: str, pin: str) -> str:
+def render_email_template(name: str, pin: str, email: str = "") -> str:
     template_path = os.path.join(os.path.dirname(__file__), "templates", "beta_access.html")
     with open(template_path, "r", encoding="utf-8") as f:
         html_content = f.read()
@@ -22,6 +22,7 @@ def render_email_template(name: str, pin: str) -> str:
     pin_str = str(pin).strip().zfill(5)
     
     html_content = html_content.replace("{{name}}", name)
+    html_content = html_content.replace("{{email}}", email)
     for i in range(5):
         if i < len(pin_str):
             html_content = html_content.replace(f"{{{{pin_{i+1}}}}}", pin_str[i])
@@ -41,7 +42,7 @@ def send_beta_email(to_email: str, name: str, pin: str) -> bool:
         msg["From"] = f"{FROM_NAME} <{SMTP_EMAIL}>"
         msg["To"] = to_email
 
-        html_content = render_email_template(name, pin)
+        html_content = render_email_template(name, pin, to_email)
         msg.attach(MIMEText(html_content, "html"))
 
         with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=10) as server:

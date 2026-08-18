@@ -628,7 +628,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
   useEffect(() => {
     if (tab === 'mail' && selectedBetaEmail) {
       setMailPreviewHtml('<div class="p-4 text-slate-400 font-mono text-xs animate-pulse">Generating personalized preview...</div>');
-      adminFetchHtml(`/api/mailservice/preview/${encodeURIComponent(selectedBetaEmail)}`, token)
+      adminFetchHtml(`/api/mailservice/preview/${encodeURIComponent(selectedBetaEmail)}?t=${Date.now()}`, token)
         .then(html => setMailPreviewHtml(html))
         .catch(() => setMailPreviewHtml('<div class="p-4 text-red-400 font-mono text-xs">Failed to load preview.</div>'));
     }

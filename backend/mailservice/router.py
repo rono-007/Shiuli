@@ -62,7 +62,7 @@ def preview_email(email: str, _ = Depends(verify_admin)):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
         
-    html_content = email_service.render_email_template(user["name"], user["pin"])
+    html_content = email_service.render_email_template(user["name"], user["pin"], user["email"])
     return html_content
 
 @router.post("/send")

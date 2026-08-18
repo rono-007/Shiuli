@@ -135,14 +135,14 @@ async def log_requests(request: Request, call_next):
     request_logs.appendleft(log_entry)
 
     # ─── Cloudflare & Edge CDN Caching Headers ───────────────────────────
-    if request.method == "GET" and request.url.path.startswith("/api/") and not request.url.path.startswith("/api/admin"):
+    if request.method == "GET" and request.url.path.startswith("/api/") and not request.url.path.startswith("/api/admin") and not request.url.path.startswith("/api/mailservice"):
         # Tell Cloudflare Edge Nodes to cache JSON for 24h, browsers for 1h
         response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=604800"
         response.headers["CDN-Cache-Control"] = "public, s-maxage=86400"
         response.headers["Cloudflare-CDN-Cache-Control"] = "public, s-maxage=86400"
         response.headers["Vary"] = "Accept-Encoding"
-    elif request.method == "POST":
-        # Ensure security verification endpoint requests are never cached at edge
+    else:
+        # Ensure security, admin, and mail preview endpoint requests are never cached
         response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate, private"
 
     return response

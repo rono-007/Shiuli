@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, Utensils, Fuel, CreditCard, Hospital, Bath, Star, AlertCircle, X, Navigation, Pill, Train } from 'lucide-react';
-import PandalMap from './PandalMap';
+const PandalMap = React.lazy(() => import('./PandalMap'));
 import fallbackData from '../data/north_cords.json';
 import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
 import { getNearestFacilities } from '../utils/nearbyFacilities';
@@ -20,14 +20,31 @@ interface NorthCalcuttaSectionProps {
 }
 
 const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) => {
-  const [pandals, setPandals] = useState<Pandal[]>(fallbackData as Pandal[]);
+  const getInitialPandals = () => {
+    try {
+      const cachedData = secureGetItem<Pandal[]>('pujopath_north_pandals_cache');
+      const cachedSource = localStorage.getItem('pujopath_north_pandals_cache_source');
+      if (cachedSource === 'fastapi' && Array.isArray(cachedData) && cachedData.length > 0) {
+        return cachedData;
+      }
+    } catch (e) {}
+    return fallbackData as Pandal[];
+  };
+
+  const [pandals, setPandals] = useState<Pandal[]>(getInitialPandals);
   const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<'cards' | 'map'>('cards');
   const [selectedPandalName, setSelectedPandalName] = useState<string | null>(null);
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
   const [expandedPandalIdx, setExpandedPandalIdx] = useState<number | null>(null);
+  const [visibleCount, setVisibleCount] = useState<number>(20);
   const detailRef = useRef<HTMLDivElement>(null);
+
+  // Reset pagination when search query changes
+  useEffect(() => {
+    setVisibleCount(20);
+  }, [searchQuery]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -37,27 +54,18 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
   }, [searchQuery]);
 
   const fetchData = async () => {
-    setLoading(true);
+    if (pandals.length === 0) setLoading(true);
 
     const CACHE_KEY = 'pujopath_north_pandals_cache';
     const CACHE_TIME_KEY = 'pujopath_north_pandals_cache_time';
     const ONE_HOUR_MS = 60 * 60 * 1000;
 
-    // Check localStorage cache first
-    try {
-      const cachedData = secureGetItem<Pandal[]>(CACHE_KEY);
-      const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
-      const cachedSource = localStorage.getItem('pujopath_north_pandals_cache_source');
-      
-      if (cachedSource === 'fastapi' && cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
-        if (Array.isArray(cachedData) && cachedData.length > 0) {
-          setPandals(cachedData);
-          setLoading(false);
-          return;
-        }
-      }
-    } catch (err) {
-      console.warn('Failed to read from localStorage cache:', err);
+    const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+    const cachedSource = localStorage.getItem('pujopath_north_pandals_cache_source');
+    
+    if (cachedSource === 'fastapi' && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
+      setLoading(false);
+      return;
     }
 
     const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
@@ -391,6 +399,8 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
                 </div>
               ))}
             </div>
+
+
           </div>
         </div>
       </div>
@@ -503,26 +513,43 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
           </div>
         </div>
 
-        {/* Loading Spinner / Map View / Pandal Cards Grid */}
+        {/* Loading Skeleton / Map View / Pandal Cards Grid */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 space-y-4">
-            <div className="w-10 h-10 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin"></div>
-            <p className="text-xs font-sans text-ink/50 italic">লোড হচ্ছে...</p>
+          <div className="bg-[#F5EFE6] p-6 md:p-8 rounded-3xl border border-ink/10 shadow-inner">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[...Array(6)].map((_, idx) => (
+                <div key={idx} className="bg-paper border border-ink/10 rounded-2xl p-4 shadow-sm animate-pulse">
+                  <div className="flex justify-between items-center border-b border-ink/10 pb-2 mb-3">
+                    <div className="h-4 bg-bengali-red/20 rounded w-12"></div>
+                    <div className="h-4 bg-ink/10 rounded w-16"></div>
+                  </div>
+                  <div className="h-5 bg-ink/10 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-ink/5 rounded w-1/2"></div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : viewMode === 'map' ? (
           /* Interactive MapLibre GL Map View */
           <div className="w-full h-auto sm:h-[80vh] md:h-[calc(100vh-280px)] min-h-[450px] sm:min-h-[550px] md:min-h-[600px] bg-transparent sm:bg-[#FAF6ED] sm:border border-ink/10 rounded-2xl md:rounded-3xl overflow-visible sm:overflow-hidden sm:shadow-lg relative animate-fade-in-slow">
-            <PandalMap
-              pandals={filteredPandals}
-              selectedPandalName={selectedPandalName}
-              searchQuery={debouncedQuery}
-            />
+            <Suspense fallback={
+              <div className="w-full h-full flex flex-col items-center justify-center min-h-[400px]">
+                <div className="w-8 h-8 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin"></div>
+                <p className="text-xs font-sans text-ink/50 mt-4">মানচিত্র লোড হচ্ছে...</p>
+              </div>
+            }>
+              <PandalMap
+                pandals={filteredPandals}
+                selectedPandalName={selectedPandalName}
+                searchQuery={debouncedQuery}
+              />
+            </Suspense>
           </div>
         ) : filteredPandals.length > 0 ? (
           /* Pandal Cards Grid with Expandable Detail Panel */
           <div className="bg-[#F5EFE6] p-6 md:p-8 rounded-3xl border border-ink/10 shadow-inner">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredPandals.map((pandal, idx) => {
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 pb-20">
+            {filteredPandals.slice(0, visibleCount).map((pandal, idx) => {
                 const isExpanded = expandedPandalIdx === idx;
 
                 return (
@@ -587,6 +614,19 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
                 );
               })}
             </div>
+
+            {/* Load More Button */}
+            {visibleCount < filteredPandals.length && (
+              <div className="flex justify-center mt-6">
+                <button
+                  onClick={() => setVisibleCount(prev => prev + 20)}
+                  className="bg-[#3D0D11]/5 hover:bg-[#3D0D11]/10 text-[#3D0D11] border border-[#3D0D11]/10 px-6 py-2.5 rounded-full font-serif font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  আরও দেখুন
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           /* Empty state */

@@ -1,6 +1,87 @@
 {
   "history": [
     {
+      "id": "bcae60b3-0d12-461e-969e-fe3057ee2cc0",
+      "name": "Prasunita De",
+      "email": "prasunitade30@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T20:15:55.040051+00:00",
+      "error": null
+    },
+    {
+      "id": "cb4260f0-325a-4e0f-bc76-4abf3c424d56",
+      "name": "Arijit Dey",
+      "email": "deyarijit2004@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T20:15:37.323790+00:00",
+      "error": null
+    },
+    {
+      "id": "3b17d8c7-17c0-4f77-a4e8-89f3c0b9fb06",
+      "name": "Rimita Das",
+      "email": "rimitad.02@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T20:15:29.369254+00:00",
+      "error": null
+    },
+    {
+      "id": "5c67a40b-e672-43a1-be36-7e19f018c673",
+      "name": "Soumi Kanrar",
+      "email": "soumikanrar18@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T20:15:06.187717+00:00",
+      "error": null
+    },
+    {
+      "id": "8241a556-0f64-4d57-8d8a-ed7e6916df07",
+      "name": "Shreya Dhar",
+      "email": "step-rare-remold@duck.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T20:09:29.639086+00:00",
+      "error": null
+    },
+    {
+      "id": "efb147e7-bef8-4cf1-81a4-47f97fa043d0",
+      "name": "Kamelia Seth",
+      "email": "kameliaseth64@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T20:09:16.904961+00:00",
+      "error": null
+    },
+    {
+      "id": "b0fedeb3-a36f-4633-8d43-08e950e82726",
+      "name": "Arnob Biswas",
+      "email": "arnobb28@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T20:09:00.712812+00:00",
+      "error": null
+    },
+    {
+      "id": "0aff602b-7bf8-4dbe-9c33-4072b57239d6",
+      "name": "Anupama Dey",
+      "email": "anupamadey161@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T20:08:40.188957+00:00",
+      "error": null
+    },
+    {
+      "id": "a2d1ffea-c130-441c-8bdd-3459ab5d2a6d",
+      "name": "Soumili Sil",
+      "email": "soumilisil98@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-18T20:08:32.936478+00:00",
+      "error": null
+    },
+    {
       "id": "7b8135af-3f54-428c-9685-f48e6d7f19a6",
       "name": "Arunima Debnath",
       "email": "arunimadebnath40@gmail.com",

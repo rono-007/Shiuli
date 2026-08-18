@@ -885,6 +885,20 @@ def get_all_pandals():
     }
     return ORJSONResponse(content=load_all_pandals_data(), headers=headers)
 
+@app.get("/api/home")
+def get_home_data():
+    """Return aggregated lightweight data for prefetching."""
+    headers = {
+        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    }
+    data = {
+        "north": load_pandals_data(),
+        "south": load_south_pandals_data(),
+        "central": load_central_pandals_data(),
+        "bonedi": load_bonedi_pandals_data()
+    }
+    return ORJSONResponse(content=data, headers=headers)
+
 @lru_cache(maxsize=1)
 def load_north_eateries_data() -> List[dict]:
     file_path = os.path.join(os.path.dirname(__file__), "data", "north_eateries.json")

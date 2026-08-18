@@ -10,6 +10,7 @@ import { LanguageToggle } from './components/LanguageToggle';
 import BetaAccessModal from './components/BetaAccessModal';
 import BetaModal from './components/BetaModal';
 import { verifyBetaAccessAsync } from './config/betaKeys';
+import { secureSetItem } from './utils/storage';
 
 const NorthCalcuttaSection = lazy(() => import('./components/NorthCalcuttaSection'));
 const SouthCalcuttaSection = lazy(() => import('./components/SouthCalcuttaSection'));
@@ -397,7 +398,45 @@ function AppContent() {
 
     window.addEventListener('popstate', handlePopState);
 
+    // Background prefetch /api/home when on homepage or just launching
+    const prefetchTimeout = setTimeout(() => {
+      const CACHE_TIME_KEY = 'pujopath_home_cache_time';
+      const ONE_HOUR_MS = 60 * 60 * 1000;
+      const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+      
+      if (!cachedTime || (Date.now() - parseInt(cachedTime, 10)) > ONE_HOUR_MS) {
+        const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
+        fetch(`${baseUrl}/api/home`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.north) {
+              secureSetItem('pujopath_north_pandals_cache', data.north);
+              localStorage.setItem('pujopath_north_pandals_cache_time', Date.now().toString());
+              localStorage.setItem('pujopath_north_pandals_cache_source', 'fastapi');
+            }
+            if (data.south) {
+              secureSetItem('pujopath_south_pandals_cache', data.south);
+              localStorage.setItem('pujopath_south_pandals_cache_time', Date.now().toString());
+              localStorage.setItem('pujopath_south_pandals_cache_source', 'fastapi');
+            }
+            if (data.central) {
+              secureSetItem('pujopath_central_pandals_cache', data.central);
+              localStorage.setItem('pujopath_central_pandals_cache_time', Date.now().toString());
+              localStorage.setItem('pujopath_central_pandals_cache_source', 'fastapi');
+            }
+            if (data.bonedi) {
+              secureSetItem('pujopath_bonedi_pandals_cache', data.bonedi);
+              localStorage.setItem('pujopath_bonedi_pandals_cache_time', Date.now().toString());
+              localStorage.setItem('pujopath_bonedi_pandals_cache_source', 'fastapi');
+            }
+            localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+          })
+          .catch(err => console.warn('Background prefetch failed:', err));
+      }
+    }, 2000); // Wait 2s to not block initial paint
+
     return () => {
+      clearTimeout(prefetchTimeout);
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
       window.removeEventListener('popstate', handlePopState);

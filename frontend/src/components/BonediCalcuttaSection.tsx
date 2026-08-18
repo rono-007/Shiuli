@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, ArrowUp } from 'lucide-react';
-import PandalMap from './PandalMap';
+const PandalMap = React.lazy(() => import('./PandalMap'));
 import fallbackData from '../data/bonedi_kolkata.json';
 import { secureGetItem, secureSetItem } from '../utils/storage';
 
@@ -18,12 +18,28 @@ interface BonediCalcuttaSectionProps {
 }
 
 const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack }) => {
-  const [pandals, setPandals] = useState<Pandal[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const getInitialPandals = () => {
+    try {
+      const cachedData = secureGetItem<Pandal[]>('pujopath_bonedi_pandals_cache');
+      if (Array.isArray(cachedData) && cachedData.length > 0) {
+        return cachedData;
+      }
+    } catch (e) {}
+    return fallbackData as Pandal[];
+  };
+
+  const [pandals, setPandals] = useState<Pandal[]>(getInitialPandals);
+  const [loading, setLoading] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [viewMode, setViewMode] = useState<'cards' | 'map'>('cards');
   const [selectedPandalName, setSelectedPandalName] = useState<string | null>(null);
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
+  const [visibleCount, setVisibleCount] = useState<number>(20);
+
+  // Reset pagination when search query changes
+  useEffect(() => {
+    setVisibleCount(20);
+  }, [searchQuery]);
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -33,24 +49,17 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
   }, [searchQuery]);
 
   const fetchData = async () => {
-    setLoading(true);
+    if (pandals.length === 0) setLoading(true);
 
     const CACHE_KEY = 'pujopath_bonedi_pandals_cache';
     const CACHE_TIME_KEY = 'pujopath_bonedi_pandals_cache_time';
     const ONE_HOUR_MS = 60 * 60 * 1000;
 
-    // Check localStorage cache first
-    try {
-      const cachedData = secureGetItem<Pandal[]>(CACHE_KEY);
-      const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
-      
-      if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
-        setPandals(cachedData);
-        setLoading(false);
-        return;
-      }
-    } catch (err) {
-      console.warn('Failed to read from localStorage cache:', err);
+    const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
+    
+    if (cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
+      setLoading(false);
+      return;
     }
 
     const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
@@ -194,20 +203,39 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
           </div>
         </div>
 
-        {/* Loading Spinner / Map View / Pandal Cards Grid */}
+        {/* Loading Skeleton / Map View / Pandal Cards Grid */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 space-y-4">
-            <div className="w-10 h-10 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin"></div>
-            <p className="text-xs font-sans text-ink/50 italic">লোড হচ্ছে...</p>
+          <div className="bg-[#F5EFE6] p-6 md:p-10 rounded-3xl border border-ink/10 shadow-inner">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+              {[...Array(12)].map((_, idx) => (
+                <div key={idx} className="bg-paper p-1.5 shadow-sm animate-pulse">
+                  <div className="p-3 border-[3px] border-dotted border-ink/10 h-full aspect-square flex flex-col justify-between">
+                    <div className="flex justify-between items-start">
+                      <div className="h-3 bg-ink/10 rounded w-8"></div>
+                      <div className="h-3 bg-ink/10 rounded w-4"></div>
+                    </div>
+                    <div className="h-4 bg-ink/20 rounded w-full my-2"></div>
+                    <div className="h-2 bg-ink/5 rounded w-16 mx-auto mt-2"></div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         ) : viewMode === 'map' ? (
           /* Interactive MapLibre GL Map View */
           <div className="w-full h-[85vh] md:h-[calc(100vh-280px)] min-h-[600px] bg-[#FAF6ED] border border-ink/10 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg relative animate-fade-in-slow">
-            <PandalMap
-              pandals={filteredPandals}
-              selectedPandalName={selectedPandalName}
-              searchQuery={debouncedQuery}
-            />
+            <Suspense fallback={
+              <div className="w-full h-full flex flex-col items-center justify-center min-h-[400px]">
+                <div className="w-8 h-8 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin"></div>
+                <p className="text-xs font-sans text-ink/50 mt-4">মানচিত্র লোড হচ্ছে...</p>
+              </div>
+            }>
+              <PandalMap
+                pandals={filteredPandals}
+                selectedPandalName={selectedPandalName}
+                searchQuery={debouncedQuery}
+              />
+            </Suspense>
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               className="absolute bottom-6 right-6 md:hidden bg-[#8B1E2D] hover:bg-[#8B1E2D]/90 text-[#FAF6ED] px-4 py-2.5 rounded-full shadow-xl border border-[#D4A24C]/35 flex items-center gap-1.5 active:scale-95 transition-all z-20 font-sans text-xs font-bold"
@@ -220,8 +248,8 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
         ) : filteredPandals.length > 0 ? (
           /* Postage Stamp Album Layout */
           <div className="bg-[#F5EFE6] p-6 md:p-10 rounded-3xl border border-ink/10 shadow-inner">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-              {filteredPandals.map((pandal, idx) => (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6 pb-20">
+              {filteredPandals.slice(0, visibleCount).map((pandal, idx) => (
                 <div 
                   key={idx} 
                   onClick={() => {
@@ -279,6 +307,19 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
                 </div>
               ))}
             </div>
+
+            {/* Load More Button */}
+            {visibleCount < filteredPandals.length && (
+              <div className="flex justify-center -mt-10 mb-6">
+                <button
+                  onClick={() => setVisibleCount(prev => prev + 20)}
+                  className="bg-[#3D0D11]/5 hover:bg-[#3D0D11]/10 text-[#3D0D11] border border-[#3D0D11]/10 px-6 py-2.5 rounded-full font-serif font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
+                >
+                  <RefreshCw className="w-4 h-4" />
+                  আরও দেখুন
+                </button>
+              </div>
+            )}
           </div>
         ) : (
           /* Empty state */

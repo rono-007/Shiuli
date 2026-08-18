@@ -4,16 +4,19 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
 
-load_dotenv()
-
-SMTP_HOST = os.getenv("SMTP_HOST", "smtp.hostinger.com")
-SMTP_PORT = int(os.getenv("SMTP_PORT", "465"))
-SMTP_EMAIL = os.getenv("SMTP_EMAIL", "")
-SMTP_PASSWORD = os.getenv("SMTP_PASSWORD", "")
-FROM_NAME = os.getenv("FROM_NAME", "Shiuli")
-BETA_ACCESS_URL = os.getenv("BETA_ACCESS_URL", "https://beta.shiuli.online")
+def get_smtp_config():
+    load_dotenv(override=True)
+    return {
+        "host": os.getenv("SMTP_HOST", "smtp.hostinger.com"),
+        "port": int(os.getenv("SMTP_PORT", "465")),
+        "email": os.getenv("SMTP_EMAIL", ""),
+        "password": os.getenv("SMTP_PASSWORD", ""),
+        "from_name": os.getenv("FROM_NAME", "Shiuli"),
+        "beta_url": os.getenv("BETA_ACCESS_URL", "https://beta.shiuli.online"),
+    }
 
 def render_email_template(name: str, pin: str, email: str = "") -> str:
+    config = get_smtp_config()
     template_path = os.path.join(os.path.dirname(__file__), "templates", "beta_access.html")
     with open(template_path, "r", encoding="utf-8") as f:
         html_content = f.read()
@@ -29,25 +32,29 @@ def render_email_template(name: str, pin: str, email: str = "") -> str:
         else:
             html_content = html_content.replace(f"{{{{pin_{i+1}}}}}", "0")
             
-    html_content = html_content.replace("{{beta_url}}", BETA_ACCESS_URL)
+    html_content = html_content.replace("{{beta_url}}", config["beta_url"])
     return html_content
 
 def send_beta_email(to_email: str, name: str, pin: str) -> bool:
-    if not SMTP_EMAIL or not SMTP_PASSWORD:
-        raise ValueError("SMTP credentials are not configured in environment variables.")
+    config = get_smtp_config()
+    smtp_email = config["email"]
+    smtp_password = config["password"]
+
+    if not smtp_email or not smtp_password:
+        raise ValueError("SMTP credentials (SMTP_EMAIL and SMTP_PASSWORD) are not configured in environment variables.")
 
     try:
         msg = MIMEMultipart("alternative")
         msg["Subject"] = "Your Shiuli Beta Access PIN"
-        msg["From"] = f"{FROM_NAME} <{SMTP_EMAIL}>"
+        msg["From"] = f"{config['from_name']} <{smtp_email}>"
         msg["To"] = to_email
 
         html_content = render_email_template(name, pin, to_email)
         msg.attach(MIMEText(html_content, "html"))
 
-        with smtplib.SMTP_SSL(SMTP_HOST, SMTP_PORT, timeout=10) as server:
-            server.login(SMTP_EMAIL, SMTP_PASSWORD)
-            server.sendmail(SMTP_EMAIL, to_email, msg.as_string())
+        with smtplib.SMTP_SSL(config["host"], config["port"], timeout=10) as server:
+            server.login(smtp_email, smtp_password)
+            server.sendmail(smtp_email, to_email, msg.as_string())
             
         return True
     except Exception as e:

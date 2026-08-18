@@ -87,10 +87,14 @@ def send_beta_email(request: Request, body: SendEmailRequest, _ = Depends(verify
         email_service.send_beta_email(email, user["name"], user["pin"])
         history_service.record_attempt(user["name"], email, "sent", action)
         return {"success": True, "message": "Email sent successfully"}
+    except ValueError as ve:
+        error_msg = str(ve)
+        history_service.record_attempt(user["name"], email, "failed", action, error_msg)
+        return JSONResponse(status_code=400, content={"success": False, "message": error_msg})
     except Exception as e:
-        history_service.record_attempt(user["name"], email, "failed", action, str(e))
-        # Do not expose internal SMTP errors
-        return JSONResponse(status_code=500, content={"success": False, "message": "Unable to send the email. Please try again."})
+        error_msg = str(e)
+        history_service.record_attempt(user["name"], email, "failed", action, error_msg)
+        return JSONResponse(status_code=500, content={"success": False, "message": f"SMTP Delivery Error: {error_msg}"})
 
 @router.get("/stats")
 def get_stats(_ = Depends(verify_admin)):

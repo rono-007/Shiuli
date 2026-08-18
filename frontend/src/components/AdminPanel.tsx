@@ -6,7 +6,7 @@ import {
   HardDrive, Users, TrendingUp, Search, X, Eye, ChevronDown,
   ChevronUp, BarChart3, Wifi, WifiOff, Smartphone, Monitor,
   Tablet, Bot, MapPin, ArrowUpRight, Filter, AlertOctagon,
-  Gauge, ArrowRight, MessageSquare, Star
+  Gauge, ArrowRight, MessageSquare, Star, Mail, Send, CheckCircle2, XCircle, Loader2
 } from 'lucide-react';
 
 interface ErrorBoundaryProps {
@@ -164,6 +164,33 @@ interface DataOverview {
   server_start: string;
 }
 
+interface MailStats {
+  total_beta_users: number;
+  emails_sent: number;
+  not_yet_sent: number;
+  failed_emails: number;
+  total_attempts: number;
+  resend_count: number;
+  success_rate: number;
+  recent_activity: {
+    id: string;
+    name: string;
+    email: string;
+    status: string;
+    action: string;
+    timestamp: string;
+    error?: string;
+  }[];
+}
+
+interface BetaUser {
+  name: string;
+  email: string;
+  email_status: string;
+  last_sent: string | null;
+  attempt_count: number;
+}
+
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 
 function formatUptime(seconds: number): string {
@@ -221,6 +248,21 @@ async function adminFetch<T>(path: string, token: string, options?: RequestInit)
     throw new Error(`HTTP ${res.status}`);
   }
   return res.json();
+}
+
+async function adminFetchHtml(path: string, token: string, options?: RequestInit): Promise<string> {
+  const res = await fetch(`${API_BASE}${path}`, {
+    ...options,
+    headers: {
+      'x-admin-token': token,
+      ...(options?.headers || {}),
+    },
+  });
+  if (!res.ok) {
+    if (res.status === 401) throw new Error('UNAUTHORIZED');
+    throw new Error(`HTTP ${res.status}`);
+  }
+  return res.text();
 }
 
 // ─── Login Screen ─────────────────────────────────────────────────────────────
@@ -468,7 +510,7 @@ interface FeedbackItem {
   ip?: string;
 }
 
-type Tab = 'overview' | 'sources' | 'logs' | 'data' | 'feedback';
+type Tab = 'overview' | 'sources' | 'logs' | 'data' | 'feedback' | 'mail';
 
 function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => void }) {
   const [tab, setTab] = useState<Tab>('overview');
@@ -481,6 +523,16 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
   const [loading, setLoading] = useState(true);
   const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
   const [serverOnline, setServerOnline] = useState(true);
+
+  // Mail tab state
+  const [mailStats, setMailStats] = useState<MailStats | null>(null);
+  const [betaUsers, setBetaUsers] = useState<BetaUser[]>([]);
+  const [selectedBetaEmail, setSelectedBetaEmail] = useState<string | null>(null);
+  const [mailPreviewHtml, setMailPreviewHtml] = useState<string>('');
+  const [betaUserSearch, setBetaUserSearch] = useState('');
+  const [betaUserFilter, setBetaUserFilter] = useState<'all' | 'sent' | 'failed' | 'not_sent'>('all');
+  const [sendingMail, setSendingMail] = useState(false);
+  const [mailMessage, setMailMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Logs tab state
   const [logSearch, setLogSearch] = useState('');
@@ -498,12 +550,14 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
-      const [statsData, logsData, overviewData, healthData, feedbackData] = await Promise.allSettled([
+      const [statsData, logsData, overviewData, healthData, feedbackData, mailStatsData, betaUsersData] = await Promise.allSettled([
         adminFetch<Stats>('/admin/stats', token),
         adminFetch<{ logs: LogEntry[]; total: number }>('/admin/logs?limit=500', token),
         adminFetch<DataOverview>('/admin/data-overview', token),
         fetch(`${API_BASE}/health`).then(r => r.json()),
         adminFetch<FeedbackItem[]>('/admin/feedback', token),
+        adminFetch<MailStats>('/api/mailservice/stats', token),
+        adminFetch<BetaUser[]>('/api/mailservice/beta-users', token),
       ]);
 
       if (statsData.status === 'fulfilled') {
@@ -555,6 +609,8 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
       } else {
         setServerOnline(false);
       }
+      if (mailStatsData.status === 'fulfilled') setMailStats(mailStatsData.value);
+      if (betaUsersData.status === 'fulfilled') setBetaUsers(betaUsersData.value);
       setLastRefresh(new Date());
     } catch {
       setServerOnline(false);
@@ -568,6 +624,35 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
     const interval = setInterval(fetchAll, 15000); // 15s auto-refresh
     return () => clearInterval(interval);
   }, [fetchAll]);
+
+  useEffect(() => {
+    if (tab === 'mail' && selectedBetaEmail) {
+      setMailPreviewHtml('<div class="p-4 text-slate-400 font-mono text-xs animate-pulse">Generating personalized preview...</div>');
+      adminFetchHtml(`/api/mailservice/preview/${encodeURIComponent(selectedBetaEmail)}`, token)
+        .then(html => setMailPreviewHtml(html))
+        .catch(() => setMailPreviewHtml('<div class="p-4 text-red-400 font-mono text-xs">Failed to load preview.</div>'));
+    }
+  }, [tab, selectedBetaEmail, token]);
+
+  const handleSendMail = async (email: string) => {
+    if (!confirm(`Send beta access email to ${email}?`)) return;
+    setSendingMail(true);
+    setMailMessage(null);
+    try {
+      await adminFetch('/api/mailservice/send', token, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      setMailMessage({ type: 'success', text: `Email sent successfully to ${email}` });
+      fetchAll(); // refresh data
+    } catch (err: any) {
+      setMailMessage({ type: 'error', text: err.message || 'Failed to send email' });
+    } finally {
+      setSendingMail(false);
+      setTimeout(() => setMailMessage(null), 5000);
+    }
+  };
 
   // Fetch collection data when expanded
   const loadCollectionData = async (endpoint: string) => {
@@ -755,6 +840,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
 
   const tabs: { id: Tab; label: string; icon: React.ElementType; badge?: number }[] = [
     { id: 'overview', label: 'Overview & Charts', icon: BarChart3 },
+    { id: 'mail', label: 'Mail Dashboard', icon: Mail },
     { id: 'sources', label: 'Request Origins (IPs)', icon: MapPin },
     { id: 'logs', label: 'Request Logs', icon: ScrollText },
     { id: 'data', label: 'Data Explorer', icon: Database },
@@ -845,6 +931,38 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
             <div className="bg-[#111827] border border-slate-700/40 rounded-xl p-5 shadow-lg">
               <TrafficChart data={effectiveTimeSeries} />
             </div>
+
+            {/* Beta Access Mail Stats */}
+            {mailStats && (
+              <div className="bg-[#111827] border border-slate-700/40 rounded-xl p-5 shadow-lg">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="text-sm uppercase tracking-wider text-amber-400 font-semibold flex items-center gap-2">
+                    <Mail className="w-4 h-4" /> Beta Access Mail Campaign
+                  </h3>
+                  <button onClick={() => setTab('mail')} className="text-xs text-amber-400 hover:underline flex items-center gap-1">
+                    Manage Mails <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  <div className="bg-slate-800/40 rounded-lg p-3">
+                    <div className="text-xs text-slate-400 mb-1">Total Waitlist</div>
+                    <div className="text-xl font-bold text-white font-mono">{mailStats.total_beta_users}</div>
+                  </div>
+                  <div className="bg-emerald-500/10 rounded-lg p-3">
+                    <div className="text-xs text-emerald-400 mb-1">Mails Sent</div>
+                    <div className="text-xl font-bold text-emerald-400 font-mono">{mailStats.emails_sent}</div>
+                  </div>
+                  <div className="bg-amber-500/10 rounded-lg p-3">
+                    <div className="text-xs text-amber-400 mb-1">Pending</div>
+                    <div className="text-xl font-bold text-amber-400 font-mono">{mailStats.not_yet_sent}</div>
+                  </div>
+                  <div className="bg-red-500/10 rounded-lg p-3">
+                    <div className="text-xs text-red-400 mb-1">Failed</div>
+                    <div className="text-xl font-bold text-red-400 font-mono">{mailStats.failed_emails}</div>
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Request Sources & Origins Summary */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -1477,6 +1595,150 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                     </div>
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ─── MAIL DASHBOARD TAB ──────────────────────────────────── */}
+        {tab === 'mail' && (
+          <div className="space-y-6">
+            {mailMessage && (
+              <div className={`p-4 rounded-lg flex items-center gap-3 text-sm font-semibold ${mailMessage.type === 'success' ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-red-500/20 text-red-400 border border-red-500/30'}`}>
+                {mailMessage.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <XCircle className="w-5 h-5" />}
+                {mailMessage.text}
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              
+              {/* Left Column: Users List */}
+              <div className="lg:col-span-1 bg-[#111827] border border-slate-700/40 rounded-xl flex flex-col h-[700px]">
+                <div className="p-4 border-b border-slate-700/40">
+                  <h3 className="text-sm font-semibold text-white flex items-center gap-2 mb-3">
+                    <Users className="w-4 h-4 text-amber-400" /> Beta Users
+                  </h3>
+                  <div className="space-y-2">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+                      <input 
+                        type="text" 
+                        value={betaUserSearch}
+                        onChange={e => setBetaUserSearch(e.target.value)}
+                        placeholder="Search email..." 
+                        className="w-full pl-9 pr-4 py-1.5 bg-[#0a0e17] border border-slate-700/50 rounded-lg text-xs text-white focus:outline-none focus:border-amber-500/50"
+                      />
+                    </div>
+                    <select 
+                      value={betaUserFilter}
+                      onChange={e => setBetaUserFilter(e.target.value as any)}
+                      className="w-full px-3 py-1.5 bg-[#0a0e17] border border-slate-700/50 rounded-lg text-xs text-slate-300 focus:outline-none"
+                    >
+                      <option value="all">All Users</option>
+                      <option value="not_sent">Pending / Not Sent</option>
+                      <option value="sent">Successfully Sent</option>
+                      <option value="failed">Failed</option>
+                    </select>
+                  </div>
+                </div>
+                
+                <div className="flex-1 overflow-y-auto p-2 space-y-1">
+                  {betaUsers
+                    .filter(u => betaUserFilter === 'all' || u.email_status === betaUserFilter)
+                    .filter(u => !betaUserSearch || u.email.toLowerCase().includes(betaUserSearch.toLowerCase()))
+                    .map(u => (
+                      <button
+                        key={u.email}
+                        onClick={() => setSelectedBetaEmail(u.email)}
+                        className={`w-full text-left p-3 rounded-lg transition-colors border ${selectedBetaEmail === u.email ? 'bg-slate-800 border-amber-500/50' : 'bg-transparent border-transparent hover:bg-slate-800/40'}`}
+                      >
+                        <div className="flex justify-between items-start mb-1">
+                          <span className="text-xs font-semibold text-white truncate pr-2">{u.name}</span>
+                          <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
+                            u.email_status === 'sent' ? 'bg-emerald-500/20 text-emerald-400' :
+                            u.email_status === 'failed' ? 'bg-red-500/20 text-red-400' :
+                            'bg-amber-500/20 text-amber-400'
+                          }`}>
+                            {u.email_status}
+                          </span>
+                        </div>
+                        <div className="text-[11px] text-slate-400 truncate font-mono">{u.email}</div>
+                        {u.last_sent && (
+                          <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
+                            <Clock className="w-3 h-3" /> {new Date(u.last_sent).toLocaleString()}
+                          </div>
+                        )}
+                      </button>
+                    ))}
+                  {betaUsers.length === 0 && (
+                    <div className="text-center p-4 text-xs text-slate-500">No users found.</div>
+                  )}
+                </div>
+              </div>
+
+              {/* Right Column: Preview & Action */}
+              <div className="lg:col-span-2 bg-[#111827] border border-slate-700/40 rounded-xl flex flex-col h-[700px]">
+                {selectedBetaEmail ? (
+                  <>
+                    <div className="p-4 border-b border-slate-700/40 flex items-center justify-between bg-slate-800/20">
+                      <div>
+                        <h3 className="text-sm font-semibold text-white">Email Preview</h3>
+                        <p className="text-xs text-slate-400">Previewing customized template for {selectedBetaEmail}</p>
+                      </div>
+                      <button
+                        onClick={() => handleSendMail(selectedBetaEmail)}
+                        disabled={sendingMail}
+                        className="flex items-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-lg text-xs transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {sendingMail ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                        {sendingMail ? 'Sending...' : 'Send Email Now'}
+                      </button>
+                    </div>
+                    <div className="flex-1 bg-white overflow-hidden rounded-b-xl relative">
+                      {mailPreviewHtml.includes('Loading preview') || mailPreviewHtml.includes('Failed to load') ? (
+                        <div className="absolute inset-0 flex items-center justify-center bg-slate-900" dangerouslySetInnerHTML={{ __html: mailPreviewHtml }}></div>
+                      ) : (
+                        <iframe 
+                          srcDoc={mailPreviewHtml} 
+                          className="w-full h-full border-none" 
+                          title="Email Preview"
+                        />
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex-1 flex flex-col items-center justify-center text-slate-500 p-6 text-center">
+                    <Mail className="w-12 h-12 mb-3 text-slate-600" />
+                    <h3 className="text-sm font-semibold text-slate-300">Select a User</h3>
+                    <p className="text-xs mt-1">Select a beta user from the left list to preview their customized email template and send it.</p>
+                  </div>
+                )}
+              </div>
+            </div>
+            
+            {/* Recent Activity */}
+            {mailStats && mailStats.recent_activity.length > 0 && (
+              <div className="bg-[#111827] border border-slate-700/40 rounded-xl p-5">
+                <h3 className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-4 flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-emerald-400" /> Recent Send Activity
+                </h3>
+                <div className="space-y-2">
+                  {mailStats.recent_activity.map(act => (
+                    <div key={act.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg bg-slate-800/40 border border-slate-700/30 text-xs">
+                      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2 sm:mb-0">
+                        <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${act.status === 'success' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
+                          {act.status}
+                        </span>
+                        <span className="text-white font-semibold">{act.email}</span>
+                        <span className="text-slate-400 font-mono hidden sm:block">{act.action}</span>
+                      </div>
+                      <div className="flex items-center gap-4 text-slate-500 font-mono text-[11px]">
+                        {act.error && <span className="text-red-400 max-w-[200px] truncate" title={act.error}>{act.error}</span>}
+                        <span>{new Date(act.timestamp).toLocaleString()}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
           </div>

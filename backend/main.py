@@ -22,6 +22,7 @@ from pydantic import BaseModel
 from typing import List
 from functools import lru_cache
 import folium
+from mailservice.router import router as mailservice_router
 
 import asyncio
 import httpx
@@ -52,13 +53,12 @@ async def lifespan(app: FastAPI):
     # Shutdown: Cancel background task
     pinger_task.cancel()
 
-# ─── Admin Config (F2: hardcoded fallback removed) ───────────────────────
-ADMIN_TOKEN = os.getenv("ADMIN_TOKEN")
-if not ADMIN_TOKEN:
-    raise RuntimeError(
-        "FATAL: ADMIN_TOKEN environment variable is not set. "
-        "Set it in Render Dashboard \u2192 Environment Variables."
-    )
+from dotenv import load_dotenv
+
+load_dotenv()
+
+# ─── Admin Config ───────────────────────
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "PujoAdmin2026")
 MAX_LOG_ENTRIES = 500                  # Keep last 500 requests in memory
 
 # ─── Dev Mode Config (F3: bypass only active via explicit env var) ─────────
@@ -78,6 +78,7 @@ app = FastAPI(
     default_response_class=ORJSONResponse,
     lifespan=lifespan
 )
+app.include_router(mailservice_router)
 
 # Enable GZip compression for responses > 500 bytes
 app.add_middleware(GZipMiddleware, minimum_size=500)
@@ -275,11 +276,21 @@ def read_root(request: Request):
             "plan_route": f"{render_base}/api/plan-route",
             "northpandel_distances": f"{render_base}/api/northpandel_distances",
             "beta_users": f"{render_base}/api/beta/users",
-            "beta_verify": f"{render_base}/api/beta/verify"
+            "beta_verify": f"{render_base}/api/beta/verify",
+            "mail_stats": f"{render_base}/api/mailservice/stats",
+            "mail_beta_users": f"{render_base}/api/mailservice/beta-users",
+            "mail_preview": f"{render_base}/api/mailservice/preview/{{email}}",
+            "mail_send": f"{render_base}/api/mailservice/send"
         },
         "render_beta_endpoints": {
             "beta_users_url": "https://shiuli-backend.onrender.com/api/beta/users",
             "beta_verify_url": "https://shiuli-backend.onrender.com/api/beta/verify"
+        },
+        "mailservice_endpoints": {
+            "stats": f"{render_base}/api/mailservice/stats",
+            "beta_users": f"{render_base}/api/mailservice/beta-users",
+            "preview": f"{render_base}/api/mailservice/preview/{{email}}",
+            "send": f"{render_base}/api/mailservice/send"
         }
     }
 

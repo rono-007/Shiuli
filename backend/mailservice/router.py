@@ -1,9 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import HTMLResponse, JSONResponse
 import os
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 from .models import SendEmailRequest, BetaUserResponse
 from . import user_service, history_service, email_service
 
+limiter = Limiter(key_func=get_remote_address)
 router = APIRouter(prefix="/api/mailservice", tags=["mailservice"])
 
 ADMIN_TOKEN = os.getenv("ADMIN_TOKEN")
@@ -67,8 +70,9 @@ def preview_email(email: str, _ = Depends(verify_admin)):
 
 @router.post("/send")
 @router.post("/send-beta-email")
-def send_beta_email(request: SendEmailRequest, _ = Depends(verify_admin)):
-    email = request.email.strip().lower()
+@limiter.limit("10/minute")
+def send_beta_email(request: Request, body: SendEmailRequest, _ = Depends(verify_admin)):
+    email = body.email.strip().lower()
     user = user_service.get_user_by_email(email)
     
     if not user:

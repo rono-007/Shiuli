@@ -480,17 +480,18 @@ class MetricsCollector:
 
             active_minutes = max(len([mk for mk in self._minute_buckets if mk >= cutoff_key]), 1)
             result = []
-            for feature in feat_durations:
-                durs = feat_durations[feature]
-                total = feat_counts[feature]
+            all_features = set(FEATURE_MAP.values()) | {"Other"}
+            for feature in all_features:
+                durs = feat_durations.get(feature, [])
+                total = feat_counts.get(feature, 0)
                 result.append({
                     "feature": feature,
                     "requests": total,
                     "rpm": round(total / active_minutes, 1),
                     "latency": _compute_latency_stats(durs),
-                    "error_rate": round(feat_errors[feature] / total * 100, 1) if total else 0,
-                    "slow_count": feat_slow[feature],
-                    "total_transferred": sum(feat_sizes[feature]),
+                    "error_rate": round(feat_errors.get(feature, 0) / total * 100, 1) if total else 0,
+                    "slow_count": feat_slow.get(feature, 0),
+                    "total_transferred": sum(feat_sizes.get(feature, [])),
                 })
 
             return sorted(result, key=lambda x: x["requests"], reverse=True)

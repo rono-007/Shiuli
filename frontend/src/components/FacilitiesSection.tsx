@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, Star, Phone, Clock, Loader2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -13,6 +13,7 @@ interface OpeningHour {
 }
 
 interface Eatery {
+  id?: string;
   title: string;
   subTitle?: string | null;
   description?: string | null;
@@ -40,125 +41,101 @@ interface FacilitiesSectionProps {
 }
 
 
-// Module-level in-memory cache to guarantee 0ms instant reload
-let cachedNorthEateries: Eatery[] | null = null;
-let cachedSouthEateries: Eatery[] | null = null;
-let loadPromise: Promise<{ north: Eatery[]; south: Eatery[] }> | null = null;
-
-function loadEateriesDatasets() {
-  if (cachedNorthEateries && cachedSouthEateries) {
-    return Promise.resolve({ north: cachedNorthEateries, south: cachedSouthEateries });
-  }
-  if (!loadPromise) {
-    loadPromise = Promise.all([
-      import('../data/north_eateries.json').then(m =>
-        (((m.default || m) as unknown) as Eatery[]).map(x => ({ ...x, zone: 'north' as const }))
-      ).catch(() => []),
-      import('../data/south_eateries.json').then(m =>
-        (((m.default || m) as unknown) as Eatery[]).map(x => ({ ...x, zone: 'south' as const }))
-      ).catch(() => [])
-    ]).then(([north, south]) => {
-      cachedNorthEateries = north;
-      cachedSouthEateries = south;
-      return { north, south };
-    });
-  }
-  return loadPromise;
-}
-
-// Immediately trigger background prefetch when module is loaded
-loadEateriesDatasets().catch(() => {});
+const baseUrl = import.meta.env.VITE_API_URL || 'https://shiuli-backend.onrender.com';
 
 const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
   const { t } = useLanguage();
-  const [data, setData] = useState<{ north: Eatery[]; south: Eatery[] }>({
-    north: cachedNorthEateries || [],
-    south: cachedSouthEateries || []
-  });
-  const [loading, setLoading] = useState<boolean>(!cachedNorthEateries || !cachedSouthEateries);
+  
+  const [data, setData] = useState<Eatery[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [loadingMore, setLoadingMore] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [minRating, setMinRating] = useState<number>(0);
   const [selectedZone, setSelectedZone] = useState<'all' | 'north' | 'south'>('all');
-  const [displayLimit, setDisplayLimit] = useState<number>(32);
+  
+  const [page, setPage] = useState<number>(1);
+  const [hasMore, setHasMore] = useState<boolean>(false);
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [dynamicCategoryTags, setDynamicCategoryTags] = useState<string[]>(['All']);
 
+  // Fetch categories when zone changes
   useEffect(() => {
-    if (!cachedNorthEateries || !cachedSouthEateries) {
+    fetch(`${baseUrl}/api/food/categories?zone=${selectedZone}`)
+      .then(res => res.json())
+      .then(resData => {
+        if (resData && resData.categories) {
+          setDynamicCategoryTags(resData.categories);
+        }
+      })
+      .catch(err => console.error("Failed to load food categories", err));
+  }, [selectedZone, baseUrl]);
+
+  // Fetch paginated food data
+  useEffect(() => {
+    let isMounted = true;
+    
+    if (page === 1) {
       setLoading(true);
-      loadEateriesDatasets().then(res => {
-        setData(res);
-        setLoading(false);
-      });
+    } else {
+      setLoadingMore(true);
     }
-  }, []);
-
-  // Reset pagination limit when filters change
-  useEffect(() => {
-    setDisplayLimit(32);
-  }, [searchQuery, selectedCategory, minRating, selectedZone]);
-
-  const eateriesList = useMemo(() => {
-    if (selectedZone === 'north') return data.north;
-    if (selectedZone === 'south') return data.south;
-    return [...data.north, ...data.south];
-  }, [data, selectedZone]);
-
-  // Dynamically extract top category tags for the currently selected zone (North / South / All)
-  const dynamicCategoryTags = useMemo(() => {
-    const counts: Record<string, number> = {};
-    eateriesList.forEach(item => {
-      if (item.categoryName && !item.permanentlyClosed) {
-        const cat = item.categoryName.trim();
-        counts[cat] = (counts[cat] || 0) + 1;
-      }
+    
+    const params = new URLSearchParams({
+      page: page.toString(),
+      limit: '24',
+      zone: selectedZone,
+      category: selectedCategory,
+      minRating: minRating.toString(),
+      search: searchQuery
     });
 
-    const sortedCats = Object.entries(counts)
-      .sort((a, b) => b[1] - a[1])
-      .map(([cat]) => cat);
+    fetch(`${baseUrl}/api/food?${params.toString()}`)
+      .then(res => res.json())
+      .then(resData => {
+        if (!isMounted) return;
+        
+        const newItems = resData.data || [];
+        if (page === 1) {
+          setData(newItems);
+        } else {
+          setData(prev => {
+            // Prevent duplicates if double-fetching occurs
+            const existingIds = new Set(prev.map(i => i.id || i.title));
+            const uniqueNewItems = newItems.filter((i: any) => !existingIds.has(i.id || i.title));
+            return [...prev, ...uniqueNewItems];
+          });
+        }
+        
+        const pagination = resData.pagination;
+        if (pagination) {
+          setTotalCount(pagination.total);
+          setHasMore(page < pagination.total_pages);
+        }
+      })
+      .catch(err => console.error("Failed to fetch food data", err))
+      .finally(() => {
+        if (isMounted) {
+          setLoading(false);
+          setLoadingMore(false);
+        }
+      });
+      
+    return () => { isMounted = false; };
+  }, [page, selectedZone, selectedCategory, minRating, searchQuery, baseUrl]);
 
-    // Pick top 12 categories for current zone, starting with 'All'
-    return ['All', ...sortedCats.slice(0, 12)];
-  }, [eateriesList]);
+  // Reset page to 1 when filters change
+  useEffect(() => {
+    setPage(1);
+  }, [searchQuery, selectedCategory, minRating, selectedZone]);
 
   const handleZoneChange = (zone: 'all' | 'north' | 'south') => {
     setSelectedZone(zone);
     setSelectedCategory('All');
   };
 
-  const filteredEateries = useMemo(() => {
-    return eateriesList.filter(item => {
-      if (item.permanentlyClosed) return false;
-
-      // Category filter
-      if (selectedCategory !== 'All') {
-        const cat = (item.categoryName || '').toLowerCase();
-        if (!cat.includes(selectedCategory.toLowerCase())) return false;
-      }
-
-      // Rating filter
-      if (minRating > 0 && (item.totalScore || 0) < minRating) {
-        return false;
-      }
-
-      // Search query filter
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        const titleMatch = (item.title || '').toLowerCase().includes(q);
-        const subTitleMatch = (item.subTitle || '').toLowerCase().includes(q);
-        const descMatch = (item.description || '').toLowerCase().includes(q);
-        const addrMatch = (item.address || '').toLowerCase().includes(q);
-        const neighMatch = (item.neighborhood || '').toLowerCase().includes(q);
-        return titleMatch || subTitleMatch || descMatch || addrMatch || neighMatch;
-      }
-
-      return true;
-    });
-  }, [eateriesList, selectedCategory, minRating, searchQuery]);
-
-  const visibleEateries = useMemo(() => {
-    return filteredEateries.slice(0, displayLimit);
-  }, [filteredEateries, displayLimit]);
+  const visibleEateries = data;
+  const filteredEateries = { length: totalCount };
 
   return (
     <div 
@@ -476,12 +453,14 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
             </div>
 
             {/* LOAD MORE BUTTON */}
-            {displayLimit < filteredEateries.length && (
+            {hasMore && (
               <div className="text-center mt-12">
                 <button
-                  onClick={() => setDisplayLimit(prev => prev + 32)}
-                  className="px-8 py-3 bg-bengali-red text-white text-xs font-serif font-bold rounded-2xl hover:bg-[#721724] transition-all shadow-md hover:shadow-lg cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0"
+                  onClick={() => setPage(p => p + 1)}
+                  disabled={loadingMore}
+                  className="px-8 py-3 bg-bengali-red text-white text-xs font-serif font-bold rounded-2xl hover:bg-[#721724] transition-all shadow-md hover:shadow-lg cursor-pointer transform hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2"
                 >
+                  {loadingMore && <Loader2 className="w-4 h-4 animate-spin" />}
                   {t.loadMoreBtn} ({visibleEateries.length} / {filteredEateries.length})
                 </button>
               </div>

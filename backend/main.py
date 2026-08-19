@@ -13,7 +13,7 @@ from datetime import datetime, timezone, timedelta
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from fastapi import FastAPI, HTTPException, Request, Depends, BackgroundTasks
+from fastapi import FastAPI, HTTPException, Request, Depends, BackgroundTasks, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import HTMLResponse, JSONResponse, ORJSONResponse
@@ -936,6 +936,162 @@ def get_south_eateries():
         "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
     }
     return ORJSONResponse(content=load_south_eateries_data(), headers=headers)
+
+@lru_cache(maxsize=1)
+def get_optimized_food_data() -> List[dict]:
+    """Loads, processes, and combines food data once into memory."""
+    t0 = time.perf_counter()
+    optimized = []
+    
+    # Process North
+    try:
+        north = load_north_eateries_data()
+        for item in north:
+            optimized.append({
+                "id": str(uuid.uuid4())[:8],
+                "title": item.get("title", ""),
+                "subTitle": item.get("subTitle", ""),
+                "categoryName": item.get("categoryName", ""),
+                "price": item.get("price", ""),
+                "totalScore": item.get("totalScore", 0),
+                "reviewsCount": item.get("reviewsCount", 0),
+                "address": item.get("address", ""),
+                "neighborhood": item.get("neighborhood", ""),
+                "description": item.get("description", ""),
+                "imageUrl": item.get("imageUrl", ""),
+                "url": item.get("url", ""),
+                "lat": item.get("lat", 0),
+                "lng": item.get("lng", 0) if "lng" in item else item.get("lon", 0),
+                "permanentlyClosed": item.get("permanentlyClosed", False),
+                "zone": "north"
+            })
+    except Exception as e:
+        logger.error(f"Error processing north eateries: {e}")
+        
+    # Process South
+    try:
+        south = load_south_eateries_data()
+        for item in south:
+            optimized.append({
+                "id": str(uuid.uuid4())[:8],
+                "title": item.get("title", ""),
+                "subTitle": item.get("subTitle", ""),
+                "categoryName": item.get("categoryName", ""),
+                "price": item.get("price", ""),
+                "totalScore": item.get("totalScore", 0),
+                "reviewsCount": item.get("reviewsCount", 0),
+                "address": item.get("address", ""),
+                "neighborhood": item.get("neighborhood", ""),
+                "description": item.get("description", ""),
+                "imageUrl": item.get("imageUrl", ""),
+                "url": item.get("url", ""),
+                "lat": item.get("lat", 0),
+                "lng": item.get("lng", 0) if "lng" in item else item.get("lon", 0),
+                "permanentlyClosed": item.get("permanentlyClosed", False),
+                "zone": "south"
+            })
+    except Exception as e:
+        logger.error(f"Error processing south eateries: {e}")
+        
+    logger.info(f"Optimized {len(optimized)} food records in {time.perf_counter() - t0:.4f}s")
+    return optimized
+
+@app.get("/api/food/categories")
+def get_food_categories(zone: str = Query("all", description="all, north, south")):
+    data = get_optimized_food_data()
+    counts = {}
+    for item in data:
+        if item.get("permanentlyClosed"):
+            continue
+        if zone != "all" and item.get("zone") != zone:
+            continue
+        cat = item.get("categoryName", "").strip()
+        if cat:
+            counts[cat] = counts.get(cat, 0) + 1
+            
+    sorted_cats = sorted(counts.items(), key=lambda x: x[1], reverse=True)
+    top_cats = ["All"] + [c[0] for c in sorted_cats[:12]]
+    
+    return ORJSONResponse(
+        content={"categories": top_cats}, 
+        headers={"Cache-Control": "public, max-age=3600, s-maxage=86400"}
+    )
+
+@app.get("/api/food")
+def get_food(
+    page: int = Query(1, ge=1),
+    limit: int = Query(12, ge=1, le=100),
+    zone: str = Query("all"),
+    category: str = Query("All"),
+    minRating: float = Query(0.0),
+    search: str = Query("")
+):
+    t0 = time.perf_counter()
+    data = get_optimized_food_data()
+    
+    # Filter
+    search_lower = search.lower().strip()
+    category_lower = category.lower().strip()
+    
+    filtered = []
+    for item in data:
+        if item.get("permanentlyClosed"):
+            continue
+        if zone != "all" and item.get("zone") != zone:
+            continue
+        if minRating > 0 and item.get("totalScore", 0) < minRating:
+            continue
+        if category_lower != "all":
+            cat = item.get("categoryName", "").lower()
+            if category_lower not in cat:
+                continue
+        if search_lower:
+            match = (
+                search_lower in item.get("title", "").lower() or
+                search_lower in item.get("subTitle", "").lower() or
+                search_lower in item.get("description", "").lower() or
+                search_lower in item.get("address", "").lower() or
+                search_lower in item.get("neighborhood", "").lower()
+            )
+            if not match:
+                continue
+        filtered.append(item)
+        
+    t_filter = time.perf_counter() - t0
+    
+    total = len(filtered)
+    total_pages = math.ceil(total / limit)
+    start_idx = (page - 1) * limit
+    end_idx = start_idx + limit
+    
+    paginated = filtered[start_idx:end_idx]
+    
+    # Do not send description or neighborhood to client in paginated list
+    final_data = []
+    for p in paginated:
+        c = p.copy()
+        if "description" in c:
+            del c["description"]
+        if "neighborhood" in c:
+            del c["neighborhood"]
+        final_data.append(c)
+        
+    t_total = time.perf_counter() - t0
+    logger.info(f"Food API: Filter={t_filter:.4f}s, Total={t_total:.4f}s, Page={page}/{total_pages}")
+    
+    return ORJSONResponse(content={
+        "data": final_data,
+        "pagination": {
+            "page": page,
+            "limit": limit,
+            "total": total,
+            "total_pages": total_pages
+        },
+        "perf": {
+            "filter_ms": round(t_filter * 1000, 2),
+            "total_ms": round(t_total * 1000, 2)
+        }
+    }, headers={"Cache-Control": "public, max-age=60, s-maxage=300"})
 
 @lru_cache(maxsize=1)
 def load_north_facilities_data() -> List[dict]:

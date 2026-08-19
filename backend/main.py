@@ -1019,6 +1019,15 @@ def get_food_categories(zone: str = Query("all", description="all, north, south"
         headers={"Cache-Control": "public, max-age=3600, s-maxage=86400"}
     )
 
+@app.get("/api/food/all_light")
+def get_all_food_light():
+    data = get_optimized_food_data()
+    active_data = [item for item in data if not item.get("permanentlyClosed")]
+    return ORJSONResponse(
+        content={"data": active_data, "total": len(active_data)},
+        headers={"Cache-Control": "public, max-age=86400, s-maxage=604800"}
+    )
+
 @app.get("/api/food")
 def get_food(
     page: int = Query(1, ge=1),

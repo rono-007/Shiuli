@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, Star, Phone, Clock, Loader2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { startBackgroundPreload, isFoodCacheReady, queryLocalFood } from '../utils/foodCache';
 
 interface EateryLocation {
   lat: number;
@@ -71,58 +72,95 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
       .catch(err => console.error("Failed to load food categories", err));
   }, [selectedZone, baseUrl]);
 
-  // Fetch paginated food data
-  useEffect(() => {
-    let isMounted = true;
-    
-    if (page === 1) {
-      setLoading(true);
-    } else {
-      setLoadingMore(true);
-    }
-    
-    const params = new URLSearchParams({
-      page: page.toString(),
-      limit: '24',
+// Start background preload early
+useEffect(() => {
+  startBackgroundPreload(baseUrl);
+}, [baseUrl]);
+
+// Fetch paginated food data (from local cache if ready, else from API)
+useEffect(() => {
+  let isMounted = true;
+  
+  if (page === 1) {
+    setLoading(true);
+  } else {
+    setLoadingMore(true);
+  }
+
+  // Check if background preload cache is ready for instant 0ms response
+  if (isFoodCacheReady()) {
+    const resData = queryLocalFood({
+      page,
+      limit: 24,
       zone: selectedZone,
       category: selectedCategory,
-      minRating: minRating.toString(),
+      minRating,
       search: searchQuery
     });
 
-    fetch(`${baseUrl}/api/food?${params.toString()}`)
-      .then(res => res.json())
-      .then(resData => {
-        if (!isMounted) return;
-        
-        const newItems = resData.data || [];
-        if (page === 1) {
-          setData(newItems);
-        } else {
-          setData(prev => {
-            // Prevent duplicates if double-fetching occurs
-            const existingIds = new Set(prev.map(i => i.id || i.title));
-            const uniqueNewItems = newItems.filter((i: any) => !existingIds.has(i.id || i.title));
-            return [...prev, ...uniqueNewItems];
-          });
-        }
-        
-        const pagination = resData.pagination;
-        if (pagination) {
-          setTotalCount(pagination.total);
-          setHasMore(page < pagination.total_pages);
-        }
-      })
-      .catch(err => console.error("Failed to fetch food data", err))
-      .finally(() => {
-        if (isMounted) {
-          setLoading(false);
-          setLoadingMore(false);
-        }
-      });
+    if (isMounted) {
+      if (page === 1) {
+        setData(resData.data);
+      } else {
+        setData(prev => {
+          const existingIds = new Set(prev.map(i => i.id || i.title));
+          const uniqueNewItems = resData.data.filter((i: any) => !existingIds.has(i.id || i.title));
+          return [...prev, ...uniqueNewItems];
+        });
+      }
+      setTotalCount(resData.pagination.total);
+      setHasMore(page < resData.pagination.total_pages);
+      setLoading(false);
+      setLoadingMore(false);
+    }
+    return;
+  }
+
+  // Fallback to Server API if background cache is not ready yet
+  const params = new URLSearchParams({
+    page: page.toString(),
+    limit: '24',
+    zone: selectedZone,
+    category: selectedCategory,
+    minRating: minRating.toString(),
+    search: searchQuery
+  });
+
+  fetch(`${baseUrl}/api/food?${params.toString()}`)
+    .then(res => res.json())
+    .then(resData => {
+      if (!isMounted) return;
       
-    return () => { isMounted = false; };
-  }, [page, selectedZone, selectedCategory, minRating, searchQuery, baseUrl]);
+      const newItems = resData.data || [];
+      if (page === 1) {
+        setData(newItems);
+      } else {
+        setData(prev => {
+          const existingIds = new Set(prev.map(i => i.id || i.title));
+          const uniqueNewItems = newItems.filter((i: any) => !existingIds.has(i.id || i.title));
+          return [...prev, ...uniqueNewItems];
+        });
+      }
+      
+      const pagination = resData.pagination;
+      if (pagination) {
+        setTotalCount(pagination.total);
+        setHasMore(page < pagination.total_pages);
+      }
+
+      // Trigger background preload for subsequent searches
+      startBackgroundPreload(baseUrl);
+    })
+    .catch(err => console.error("Failed to fetch food data", err))
+    .finally(() => {
+      if (isMounted) {
+        setLoading(false);
+        setLoadingMore(false);
+      }
+    });
+    
+  return () => { isMounted = false; };
+}, [page, selectedZone, selectedCategory, minRating, searchQuery, baseUrl]);
 
   // Reset page to 1 when filters change
   useEffect(() => {

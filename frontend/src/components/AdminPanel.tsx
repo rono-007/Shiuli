@@ -191,6 +191,52 @@ interface BetaUser {
   attempt_count: number;
 }
 
+interface PerfLatency {
+  min: number; max: number; avg: number;
+  p50: number; p75: number; p90: number; p95: number; p99: number; count: number;
+}
+interface PerfPayload {
+  avg_bytes: number; min_bytes: number; max_bytes: number; total_transferred: number;
+}
+interface PerfCache {
+  hits: number; misses: number; hit_rate: number | null;
+}
+interface PerfOverviewData {
+  timestamp: string; uptime_seconds: number; total_requests: number; boot_duration_ms: number | null;
+  server_boot_utc: string; is_cold: boolean; retention_minutes: number; minutes_stored: number;
+  slow_threshold_ms: number;
+  current: {
+    minute: string; rpm: number; avg_ms: number; p50_ms: number; p95_ms: number; p99_ms: number;
+    error_rate: number; slow_requests: number; cache_hit_rate: number | null;
+  } | null;
+  features: {
+    feature: string; requests: number; rpm: number; latency: PerfLatency; error_rate: number;
+    slow_count: number; total_transferred: number;
+  }[];
+}
+interface PerfMinute {
+  minute: string; requests: number; success: number; client_errors: number; server_errors: number; rpm: number;
+  latency: PerfLatency; error_rate: number; payload: PerfPayload; cache: PerfCache;
+  slow: { gt_500ms: number; gt_1s: number; gt_2s: number; gt_5s: number; };
+  most_requested_endpoint: string | null; slowest_endpoint: string | null;
+  slowest_endpoint_avg_ms: number | null; highest_error_endpoint: string | null;
+  highest_error_rate: number | null;
+}
+interface PerfEndpoint {
+  endpoint: string; feature: string; requests: number; rpm: number; latency: PerfLatency; success: number;
+  client_errors: number; server_errors: number; error_rate: number; avg_response_bytes: number; cache_hit_rate: number | null;
+}
+interface PerfSlowRequest {
+  request_id: string; timestamp: string; method: string; path: string; feature: string; status_code: number;
+  total_ms: number; slow_class: string; response_bytes: number; cache_status: string | null; cold_start: boolean;
+  endpoint_timings: Record<string, number>;
+}
+interface PerfErrorSummary {
+  minute_trend: { minute: string; total_errors: number; client_errors: number; server_errors: number; error_rate: number; }[];
+  by_endpoint: { endpoint: string; total: number; '4xx': number; '5xx': number; }[];
+  recent_errors: { request_id: string; timestamp: string; method: string; path: string; status_code: number; error_type: string; error_message: string; total_ms: number; }[];
+}
+
 // ─── Helper Functions ─────────────────────────────────────────────────────────
 
 function formatUptime(seconds: number): string {
@@ -510,7 +556,7 @@ interface FeedbackItem {
   ip?: string;
 }
 
-type Tab = 'overview' | 'sources' | 'logs' | 'data' | 'feedback' | 'mail';
+type Tab = 'overview' | 'sources' | 'logs' | 'data' | 'feedback' | 'mail' | 'performance';
 
 function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => void }) {
   const [tab, setTab] = useState<Tab>('overview');
@@ -546,6 +592,38 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
   const [expandedCollection, setExpandedCollection] = useState<string | null>(null);
   const [collectionData, setCollectionData] = useState<Record<string, unknown[]>>({});
   const [collectionSearch, setCollectionSearch] = useState('');
+
+  // Performance tab state
+  const [perfOverview, setPerfOverview] = useState<PerfOverviewData | null>(null);
+  const [perfSlowRequests, setPerfSlowRequests] = useState<PerfSlowRequest[]>([]);
+  const [perfLoading, setPerfLoading] = useState(false);
+
+  const fetchPerfMetrics = useCallback(async () => {
+    setPerfLoading(true);
+    try {
+      const [o, , , s] = await Promise.allSettled([
+        adminFetch<PerfOverviewData>('/admin/metrics/overview', token),
+        adminFetch<{ minutes: PerfMinute[] }>('/admin/metrics/minutes?minutes=60', token),
+        adminFetch<{ endpoints: PerfEndpoint[] }>('/admin/metrics/endpoints?minutes=60', token),
+        adminFetch<{ slow_requests: PerfSlowRequest[] }>('/admin/metrics/slow-requests?limit=100', token),
+        adminFetch<PerfErrorSummary>('/admin/metrics/errors?minutes=60', token),
+      ]);
+      if (o.status === 'fulfilled') setPerfOverview(o.value);
+      if (s.status === 'fulfilled') setPerfSlowRequests(s.value.slow_requests);
+    } catch {
+      // ignore
+    } finally {
+      setPerfLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    if (tab === 'performance') {
+      fetchPerfMetrics();
+      const interval = setInterval(fetchPerfMetrics, 10000); // 10s auto-refresh
+      return () => clearInterval(interval);
+    }
+  }, [tab, fetchPerfMetrics]);
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -838,6 +916,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
 
   const tabs: { id: Tab; label: string; icon: React.ElementType; badge?: number }[] = [
     { id: 'overview', label: 'Overview & Charts', icon: BarChart3 },
+    { id: 'performance', label: 'Performance', icon: Activity },
     { id: 'mail', label: 'Mail Dashboard', icon: Mail },
     { id: 'sources', label: 'Request Origins (IPs)', icon: MapPin },
     { id: 'logs', label: 'Request Logs', icon: ScrollText },
@@ -1737,6 +1816,132 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {tab === 'performance' && (
+          <div className="space-y-6">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-xl font-medium text-slate-200">System Performance</h2>
+              {perfLoading && <Loader2 className="w-4 h-4 text-amber-400 animate-spin" />}
+            </div>
+            
+            {perfOverview ? (
+              <>
+                {/* Health Overview */}
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="bg-slate-800/30 border border-slate-700/40 p-4 rounded-xl">
+                    <div className="text-xs text-slate-400 mb-1">Server Uptime</div>
+                    <div className="text-xl font-medium text-slate-200">{formatUptime(perfOverview.uptime_seconds)}</div>
+                    <div className="text-[10px] text-slate-500 mt-1">
+                      Boot: {perfOverview.boot_duration_ms ? `${perfOverview.boot_duration_ms}ms` : 'N/A'} {perfOverview.is_cold && <span className="text-red-400">(Cold)</span>}
+                    </div>
+                  </div>
+                  <div className="bg-slate-800/30 border border-slate-700/40 p-4 rounded-xl">
+                    <div className="text-xs text-slate-400 mb-1">Current RPM (1m)</div>
+                    <div className="text-xl font-medium text-amber-400">{perfOverview.current?.rpm.toFixed(1) || '0'}</div>
+                  </div>
+                  <div className="bg-slate-800/30 border border-slate-700/40 p-4 rounded-xl">
+                    <div className="text-xs text-slate-400 mb-1">Avg Latency (1m)</div>
+                    <div className="text-xl font-medium text-emerald-400">{perfOverview.current?.avg_ms.toFixed(1) || '0'} ms</div>
+                    <div className="text-[10px] text-slate-500 mt-1">p95: {perfOverview.current?.p95_ms.toFixed(1) || '0'}ms</div>
+                  </div>
+                  <div className="bg-slate-800/30 border border-slate-700/40 p-4 rounded-xl">
+                    <div className="text-xs text-slate-400 mb-1">Error Rate (1m)</div>
+                    <div className={`text-xl font-medium ${perfOverview.current?.error_rate && perfOverview.current.error_rate > 5 ? 'text-red-400' : 'text-slate-200'}`}>
+                      {perfOverview.current?.error_rate.toFixed(1) || '0'}%
+                    </div>
+                  </div>
+                </div>
+
+                {/* Features Table */}
+                <div className="bg-slate-800/40 border border-slate-700/50 rounded-2xl overflow-hidden mt-6">
+                  <div className="p-4 border-b border-slate-700/40">
+                    <h3 className="text-sm font-medium text-slate-200 flex items-center gap-2">
+                      <Gauge className="w-4 h-4 text-emerald-400" />
+                      Feature Performance (Last {perfOverview.retention_minutes}m)
+                    </h3>
+                  </div>
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-sm text-left">
+                      <thead className="text-xs text-slate-400 uppercase bg-slate-900/50 border-b border-slate-700/40">
+                        <tr>
+                          <th className="px-4 py-3">Feature</th>
+                          <th className="px-4 py-3">Requests</th>
+                          <th className="px-4 py-3">Avg (ms)</th>
+                          <th className="px-4 py-3">p95 (ms)</th>
+                          <th className="px-4 py-3">Error Rate</th>
+                          <th className="px-4 py-3">Slow</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-800/50">
+                        {perfOverview.features.map(f => (
+                          <tr key={f.feature} className="hover:bg-slate-800/30 transition-colors">
+                            <td className="px-4 py-3 font-medium text-slate-200">{f.feature}</td>
+                            <td className="px-4 py-3 text-slate-400">{f.requests}</td>
+                            <td className="px-4 py-3 text-slate-300">{f.latency.avg.toFixed(1)}</td>
+                            <td className="px-4 py-3 text-amber-400/80">{f.latency.p95.toFixed(1)}</td>
+                            <td className="px-4 py-3">
+                              <span className={f.error_rate > 5 ? 'text-red-400' : 'text-emerald-400/80'}>{f.error_rate.toFixed(1)}%</span>
+                            </td>
+                            <td className="px-4 py-3 text-orange-400/80">{f.slow_count}</td>
+                          </tr>
+                        ))}
+                        {perfOverview.features.length === 0 && (
+                          <tr><td colSpan={6} className="px-4 py-6 text-center text-slate-500">No feature metrics recorded yet.</td></tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+
+                {/* Slow Requests Table */}
+                {perfSlowRequests.length > 0 && (
+                  <div className="bg-slate-800/40 border border-slate-700/50 rounded-2xl overflow-hidden mt-6">
+                    <div className="p-4 border-b border-slate-700/40">
+                      <h3 className="text-sm font-medium text-slate-200 flex items-center gap-2">
+                        <AlertOctagon className="w-4 h-4 text-red-400" />
+                        Recent Slow Requests
+                      </h3>
+                    </div>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm text-left">
+                        <thead className="text-xs text-slate-400 uppercase bg-slate-900/50 border-b border-slate-700/40">
+                          <tr>
+                            <th className="px-4 py-3">Time</th>
+                            <th className="px-4 py-3">Endpoint</th>
+                            <th className="px-4 py-3">Duration</th>
+                            <th className="px-4 py-3">Breakdown</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800/50">
+                          {perfSlowRequests.slice(0, 10).map((req, i) => (
+                            <tr key={i} className="hover:bg-slate-800/30 transition-colors">
+                              <td className="px-4 py-3 text-slate-400 text-xs">{new Date(req.timestamp).toLocaleTimeString()}</td>
+                              <td className="px-4 py-3 text-slate-200 font-mono text-[10px]">{req.method} {req.path}</td>
+                              <td className="px-4 py-3 text-red-400 font-medium">{req.total_ms}ms {req.cold_start && <span className="text-xs">(Cold)</span>}</td>
+                              <td className="px-4 py-3">
+                                <div className="flex gap-2 flex-wrap max-w-sm">
+                                  {Object.entries(req.endpoint_timings).map(([k, v]) => (
+                                    <span key={k} className="bg-slate-700/50 text-slate-300 px-1.5 py-0.5 rounded text-[10px]">
+                                      {k}: {v}ms
+                                    </span>
+                                  ))}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+              </>
+            ) : (
+              <div className="text-center py-20 text-slate-500">
+                {perfLoading ? 'Loading performance metrics...' : 'Performance metrics unavailable.'}
               </div>
             )}
           </div>

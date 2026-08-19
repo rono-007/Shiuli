@@ -44,7 +44,9 @@ type ViewType = 'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities'
 const VALID_VIEWS: ViewType[] = ['home', 'north', 'south', 'central', 'bonedi', 'facilities', 'route-planner', 'medical', 'admin'];
 
 // Sequential Modal Controller: Language Choice -> Beta Access Code -> Beta Phase Notice
-function ModalSequenceController({ showBetaNotice, onNoticeClosed }: { showBetaNotice: boolean; onNoticeClosed: () => void }) {
+function ModalSequenceController({ view, showBetaNotice, onNoticeClosed }: { view: ViewType; showBetaNotice: boolean; onNoticeClosed: () => void }) {
+  if (view === 'admin') return null;
+
   const { showLanguageModal } = useLanguage();
 
   const [accessDone, setAccessDone] = useState<boolean>(() => {
@@ -446,6 +448,7 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink overflow-x-hidden">
       <ModalSequenceController
+        view={view}
         showBetaNotice={showBetaNotice}
         onNoticeClosed={() => setShowBetaNotice(false)}
       />

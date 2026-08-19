@@ -23,6 +23,7 @@ from typing import List
 from functools import lru_cache
 import folium
 from mailservice.router import router as mailservice_router
+from metrics import metrics_collector
 
 import asyncio
 import httpx
@@ -88,10 +89,9 @@ app.add_middleware(GZipMiddleware, minimum_size=500)
 # ─── Request Logging Middleware ────────────────────────────────────────────
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
-    # Do not log admin dashboard polling or keep-alive pings to avoid skewing stats
-    if request.url.path.startswith("/admin/") or request.headers.get("user-agent", "").startswith("python-httpx"):
+    # Do not log keep-alive pings to avoid skewing stats
+    if request.headers.get("user-agent", "").startswith("python-httpx"):
         return await call_next(request)
-
 
     start_time = time.perf_counter()
     request_id = str(uuid.uuid4())[:8]
@@ -102,16 +102,34 @@ async def log_requests(request: Request, call_next):
         request.client.host if request.client else "unknown"
     )
 
-    response = await call_next(request)
+    # Initialize endpoint timing storage on request state
+    request.state.endpoint_timings = {}
+    request.state.cache_status = None
+
+    error_occurred = False
+    error_type = None
+    error_message = None
+
+    try:
+        response = await call_next(request)
+    except Exception as exc:
+        error_occurred = True
+        error_type = type(exc).__name__
+        error_message = str(exc)[:200]
+        raise
 
     duration_ms = round((time.perf_counter() - start_time) * 1000, 2)
-    
+
     # Parse user-agent for browser/device info
     raw_ua = request.headers.get("user-agent", "")
-    
+    response_bytes = int(response.headers.get("content-length", 0))
+    request_bytes = int(request.headers.get("content-length", 0))
+
+    timestamp_iso = datetime.now(timezone.utc).isoformat()
+
     log_entry = {
         "id": request_id,
-        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "timestamp": timestamp_iso,
         "method": request.method,
         "path": str(request.url.path),
         "query": str(request.url.query),
@@ -130,9 +148,35 @@ async def log_requests(request: Request, call_next):
             request.headers.get("x-appengine-country") or
             "Unknown"
         ),
-        "response_size": int(response.headers.get("content-length", 0)),
+        "response_size": response_bytes,
     }
     request_logs.appendleft(log_entry)
+
+    # ─── Feed Metrics Collector ───────────────────────────────────────────
+    endpoint_timings = getattr(request.state, "endpoint_timings", {})
+    cache_status = getattr(request.state, "cache_status", None)
+
+    metrics_collector.record_request({
+        "request_id": request_id,
+        "timestamp": timestamp_iso,
+        "method": request.method,
+        "path": str(request.url.path),
+        "query_params": str(request.url.query)[:500],
+        "status_code": response.status_code,
+        "total_ms": duration_ms,
+        "response_bytes": response_bytes,
+        "request_bytes": request_bytes,
+        "content_type": response.headers.get("content-type", ""),
+        "error_occurred": error_occurred or response.status_code >= 400,
+        "error_type": error_type,
+        "error_status": response.status_code if response.status_code >= 400 else None,
+        "error_message": error_message,
+        "cache_status": cache_status,
+        "endpoint_timings": endpoint_timings,
+    })
+
+    # ─── Add correlation header ───────────────────────────────────────────
+    response.headers["X-Request-Id"] = request_id
 
     # ─── Cloudflare & Edge CDN Caching Headers ───────────────────────────
     if request.method == "GET" and request.url.path.startswith("/api/") and not request.url.path.startswith("/api/admin") and not request.url.path.startswith("/api/mailservice"):
@@ -282,7 +326,15 @@ def read_root(request: Request):
             "mail_stats": f"{render_base}/api/mailservice/stats",
             "mail_beta_users": f"{render_base}/api/mailservice/beta-users",
             "mail_preview": f"{render_base}/api/mailservice/preview/{{email}}",
-            "mail_send": f"{render_base}/api/mailservice/send"
+            "mail_send": f"{render_base}/api/mailservice/send",
+            "food_all_light": f"{render_base}/api/food/all_light",
+        },
+        "admin_metrics_endpoints": {
+            "overview": f"{render_base}/admin/metrics/overview",
+            "minutes": f"{render_base}/admin/metrics/minutes",
+            "endpoints": f"{render_base}/admin/metrics/endpoints",
+            "slow_requests": f"{render_base}/admin/metrics/slow-requests",
+            "errors": f"{render_base}/admin/metrics/errors",
         },
         "render_beta_endpoints": {
             "beta_users_url": "https://shiuli-backend.onrender.com/api/beta/users",
@@ -789,6 +841,72 @@ def get_data_overview(request: Request, _ = Depends(verify_admin)):
         "server_start": server_start_time.isoformat(),
     })
 
+# ─── Admin Performance Metrics Endpoints ──────────────────────────────────
+
+@app.get("/admin/metrics/overview")
+def get_metrics_overview(request: Request, _ = Depends(verify_admin)):
+    """Global performance overview: current RPM, latency, error rate, cold-start info."""
+    overview = metrics_collector.get_overview()
+    feature_metrics = metrics_collector.get_feature_metrics(minutes=60)
+    overview["features"] = feature_metrics
+    return JSONResponse(content=overview)
+
+@app.get("/admin/metrics/minutes")
+def get_metrics_minutes(
+    request: Request,
+    minutes: int = Query(60, ge=1, le=120),
+    _ = Depends(verify_admin)
+):
+    """Minute-by-minute time series for the last N minutes (default 60)."""
+    data = metrics_collector.get_global_minute_metrics(minutes=minutes)
+    return JSONResponse(content={"minutes": data, "count": len(data)})
+
+@app.get("/admin/metrics/endpoints")
+def get_metrics_endpoints(
+    request: Request,
+    minutes: int = Query(60, ge=1, le=120),
+    _ = Depends(verify_admin)
+):
+    """Per-endpoint metrics aggregated over the last N minutes."""
+    data = metrics_collector.get_endpoint_summary(minutes=minutes)
+    return JSONResponse(content={"endpoints": data, "count": len(data)})
+
+@app.get("/admin/metrics/slow-requests")
+def get_metrics_slow_requests(
+    request: Request,
+    limit: int = Query(50, ge=1, le=200),
+    _ = Depends(verify_admin)
+):
+    """Recent slow requests with full timing breakdown."""
+    data = metrics_collector.get_slow_requests(limit=limit)
+    return JSONResponse(content={"slow_requests": data, "count": len(data)})
+
+@app.get("/admin/metrics/errors")
+def get_metrics_errors(
+    request: Request,
+    minutes: int = Query(60, ge=1, le=120),
+    _ = Depends(verify_admin)
+):
+    """Error aggregation: by minute, by endpoint, recent errors."""
+    data = metrics_collector.get_error_summary(minutes=minutes)
+    return JSONResponse(content=data)
+
+class ClientMetricsPayload(BaseModel):
+    web_vitals: dict = {}
+    api_requests: list = []
+    feature_loads: list = []
+    user_agent: str = ""
+    page_url: str = ""
+
+@app.post("/admin/metrics/client")
+def receive_client_metrics(
+    request: Request,
+    payload: ClientMetricsPayload
+):
+    """Receive batched frontend performance metrics (open to all clients)."""
+    metrics_collector.receive_client_metrics(payload.dict())
+    return JSONResponse(content={"status": "ok"})
+
 @lru_cache(maxsize=1)
 def load_pandals_data() -> List[dict]:
     file_path = os.path.join(os.path.dirname(__file__), "data", "north_cords.json")
@@ -1039,6 +1157,7 @@ def get_food(
 ):
     t0 = time.perf_counter()
     data = get_optimized_food_data()
+    request.state.cache_status = "hit" if data else "miss"
     
     # Filter
     search_lower = search.lower().strip()
@@ -1079,7 +1198,9 @@ def get_food(
     start_idx = (page - 1) * limit
     end_idx = start_idx + limit
     
+    t_paginate = time.perf_counter()
     paginated = filtered[start_idx:end_idx]
+    t_paginate = time.perf_counter() - t_paginate
     
     # Do not send description or neighborhood to client in paginated list
     final_data = []
@@ -1092,6 +1213,14 @@ def get_food(
         final_data.append(c)
         
     t_total = time.perf_counter() - t0
+    
+    # Store endpoint timings for metrics collector
+    request.state.endpoint_timings = {
+        "filter_ms": round(t_filter * 1000, 2),
+        "pagination_ms": round(t_paginate * 1000, 4),
+        "total_ms": round(t_total * 1000, 2),
+    }
+    
     logger.info(f"Food API: Filter={t_filter:.4f}s, Total={t_total:.4f}s, Page={page}/{total_pages}")
     
     return ORJSONResponse(content={

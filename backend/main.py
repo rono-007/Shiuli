@@ -1048,13 +1048,17 @@ def get_food(
             if category_lower not in cat:
                 continue
         if search_lower:
-            match = (
-                search_lower in (item.get("title") or "").lower() or
-                search_lower in (item.get("subTitle") or "").lower() or
-                search_lower in (item.get("description") or "").lower() or
-                search_lower in (item.get("address") or "").lower() or
-                search_lower in (item.get("neighborhood") or "").lower()
-            )
+            search_terms = search_lower.split()
+            combined_text = (
+                (item.get("title") or "") + " " +
+                (item.get("subTitle") or "") + " " +
+                (item.get("description") or "") + " " +
+                (item.get("address") or "") + " " +
+                (item.get("neighborhood") or "") + " " +
+                (item.get("categoryName") or "")
+            ).lower()
+            
+            match = all(term in combined_text for term in search_terms)
             if not match:
                 continue
         filtered.append(item)

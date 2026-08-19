@@ -269,6 +269,8 @@ def read_root(request: Request):
             "south_eateries": f"{render_base}/api/eateries/south",
             "north_facilities": f"{render_base}/api/facilities/north",
             "south_facilities": f"{render_base}/api/facilities/south",
+            "food": f"{render_base}/api/food",
+            "food_categories": f"{render_base}/api/food/categories",
             "medical_facilities": f"{render_base}/api/medical-facilities",
             "map": f"{render_base}/api/map",
             "launch_date": f"{render_base}/api/launch-date",

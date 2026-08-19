@@ -1007,7 +1007,7 @@ def get_food_categories(zone: str = Query("all", description="all, north, south"
             continue
         if zone != "all" and item.get("zone") != zone:
             continue
-        cat = item.get("categoryName", "").strip()
+        cat = (item.get("categoryName") or "").strip()
         if cat:
             counts[cat] = counts.get(cat, 0) + 1
             
@@ -1041,19 +1041,19 @@ def get_food(
             continue
         if zone != "all" and item.get("zone") != zone:
             continue
-        if minRating > 0 and item.get("totalScore", 0) < minRating:
+        if minRating > 0 and (item.get("totalScore") or 0) < minRating:
             continue
         if category_lower != "all":
-            cat = item.get("categoryName", "").lower()
+            cat = (item.get("categoryName") or "").lower()
             if category_lower not in cat:
                 continue
         if search_lower:
             match = (
-                search_lower in item.get("title", "").lower() or
-                search_lower in item.get("subTitle", "").lower() or
-                search_lower in item.get("description", "").lower() or
-                search_lower in item.get("address", "").lower() or
-                search_lower in item.get("neighborhood", "").lower()
+                search_lower in (item.get("title") or "").lower() or
+                search_lower in (item.get("subTitle") or "").lower() or
+                search_lower in (item.get("description") or "").lower() or
+                search_lower in (item.get("address") or "").lower() or
+                search_lower in (item.get("neighborhood") or "").lower()
             )
             if not match:
                 continue

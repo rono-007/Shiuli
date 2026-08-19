@@ -41,7 +41,6 @@ interface QueryResult {
 }
 
 let foodCache: Eatery[] | null = null;
-let isPreloading = false;
 let preloadPromise: Promise<Eatery[]> | null = null;
 
 const STORAGE_KEY = 'pujopoth_food_cache_v1';
@@ -69,8 +68,6 @@ export function startBackgroundPreload(baseUrl: string): Promise<Eatery[]> {
     return preloadPromise;
   }
 
-  isPreloading = true;
-
   const fetchTask = async (): Promise<Eatery[]> => {
     try {
       const res = await fetch(`${baseUrl}/api/food/all_light`);
@@ -88,7 +85,6 @@ export function startBackgroundPreload(baseUrl: string): Promise<Eatery[]> {
       throw new Error("Invalid response format");
     } catch (err) {
       console.warn("Background food preload deferred:", err);
-      isPreloading = false;
       preloadPromise = null;
       return [];
     }

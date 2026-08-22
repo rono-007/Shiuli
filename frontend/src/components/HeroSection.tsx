@@ -14,7 +14,7 @@ interface HeroSectionProps {
 const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTrendingModalOpen, setIsTrendingModalOpen] = useState(false);
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const zones = [
     { 

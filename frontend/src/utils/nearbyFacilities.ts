@@ -1,9 +1,45 @@
+import staticMetros from '../data/metros.json';
+
+export interface NearbyMetroStation {
+  title: string;
+  subTitle: string;
+  line?: string;
+  address: string;
+  lat: number;
+  lng: number;
+  distanceMeters: number;
+  distanceText: string;
+  estimatedWalkMinutes: number;
+  url: string;
+}
+
+export interface NearbyFacility {
+  title: string;
+  subTitle?: string | null;
+  categoryName?: string | null;
+  address?: string | null;
+  lat: number;
+  lng: number;
+  distanceMeters: number;
+  distanceText: string;
+  url: string;
+}
+
+export interface NearestFacilitiesGroup {
+  metro: NearbyMetroStation | null;
+  petrolPump: NearbyFacility | null;
+  atm: NearbyFacility | null;
+  hospital: NearbyFacility | null;
+  pharmacy: NearbyFacility | null;
+  toilet: NearbyFacility | null;
+}
+
 let facilitiesCache: any[] | null = null;
-let metrosCache: any[] | null = null;
+let metrosCache: any[] = staticMetros || [];
 let loadPromise: Promise<[any[], any[]]> | null = null;
 
 export async function preloadFacilitiesData(): Promise<[any[], any[]]> {
-  if (facilitiesCache && metrosCache) return [facilitiesCache, metrosCache];
+  if (facilitiesCache && metrosCache.length > 0) return [facilitiesCache, metrosCache];
   if (!loadPromise) {
     const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
     loadPromise = (async () => {
@@ -13,110 +49,124 @@ export async function preloadFacilitiesData(): Promise<[any[], any[]]> {
           fetch(`${baseUrl}/api/facilities/south`),
           fetch(`${baseUrl}/api/metro-stations`)
         ]);
-        if (northFRes.ok && southFRes.ok && mRes.ok) {
+        if (northFRes.ok && southFRes.ok) {
           const northF = await northFRes.json();
           const southF = await southFRes.json();
-          const mData = await mRes.json();
-          if (Array.isArray(northF) && Array.isArray(southF) && Array.isArray(mData)) {
-            return [[...northF, ...southF], mData] as [any[], any[]];
+          const mData = mRes.ok ? await mRes.json() : staticMetros;
+          if (Array.isArray(northF) && Array.isArray(southF)) {
+            const combinedFacilities = [...northF, ...southF];
+            const finalMetros = Array.isArray(mData) && mData.length > 0 ? mData : staticMetros;
+            return [combinedFacilities, finalMetros] as [any[], any[]];
           }
         }
         throw new Error('API response invalid');
       } catch (err) {
         console.warn('Backend facilities fetch failed, loading local JSON fallbacks:', err);
-        const [northF, southF, mData] = await Promise.all([
+        const [northF, southF] = await Promise.all([
           import('../data/north_other_facilities.json').then(m => ((m.default || m) as any[])).catch(() => []),
-          import('../data/south_other_facilities.json').then(m => ((m.default || m) as any[])).catch(() => []),
-          import('../data/metros.json').then(m => m.default || m).catch(() => [])
+          import('../data/south_other_facilities.json').then(m => ((m.default || m) as any[])).catch(() => [])
         ]);
-        return [[...northF, ...southF], mData] as [any[], any[]];
+        return [[...northF, ...southF], staticMetros] as [any[], any[]];
       }
     })();
   }
   const [fData, mData] = await loadPromise;
   facilitiesCache = fData;
-  metrosCache = mData;
-  return [fData, mData];
+  metrosCache = mData && mData.length > 0 ? mData : staticMetros;
+  return [facilitiesCache, metrosCache];
 }
 
 // Trigger background preload
 preloadFacilitiesData().catch(() => {});
 
-interface NearbyFacility {
-  title: string;
-  subTitle?: string | null;
-  categoryName?: string | null;
-  address?: string | null;
-  lat: number;
-  lng: number;
-  distanceMeters: number;
-  url: string;
-}
-
-export interface NearestFacilitiesGroup {
-  metro: NearbyFacility | null;
-  petrolPump: NearbyFacility | null;
-  atm: NearbyFacility | null;
-  hospital: NearbyFacility | null;
-  pharmacy: NearbyFacility | null;
-  toilet: NearbyFacility | null;
-}
-
-function getDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
+// Accurate Haversine Distance in meters
+export function getDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
   const R = 6371000;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const dLat = (lat2 - lat1) * (Math.PI / 180);
+  const dLon = (lon2 - lon1) * (Math.PI / 180);
   const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
             Math.sin(dLon / 2) * Math.sin(dLon / 2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return Math.round(R * c);
 }
 
+export function formatDistance(meters: number): string {
+  if (meters < 1000) {
+    return `${meters}m`;
+  }
+  return `${(meters / 1000).toFixed(1)} km`;
+}
+
+export function getNearestMetro(lat: number, lon: number): NearbyMetroStation | null {
+  const list = (metrosCache && metrosCache.length > 0 ? metrosCache : staticMetros) as any[];
+  if (!list || list.length === 0 || !lat || !lon) return null;
+
+  let closestMetro: NearbyMetroStation | null = null;
+  let minDist = Infinity;
+
+  for (const item of list) {
+    if (!item) continue;
+    let mLat: number | null = null;
+    let mLng: number | null = null;
+
+    if (item.location && typeof item.location.lat === 'number' && typeof item.location.lng === 'number') {
+      mLat = item.location.lat;
+      mLng = item.location.lng;
+    } else if (typeof item.lat === 'number' && (typeof item.lon === 'number' || typeof item.lng === 'number')) {
+      mLat = item.lat;
+      mLng = typeof item.lon === 'number' ? item.lon : item.lng;
+    }
+
+    if (mLat === null || mLng === null || isNaN(mLat) || isNaN(mLng)) continue;
+
+    const dist = getDistanceMeters(lat, lon, mLat, mLng);
+    if (dist < minDist) {
+      minDist = dist;
+      const title = item.title || item.name || 'Metro Station';
+      const subTitle = item.subTitle || item.line || 'Kolkata Metro';
+      const address = item.address || `${title}, Kolkata`;
+      const walkMin = Math.max(1, Math.round(dist / 75)); // ~4.5 km/h walking speed
+
+      closestMetro = {
+        title,
+        subTitle,
+        line: item.line,
+        address,
+        lat: mLat,
+        lng: mLng,
+        distanceMeters: dist,
+        distanceText: formatDistance(dist),
+        estimatedWalkMinutes: walkMin,
+        url: `https://www.google.com/maps/search/?api=1&query=${mLat},${mLng}`
+      };
+    }
+  }
+
+  return closestMetro;
+}
+
 export function getNearestFacilities(lat: number, lon: number): NearestFacilitiesGroup {
   const rawFacilities = (facilitiesCache || []) as any[];
-  const rawMetros = (metrosCache || []) as any[];
 
-  if (rawFacilities.length === 0 || rawMetros.length === 0) {
+  if (rawFacilities.length === 0) {
     preloadFacilitiesData();
   }
 
-  let closestMetro: NearbyFacility | null = null;
+  // 1. Calculate closest metro from verified stations
+  const closestMetro = getNearestMetro(lat, lon);
+
   let closestPetrol: NearbyFacility | null = null;
   let closestAtm: NearbyFacility | null = null;
   let closestHospital: NearbyFacility | null = null;
   let closestPharmacy: NearbyFacility | null = null;
   let closestToilet: NearbyFacility | null = null;
 
-  let minDistMetro = Infinity;
   let minDistPetrol = Infinity;
   let minDistAtm = Infinity;
   let minDistHospital = Infinity;
   let minDistPharmacy = Infinity;
   let minDistToilet = Infinity;
-
-  // 1. Search metros.json for closest Kolkata Metro station
-  for (const item of rawMetros) {
-    if (!item || !item.location || typeof item.location.lat !== 'number' || typeof item.location.lng !== 'number') {
-      continue;
-    }
-    const fLat = item.location.lat;
-    const fLng = item.location.lng;
-    const dist = getDistanceMeters(lat, lon, fLat, fLng);
-    if (dist < minDistMetro) {
-      minDistMetro = dist;
-      closestMetro = {
-        title: item.title,
-        subTitle: item.subTitle || 'Metro Station',
-        categoryName: '🚇 Metro Station',
-        address: item.address,
-        lat: fLat,
-        lng: fLng,
-        distanceMeters: dist,
-        url: `https://www.google.com/maps/search/?api=1&query=${fLat},${fLng}`
-      };
-    }
-  }
 
   // 2. Search general facilities dataset
   for (const item of rawFacilities) {
@@ -140,14 +190,9 @@ export function getNearestFacilities(lat: number, lon: number): NearestFacilitie
       lat: fLat,
       lng: fLng,
       distanceMeters: dist,
+      distanceText: formatDistance(dist),
       url: `https://www.google.com/maps/search/?api=1&query=${fLat},${fLng}`
     };
-
-    // Metro check
-    if (dist < minDistMetro && (cat.includes('subway') || cat.includes('metro station') || searchBlob.includes('metro station') || searchBlob.includes('মেট্রো'))) {
-      minDistMetro = dist;
-      closestMetro = facility;
-    }
 
     // Petrol Pump
     if (dist < minDistPetrol && (cat.includes('gas station') || searchBlob.includes('petrol') || searchBlob.includes('fuel'))) {

@@ -13,13 +13,13 @@ from datetime import datetime, timezone, timedelta
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from fastapi import FastAPI, HTTPException, Request, Depends, BackgroundTasks, Query
+from fastapi import FastAPI, HTTPException, Request, Response, Depends, BackgroundTasks, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
-from fastapi.responses import HTMLResponse, JSONResponse, ORJSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
-from typing import List
+from pydantic import BaseModel, Field
+from typing import List, Optional, Dict, Any
 from functools import lru_cache
 import folium
 from mailservice.router import router as mailservice_router
@@ -28,6 +28,49 @@ from metrics import metrics_collector
 import asyncio
 import httpx
 from contextlib import asynccontextmanager
+
+# ─── Pydantic Response Models ───────────────────────────────────────────────
+class HealthResponse(BaseModel):
+    status: str
+    timestamp: str
+
+class LaunchDateResponse(BaseModel):
+    launchDate: str
+    daysRemaining: int
+
+class MetroStationCompact(BaseModel):
+    name: str
+    lat: float
+    lon: float
+    line: Optional[str] = None
+    zone: Optional[str] = None
+
+class FoodItemCompact(BaseModel):
+    id: str
+    title: str
+    subTitle: Optional[str] = ""
+    categoryName: Optional[str] = ""
+    price: Optional[str] = ""
+    totalScore: float = 0.0
+    reviewsCount: int = 0
+    address: Optional[str] = ""
+    imageUrl: Optional[str] = ""
+    url: Optional[str] = ""
+    lat: float
+    lng: float
+    permanentlyClosed: bool = False
+    zone: str
+
+class FoodPaginationMeta(BaseModel):
+    page: int
+    limit: int
+    total: int
+    total_pages: int
+
+class FoodPaginatedResponse(BaseModel):
+    data: List[FoodItemCompact]
+    pagination: FoodPaginationMeta
+    perf: Optional[Dict[str, float]] = None
 
 # ─── Self Keep-Alive Task (Prevents Render Free Tier Sleeping) ───────────────
 KEEP_ALIVE_URL = os.getenv("RENDER_EXTERNAL_URL", "https://shiuli-backend.onrender.com/health")
@@ -48,7 +91,30 @@ async def keep_alive_pinger():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup: Launch keep-alive background task
+    # Startup: Pre-warm all dataset caches into memory
+    try:
+        t0 = time.perf_counter()
+        load_pandals_data()
+        load_south_pandals_data()
+        load_central_pandals_data()
+        load_bonedi_pandals_data()
+        load_north_eateries_data()
+        load_south_eateries_data()
+        get_optimized_food_data()
+        load_north_facilities_data()
+        load_south_facilities_data()
+        load_medical_facilities_data()
+        load_metro_stations_data()
+        load_metros_data()
+        load_trending_data()
+        load_north_distance_data()
+        get_metro_coords_lookup()
+        get_cached_routing_pandals()
+        logger.info(f"⚡ All datasets preloaded into memory in {(time.perf_counter() - t0)*1000:.2f} ms")
+    except Exception as e:
+        logger.error(f"Error during dataset pre-warming: {e}")
+
+    # Launch keep-alive background task
     pinger_task = asyncio.create_task(keep_alive_pinger())
     yield
     # Shutdown: Cancel background task
@@ -76,7 +142,6 @@ server_start_time = datetime.now(timezone.utc)
 app = FastAPI(
     title="PujoPoth API", 
     description="API backend for PujoPoth application",
-    default_response_class=ORJSONResponse,
     lifespan=lifespan
 )
 app.include_router(mailservice_router)
@@ -558,9 +623,30 @@ def update_admin_feedback_status(feedback_id: str, payload: dict, _: None = Depe
     return {"success": True, "message": f"Status updated to {new_status}"}
 
 
-@app.get("/health")
+@lru_cache(maxsize=1)
+def load_trending_data() -> dict:
+    file_path = os.path.join(os.path.dirname(__file__), "data", "trending.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Trending analysis data not found")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        logger.error(f"Failed to read trending data: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
+
+
+@app.get("/api/trending")
+def get_trending_pandals(response: Response):
+    """Return comprehensive Durga Puja popularity and trendiness analysis."""
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    return load_trending_data()
+
+
+@app.get("/health", response_model=HealthResponse)
 def health_check():
     """Health check endpoint for deployment monitoring (Render/K8s)."""
+    return {"status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
     return {"status": "ok", "timestamp": datetime.now(timezone.utc).isoformat()}
 
 # ─── Admin Endpoints ───────────────────────────────────────────────────────
@@ -851,6 +937,31 @@ def get_metrics_overview(request: Request, _ = Depends(verify_admin)):
     overview["features"] = feature_metrics
     return JSONResponse(content=overview)
 
+@app.get("/admin/metrics/dashboard")
+def get_metrics_dashboard(
+    request: Request,
+    minutes: int = Query(60, ge=1, le=120),
+    limit: int = Query(50, ge=1, le=200),
+    _ = Depends(verify_admin)
+):
+    """Combined performance metrics dashboard payload to avoid multiple requests."""
+    overview = metrics_collector.get_overview()
+    feature_metrics = metrics_collector.get_feature_metrics(minutes=minutes)
+    overview["features"] = feature_metrics
+    
+    minutes_data = metrics_collector.get_global_minute_metrics(minutes=minutes)
+    endpoints_data = metrics_collector.get_endpoint_summary(minutes=minutes)
+    slow_requests_data = metrics_collector.get_slow_requests(limit=limit)
+    error_summary_data = metrics_collector.get_error_summary(minutes=minutes)
+    
+    return JSONResponse(content={
+        "overview": overview,
+        "minutes": minutes_data,
+        "endpoints": endpoints_data,
+        "slow_requests": slow_requests_data,
+        "errors": error_summary_data
+    })
+
 @app.get("/admin/metrics/minutes")
 def get_metrics_minutes(
     request: Request,
@@ -947,25 +1058,19 @@ def load_central_pandals_data() -> List[dict]:
 
 
 @app.get("/api/pandals/north")
-def get_north_pandals():
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    return ORJSONResponse(content=load_pandals_data(), headers=headers)
+def get_north_pandals(response: Response):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    return load_pandals_data()
 
 @app.get("/api/pandals/south")
-def get_south_pandals():
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    return ORJSONResponse(content=load_south_pandals_data(), headers=headers)
+def get_south_pandals(response: Response):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    return load_south_pandals_data()
 
 @app.get("/api/pandals/central")
-def get_central_pandals():
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    return ORJSONResponse(content=load_central_pandals_data(), headers=headers)
+def get_central_pandals(response: Response):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    return load_central_pandals_data()
 
 @lru_cache(maxsize=1)
 def load_bonedi_pandals_data() -> List[dict]:
@@ -981,11 +1086,9 @@ def load_bonedi_pandals_data() -> List[dict]:
         raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 @app.get("/api/pandals/bonedi")
-def get_bonedi_pandals():
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    return ORJSONResponse(content=load_bonedi_pandals_data(), headers=headers)
+def get_bonedi_pandals(response: Response):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    return load_bonedi_pandals_data()
 
 @lru_cache(maxsize=1)
 def load_all_pandals_data() -> List[dict]:
@@ -999,155 +1102,147 @@ def load_all_pandals_data() -> List[dict]:
     return combined
 
 @app.get("/api/pandals")
-def get_all_pandals():
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    return ORJSONResponse(content=load_all_pandals_data(), headers=headers)
+def get_all_pandals(response: Response):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    return load_all_pandals_data()
 
 @app.get("/api/home")
-def get_home_data():
+def get_home_data(response: Response):
     """Return aggregated lightweight data for prefetching."""
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    data = {
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    return {
         "north": load_pandals_data(),
         "south": load_south_pandals_data(),
         "central": load_central_pandals_data(),
         "bonedi": load_bonedi_pandals_data()
     }
-    return ORJSONResponse(content=data, headers=headers)
+
+def _load_compact_eateries(filename: str, zone: str) -> List[dict]:
+    """Load and project eateries into a lightweight schema, stripping heavy raw scraper fields to save RAM."""
+    file_path = os.path.join(os.path.dirname(__file__), "data", filename)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail=f"{filename} not found")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+            compact = []
+            for item in raw:
+                title = str(item.get("title") or "")
+                subTitle = str(item.get("subTitle") or "")
+                categoryName = str(item.get("categoryName") or "")
+                address = str(item.get("address") or "")
+                loc = item.get("location") or {}
+                lat = float((loc.get("lat") if isinstance(loc, dict) else item.get("lat")) or 0)
+                lng = float((loc.get("lng") if isinstance(loc, dict) else (item.get("lng") or item.get("lon"))) or 0)
+                
+                search_blob = f"{title} {subTitle} {address} {categoryName}".lower()
+                
+                compact.append({
+                    "id": str(uuid.uuid4())[:8],
+                    "title": title,
+                    "subTitle": subTitle,
+                    "categoryName": categoryName,
+                    "category_lower": categoryName.lower().strip(),
+                    "price": str(item.get("price") or ""),
+                    "totalScore": float(item.get("totalScore") or 0),
+                    "reviewsCount": int(item.get("reviewsCount") or 0),
+                    "address": address,
+                    "imageUrl": str(item.get("imageUrl") or ""),
+                    "url": str(item.get("url") or ""),
+                    "lat": lat,
+                    "lng": lng,
+                    "permanentlyClosed": bool(item.get("permanentlyClosed", False)),
+                    "zone": zone,
+                    "_search_blob": search_blob
+                })
+            return compact
+    except Exception as e:
+        logger.error(f"Failed to read eateries data from {filename}: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 @lru_cache(maxsize=1)
 def load_north_eateries_data() -> List[dict]:
-    file_path = os.path.join(os.path.dirname(__file__), "data", "north_eateries.json")
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="North eateries data file not found")
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        logger.error("Failed to read eateries data: %s", e)
-        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
+    return _load_compact_eateries("north_eateries.json", "north")
 
 @app.get("/api/eateries/north")
-def get_north_eateries():
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    return ORJSONResponse(content=load_north_eateries_data(), headers=headers)
+def get_north_eateries(
+    response: Response,
+    limit: Optional[int] = Query(None, ge=1, le=100, description="Optional pagination limit"),
+    offset: int = Query(0, ge=0, description="Optional pagination offset")
+):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    items = load_north_eateries_data()
+    if limit is not None:
+        return {
+            "data": items[offset:offset+limit],
+            "total": len(items),
+            "limit": limit,
+            "offset": offset
+        }
+    return items
 
 @lru_cache(maxsize=1)
 def load_south_eateries_data() -> List[dict]:
-    file_path = os.path.join(os.path.dirname(__file__), "data", "south_eateries.json")
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="South eateries data file not found")
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        logger.error("Failed to read south eateries data: %s", e)
-        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
+    return _load_compact_eateries("south_eateries.json", "south")
 
 @app.get("/api/eateries/south")
-def get_south_eateries():
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    return ORJSONResponse(content=load_south_eateries_data(), headers=headers)
+def get_south_eateries(
+    response: Response,
+    limit: Optional[int] = Query(None, ge=1, le=100, description="Optional pagination limit"),
+    offset: int = Query(0, ge=0, description="Optional pagination offset")
+):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    items = load_south_eateries_data()
+    if limit is not None:
+        return {
+            "data": items[offset:offset+limit],
+            "total": len(items),
+            "limit": limit,
+            "offset": offset
+        }
+    return items
 
 @lru_cache(maxsize=1)
 def get_optimized_food_data() -> List[dict]:
-    """Loads, processes, and combines food data once into memory."""
-    t0 = time.perf_counter()
-    optimized = []
-    
-    # Process North
-    try:
-        north = load_north_eateries_data()
-        for item in north:
-            optimized.append({
-                "id": str(uuid.uuid4())[:8],
-                "title": item.get("title", ""),
-                "subTitle": item.get("subTitle", ""),
-                "categoryName": item.get("categoryName", ""),
-                "price": item.get("price", ""),
-                "totalScore": item.get("totalScore", 0),
-                "reviewsCount": item.get("reviewsCount", 0),
-                "address": item.get("address", ""),
-                "neighborhood": item.get("neighborhood", ""),
-                "description": item.get("description", ""),
-                "imageUrl": item.get("imageUrl", ""),
-                "url": item.get("url", ""),
-                "lat": item.get("lat", 0),
-                "lng": item.get("lng", 0) if "lng" in item else item.get("lon", 0),
-                "permanentlyClosed": item.get("permanentlyClosed", False),
-                "zone": "north"
-            })
-    except Exception as e:
-        logger.error(f"Error processing north eateries: {e}")
-        
-    # Process South
-    try:
-        south = load_south_eateries_data()
-        for item in south:
-            optimized.append({
-                "id": str(uuid.uuid4())[:8],
-                "title": item.get("title", ""),
-                "subTitle": item.get("subTitle", ""),
-                "categoryName": item.get("categoryName", ""),
-                "price": item.get("price", ""),
-                "totalScore": item.get("totalScore", 0),
-                "reviewsCount": item.get("reviewsCount", 0),
-                "address": item.get("address", ""),
-                "neighborhood": item.get("neighborhood", ""),
-                "description": item.get("description", ""),
-                "imageUrl": item.get("imageUrl", ""),
-                "url": item.get("url", ""),
-                "lat": item.get("lat", 0),
-                "lng": item.get("lng", 0) if "lng" in item else item.get("lon", 0),
-                "permanentlyClosed": item.get("permanentlyClosed", False),
-                "zone": "south"
-            })
-    except Exception as e:
-        logger.error(f"Error processing south eateries: {e}")
-        
-    logger.info(f"Optimized {len(optimized)} food records in {time.perf_counter() - t0:.4f}s")
-    return optimized
+    """Combines pre-projected North and South food datasets without redundant duplication."""
+    return load_north_eateries_data() + load_south_eateries_data()
 
 @app.get("/api/food/categories")
-def get_food_categories(zone: str = Query("all", description="all, north, south")):
+def get_food_categories(
+    response: Response,
+    zone: str = Query("all", description="all, north, south")
+):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400"
     data = get_optimized_food_data()
     counts = {}
     for item in data:
-        if item.get("permanentlyClosed"):
+        if item["permanentlyClosed"]:
             continue
-        if zone != "all" and item.get("zone") != zone:
+        if zone != "all" and item["zone"] != zone:
             continue
-        cat = (item.get("categoryName") or "").strip()
+        cat = item["categoryName"].strip()
         if cat:
             counts[cat] = counts.get(cat, 0) + 1
             
     sorted_cats = sorted(counts.items(), key=lambda x: x[1], reverse=True)
     top_cats = ["All"] + [c[0] for c in sorted_cats[:12]]
     
-    return ORJSONResponse(
-        content={"categories": top_cats}, 
-        headers={"Cache-Control": "public, max-age=3600, s-maxage=86400"}
-    )
+    return {"categories": top_cats}
 
 @app.get("/api/food/all_light")
-def get_all_food_light():
+def get_all_food_light(response: Response):
+    response.headers["Cache-Control"] = "public, max-age=86400, s-maxage=604800"
     data = get_optimized_food_data()
-    active_data = [item for item in data if not item.get("permanentlyClosed")]
-    return ORJSONResponse(
-        content={"data": active_data, "total": len(active_data)},
-        headers={"Cache-Control": "public, max-age=86400, s-maxage=604800"}
-    )
+    active_data = [
+        {k: v for k, v in item.items() if k not in ("_search_blob", "category_lower")}
+        for item in data if not item["permanentlyClosed"]
+    ]
+    return {"data": active_data, "total": len(active_data)}
 
-@app.get("/api/food")
+@app.get("/api/food", response_model=FoodPaginatedResponse)
 def get_food(
+    request: Request,
+    response: Response,
     page: int = Query(1, ge=1),
     limit: int = Query(12, ge=1, le=100),
     zone: str = Query("all"),
@@ -1155,75 +1250,78 @@ def get_food(
     minRating: float = Query(0.0),
     search: str = Query("")
 ):
+    response.headers["Cache-Control"] = "public, max-age=60, s-maxage=300"
     t0 = time.perf_counter()
     data = get_optimized_food_data()
-    request.state.cache_status = "hit" if data else "miss"
+    
+    if hasattr(request, "state"):
+        request.state.cache_status = "hit" if data else "miss"
     
     # Filter
     search_lower = search.lower().strip()
     category_lower = category.lower().strip()
+    search_terms = search_lower.split() if search_lower else None
     
+    t_search_start = time.perf_counter()
     filtered = []
     for item in data:
-        if item.get("permanentlyClosed"):
+        if item["permanentlyClosed"]:
             continue
-        if zone != "all" and item.get("zone") != zone:
+        if zone != "all" and item["zone"] != zone:
             continue
-        if minRating > 0 and (item.get("totalScore") or 0) < minRating:
+        if minRating > 0 and item["totalScore"] < minRating:
             continue
-        if category_lower != "all":
-            cat = (item.get("categoryName") or "").lower()
-            if category_lower not in cat:
-                continue
-        if search_lower:
-            search_terms = search_lower.split()
-            combined_text = (
-                (item.get("title") or "") + " " +
-                (item.get("subTitle") or "") + " " +
-                (item.get("description") or "") + " " +
-                (item.get("address") or "") + " " +
-                (item.get("neighborhood") or "") + " " +
-                (item.get("categoryName") or "")
-            ).lower()
-            
-            match = all(term in combined_text for term in search_terms)
-            if not match:
+        if category_lower != "all" and category_lower not in item["category_lower"]:
+            continue
+        if search_terms:
+            blob = item["_search_blob"]
+            if not all(term in blob for term in search_terms):
                 continue
         filtered.append(item)
         
-    t_filter = time.perf_counter() - t0
+    t_filter = (time.perf_counter() - t0) * 1000
+    t_search = (time.perf_counter() - t_search_start) * 1000
     
     total = len(filtered)
-    total_pages = math.ceil(total / limit)
+    total_pages = math.ceil(total / limit) if limit > 0 else 1
     start_idx = (page - 1) * limit
     end_idx = start_idx + limit
     
-    t_paginate = time.perf_counter()
+    t_paginate_start = time.perf_counter()
     paginated = filtered[start_idx:end_idx]
-    t_paginate = time.perf_counter() - t_paginate
     
-    # Do not send description or neighborhood to client in paginated list
-    final_data = []
-    for p in paginated:
-        c = p.copy()
-        if "description" in c:
-            del c["description"]
-        if "neighborhood" in c:
-            del c["neighborhood"]
-        final_data.append(c)
-        
-    t_total = time.perf_counter() - t0
+    # Send clean lightweight cards matching FoodItemCompact schema
+    final_data = [
+        {
+            "id": p["id"],
+            "title": p["title"],
+            "subTitle": p["subTitle"],
+            "categoryName": p["categoryName"],
+            "price": p["price"],
+            "totalScore": p["totalScore"],
+            "reviewsCount": p["reviewsCount"],
+            "address": p["address"],
+            "imageUrl": p["imageUrl"],
+            "url": p["url"],
+            "lat": p["lat"],
+            "lng": p["lng"],
+            "permanentlyClosed": p["permanentlyClosed"],
+            "zone": p["zone"]
+        }
+        for p in paginated
+    ]
+    t_paginate = (time.perf_counter() - t_paginate_start) * 1000
+    t_total = (time.perf_counter() - t0) * 1000
     
-    # Store endpoint timings for metrics collector
-    request.state.endpoint_timings = {
-        "filter_ms": round(t_filter * 1000, 2),
-        "pagination_ms": round(t_paginate * 1000, 4),
-        "total_ms": round(t_total * 1000, 2),
-    }
+    if hasattr(request, "state"):
+        request.state.endpoint_timings = {
+            "filter_ms": round(t_filter, 2),
+            "search_ms": round(t_search, 2),
+            "pagination_ms": round(t_paginate, 2),
+            "total_ms": round(t_total, 2),
+        }
     
-    logger.info(f"Food API: Filter={t_filter:.4f}s, Total={t_total:.4f}s, Page={page}/{total_pages}")
-    
-    return ORJSONResponse(content={
+    return {
         "data": final_data,
         "pagination": {
             "page": page,
@@ -1232,48 +1330,79 @@ def get_food(
             "total_pages": total_pages
         },
         "perf": {
-            "filter_ms": round(t_filter * 1000, 2),
-            "total_ms": round(t_total * 1000, 2)
+            "filter_ms": round(t_filter, 2),
+            "search_ms": round(t_search, 2),
+            "total_ms": round(t_total, 2)
         }
-    }, headers={"Cache-Control": "public, max-age=60, s-maxage=300"})
+    }
+
+def _load_compact_facilities(filename: str) -> List[dict]:
+    file_path = os.path.join(os.path.dirname(__file__), "data", filename)
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail=f"{filename} not found")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            raw = json.load(f)
+            compact = []
+            for item in raw:
+                if not item:
+                    continue
+                compact.append({
+                    "title": item.get("title", ""),
+                    "subTitle": item.get("subTitle", ""),
+                    "categoryName": item.get("categoryName", ""),
+                    "categories": item.get("categories", []),
+                    "address": item.get("address", ""),
+                    "phone": item.get("phone", ""),
+                    "location": item.get("location") or {"lat": 0, "lng": 0},
+                    "url": item.get("url", "")
+                })
+            return compact
+    except Exception as e:
+        logger.error(f"Failed to read facilities data from {filename}: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 @lru_cache(maxsize=1)
 def load_north_facilities_data() -> List[dict]:
-    file_path = os.path.join(os.path.dirname(__file__), "data", "north_other_facilities.json")
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="North other facilities data file not found")
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        logger.error("Failed to read facilities data: %s", e)
-        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
+    return _load_compact_facilities("north_other_facilities.json")
 
 @app.get("/api/facilities/north")
-def get_north_facilities():
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    return ORJSONResponse(content=load_north_facilities_data(), headers=headers)
+def get_north_facilities(
+    response: Response,
+    limit: Optional[int] = Query(None, ge=1, le=200, description="Optional pagination limit"),
+    offset: int = Query(0, ge=0, description="Optional pagination offset")
+):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    items = load_north_facilities_data()
+    if limit is not None:
+        return {
+            "data": items[offset:offset+limit],
+            "total": len(items),
+            "limit": limit,
+            "offset": offset
+        }
+    return items
 
 @lru_cache(maxsize=1)
 def load_south_facilities_data() -> List[dict]:
-    file_path = os.path.join(os.path.dirname(__file__), "data", "south_other_facilites.json")
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="South other facilities data file not found")
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        logger.error("Failed to read south facilities data: %s", e)
-        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
+    return _load_compact_facilities("south_other_facilites.json")
 
 @app.get("/api/facilities/south")
-def get_south_facilities():
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    return ORJSONResponse(content=load_south_facilities_data(), headers=headers)
+def get_south_facilities(
+    response: Response,
+    limit: Optional[int] = Query(None, ge=1, le=200, description="Optional pagination limit"),
+    offset: int = Query(0, ge=0, description="Optional pagination offset")
+):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    items = load_south_facilities_data()
+    if limit is not None:
+        return {
+            "data": items[offset:offset+limit],
+            "total": len(items),
+            "limit": limit,
+            "offset": offset
+        }
+    return items
 
 @lru_cache(maxsize=1)
 def load_medical_facilities_data() -> dict:
@@ -1372,39 +1501,81 @@ def load_medical_facilities_data() -> dict:
     }
 
 @app.get("/api/medical-facilities")
-def get_medical_facilities():
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    return ORJSONResponse(content=load_medical_facilities_data(), headers=headers)
+def get_medical_facilities(response: Response):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    return load_medical_facilities_data()
 
 
 @lru_cache(maxsize=1)
-def load_metros_data() -> List[dict]:
-    file_path = os.path.join(os.path.dirname(__file__), "data", "metros.json")
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail="Metros data file not found")
-    try:
-        with open(file_path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception as e:
-        logger.error("Error loading metros data: %s", e)
-        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
-
-@app.get("/api/metro-stations")
-def get_valid_metro_stations():
-    """Return only metro stations with valid coordinates."""
+def load_metro_stations_data() -> List[dict]:
     file_path = os.path.join(os.path.dirname(__file__), "data", "metro_stations.json")
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Metro stations data file not found")
     try:
         with open(file_path, "r", encoding="utf-8") as f:
             metros = json.load(f)
-            valid = [m for m in metros if m.get("lat") and m.get("lon")]
-            return ORJSONResponse(content=valid)
+            return [
+                {
+                    "name": m.get("name", ""),
+                    "lat": float(m["lat"]),
+                    "lon": float(m["lon"]),
+                    "line": m.get("line", ""),
+                    "zone": m.get("zone", "")
+                }
+                for m in metros
+                if m.get("lat") and m.get("lon")
+            ]
     except Exception as e:
         logger.error("Error loading metro stations data: %s", e)
         raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
+
+@lru_cache(maxsize=1)
+def get_metro_coords_lookup() -> dict:
+    """Precompute normalized metro station name to coordinates dictionary."""
+    metro_data = load_metro_stations_data()
+    lookup = {}
+    for m in metro_data:
+        name = m.get("name", "")
+        if name and m.get("lat") and m.get("lon"):
+            lookup[normalize_metro_name(name)] = (float(m["lat"]), float(m["lon"]))
+    return lookup
+
+@lru_cache(maxsize=1)
+def get_cached_routing_pandals() -> dict:
+    """Precompute and cache lightweight coordinate lists for route calculation."""
+    def _extract(loader):
+        try:
+            return [
+                {
+                    "title": p.get("name") or p.get("api_name") or "Durga Puja Pandal",
+                    "address": p.get("address", ""),
+                    "lat": float(p["lat"]),
+                    "lon": float(p["lon"])
+                }
+                for p in loader()
+                if p.get("lat") and p.get("lon")
+            ]
+        except Exception:
+            return []
+
+    north = _extract(load_pandals_data)
+    south = _extract(load_south_pandals_data)
+    central = _extract(load_central_pandals_data)
+    bonedi = _extract(load_bonedi_pandals_data)
+    
+    return {
+        "north": north,
+        "south": south,
+        "central": central,
+        "bonedi": bonedi,
+        "all": north + south + central + bonedi
+    }
+
+@app.get("/api/metro-stations", response_model=List[MetroStationCompact])
+def get_valid_metro_stations(response: Response):
+    """Return only metro stations with valid coordinates."""
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    return load_metro_stations_data()
 
 # --- Route Planner Logic ---
 async def get_osrm_walking_route(lat1: float, lon1: float, lat2: float, lon2: float) -> tuple[float, float]:
@@ -1440,55 +1611,30 @@ def normalize_metro_name(name: str) -> str:
 
 @app.post("/api/plan-route", response_model=RoutePlanResponse)
 async def plan_puja_route(request: RoutePlanRequest):
-    # 1. Determine starting coordinates for selected metro station
+    t0 = time.perf_counter()
+    # 1. Fast in-memory resolution of start coordinates
     start_lat = getattr(request, 'start_lat', 0)
     start_lon = getattr(request, 'start_lon', 0)
     
-    # Try looking up in metro_stations.json if coordinates not provided or zero
-    try:
-        with open(os.path.join(os.path.dirname(__file__), "data", "metro_stations.json"), "r", encoding="utf-8") as f:
-            metro_data = json.load(f)
-            req_norm = normalize_metro_name(request.metro_station_name)
-            start_m = next((
-                m for m in metro_data 
-                if m.get("name") and (
-                    normalize_metro_name(m["name"]) in req_norm or 
-                    req_norm in normalize_metro_name(m["name"])
-                )
-            ), None)
-            if start_m and start_m.get("lat") and start_m.get("lon"):
-                start_lat = float(start_m["lat"])
-                start_lon = float(start_m["lon"])
-    except Exception as e:
-        print(f"Error resolving metro station: {e}")
+    if not start_lat or not start_lon:
+        req_norm = normalize_metro_name(request.metro_station_name)
+        lookup = get_metro_coords_lookup()
+        # Direct lookup or substring match
+        if req_norm in lookup:
+            start_lat, start_lon = lookup[req_norm]
+        else:
+            for k, (lat, lon) in lookup.items():
+                if k in req_norm or req_norm in k:
+                    start_lat, start_lon = lat, lon
+                    break
 
     if not start_lat or not start_lon:
         start_lat, start_lon = 22.5726, 88.3639
 
-    # 2. Load pandals for the requested region
-    pandals = []
+    # 2. Get preloaded pandals from in-memory cache
     region = getattr(request, 'region', 'all').lower()
-    region_file_map = {
-        "north": ["north_cords.json"],
-        "south": ["south_kolkata.json"],
-        "central": ["central_kolkata.json"],
-        "all": ["north_cords.json", "south_kolkata.json", "central_kolkata.json", "bonedi_kolkata.json"]
-    }
-    files = region_file_map.get(region, region_file_map["all"])
-    for filename in files:
-        try:
-            with open(os.path.join(os.path.dirname(__file__), "data", filename), "r", encoding="utf-8") as f:
-                data = json.load(f)
-                for p in data:
-                    if p.get("lat") and p.get("lon"):
-                        pandals.append({
-                            "title": p.get("name") or p.get("api_name") or "Durga Puja Pandal",
-                            "address": p.get("address", ""),
-                            "lat": float(p["lat"]),
-                            "lon": float(p["lon"])
-                        })
-        except Exception as e:
-            print(f"Error loading {filename}: {e}")
+    routing_data = get_cached_routing_pandals()
+    pandals = routing_data.get(region, routing_data["all"])
 
     # 3. Chained Nearest Neighbor Walk (Metro -> Pandal 1 -> Pandal 2 -> Pandal 3 ...)
     usable_time = request.total_minutes - request.restaurant_break_minutes
@@ -1547,12 +1693,22 @@ async def plan_puja_route(request: RoutePlanRequest):
         stops=stops
     )
 
+@lru_cache(maxsize=1)
+def load_metros_data() -> List[dict]:
+    file_path = os.path.join(os.path.dirname(__file__), "data", "metros.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Metros data file not found")
+    try:
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        logger.error("Error loading metros data: %s", e)
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
+
 @app.get("/api/metros")
-def get_metros():
-    headers = {
-        "Cache-Control": "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
-    }
-    return ORJSONResponse(content=load_metros_data(), headers=headers)
+def get_metros(response: Response):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    return load_metros_data()
 
 @lru_cache(maxsize=128)
 def generate_map_html(q: str, selected: str = "") -> str:
@@ -1600,7 +1756,26 @@ def generate_map_html(q: str, selected: str = "") -> str:
 
     import json
     pandals_json = json.dumps(pandals_data)
-    facilities_json = json.dumps(FACILITIES)
+    
+    # Load all verified metro stations dynamically for full Kolkata coverage
+    all_facilities = list(FACILITIES)
+    try:
+        with open(os.path.join(os.path.dirname(__file__), "data", "metro_stations.json"), "r", encoding="utf-8") as mf:
+            metro_stations = json.load(mf)
+            for ms in metro_stations:
+                if ms.get("lat") and ms.get("lon"):
+                    st_name = ms.get("title", ms.get("name", "Metro"))
+                    if not any(f.get("name") == st_name for f in all_facilities):
+                        all_facilities.append({
+                            "name": st_name,
+                            "category": "🚇 Metro",
+                            "lat": ms.get("lat"),
+                            "lon": ms.get("lon")
+                        })
+    except Exception as e:
+        logger.error(f"Error reading metro_stations.json for map: {e}")
+
+    facilities_json = json.dumps(all_facilities)
 
     from branca.element import Element
     
@@ -1949,15 +2124,22 @@ def haversine_distance(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
 
-@app.get("/api/northpandel_distances")
-def get_north_pandal_distances():
+@lru_cache(maxsize=1)
+def load_north_distance_data() -> dict:
+    file_path = os.path.join(os.path.dirname(__file__), "data", "north_metro_pandals_ranked.json")
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Distance ranking data not found")
     try:
-        with open("data/north_metro_pandals_ranked.json", "r", encoding="utf-8") as f:
-            data = json.load(f)
-            return data
+        with open(file_path, "r", encoding="utf-8") as f:
+            return json.load(f)
     except Exception as e:
         logger.error("Failed to load distance data: %s", e)
         raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
+
+@app.get("/api/northpandel_distances")
+def get_north_pandal_distances(response: Response):
+    response.headers["Cache-Control"] = "public, max-age=3600, s-maxage=86400, stale-while-revalidate=86400"
+    return load_north_distance_data()
 
 
 if __name__ == "__main__":

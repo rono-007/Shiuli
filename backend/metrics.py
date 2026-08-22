@@ -115,7 +115,7 @@ class MinuteBucket:
         "minute_key", "durations", "response_sizes",
         "total", "success", "client_errors", "server_errors",
         "cache_hits", "cache_misses",
-        "slow_500", "slow_1000", "slow_2000", "slow_5000",
+        "slow_200", "slow_500", "slow_1000", "slow_3000", "slow_5000",
         "endpoint_durations", "endpoint_statuses", "endpoint_sizes",
         "endpoint_cache", "errors_by_endpoint",
     )
@@ -130,9 +130,10 @@ class MinuteBucket:
         self.server_errors = 0
         self.cache_hits = 0
         self.cache_misses = 0
+        self.slow_200 = 0
         self.slow_500 = 0
         self.slow_1000 = 0
-        self.slow_2000 = 0
+        self.slow_3000 = 0
         self.slow_5000 = 0
         self.endpoint_durations: Dict[str, List[float]] = defaultdict(list)
         self.endpoint_statuses: Dict[str, Dict[str, int]] = defaultdict(lambda: {"total": 0, "success": 0, "4xx": 0, "5xx": 0})
@@ -176,12 +177,14 @@ class MinuteBucket:
 
         if dur >= 5000:
             self.slow_5000 += 1
-        if dur >= 2000:
-            self.slow_2000 += 1
+        if dur >= 3000:
+            self.slow_3000 += 1
         if dur >= 1000:
             self.slow_1000 += 1
         if dur >= 500:
             self.slow_500 += 1
+        if dur >= 200:
+            self.slow_200 += 1
 
     def to_dict(self) -> Dict[str, Any]:
         """Serialize this minute bucket for API response."""
@@ -212,9 +215,10 @@ class MinuteBucket:
                 "hit_rate": cache_rate,
             },
             "slow": {
+                "gt_200ms": self.slow_200,
                 "gt_500ms": self.slow_500,
                 "gt_1s": self.slow_1000,
-                "gt_2s": self.slow_2000,
+                "gt_3s": self.slow_3000,
                 "gt_5s": self.slow_5000,
             },
         }

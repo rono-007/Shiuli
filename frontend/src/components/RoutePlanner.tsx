@@ -196,15 +196,20 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
     // Load from local JSON data instead of backend API
     const loadMetros = () => {
       try {
-        const formattedMetros = metrosData
-          .filter((m: any) => m.location?.lat && m.location?.lng)
-          .map((m: any) => ({
-            name: m.title,
-            api_name: m.title,
-            address: m.address || '',
-            lat: m.location.lat,
-            lon: m.location.lng
-          }));
+        const formattedMetros = (metrosData as any[])
+          .map((m: any) => {
+            const lat = m.location?.lat ?? m.lat;
+            const lon = m.location?.lng ?? m.lon ?? m.lng;
+            return {
+              name: m.title || m.name,
+              subTitle: m.subTitle || '',
+              api_name: m.title || m.name,
+              address: m.address || '',
+              lat: Number(lat) || 0,
+              lon: Number(lon) || 0
+            };
+          })
+          .filter(m => m.lat !== 0 && m.lon !== 0);
         setMetros(formattedMetros);
       } catch (err) {
         console.error("Failed to load metros", err);
@@ -415,7 +420,14 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
                           : 'border-[#E5B05C]/20 hover:border-[#C86040]/50 hover:bg-[#FAF6ED]'
                       }`}
                     >
-                      <p className="font-bold text-[#3D0D11] text-lg">{m.name}</p>
+                      <div className="flex items-center justify-between">
+                        <p className="font-bold text-[#3D0D11] text-lg">🚇 {m.name}</p>
+                        {(m as any).subTitle && (
+                          <span className="text-xs font-serif font-bold text-[#8B1E2D] bg-[#8B1E2D]/10 px-2 py-0.5 rounded-full">
+                            {(m as any).subTitle}
+                          </span>
+                        )}
+                      </div>
                       <p className="text-xs text-[#3D0D11]/60 mt-1">{m.address}</p>
                     </button>
                   ))

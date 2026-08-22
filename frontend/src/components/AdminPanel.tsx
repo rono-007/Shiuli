@@ -243,7 +243,7 @@ function formatUptime(seconds: number): string {
   const d = Math.floor(seconds / 86400);
   const h = Math.floor((seconds % 86400) / 3600);
   const m = Math.floor((seconds % 3600) / 60);
-  const s = seconds % 60;
+  const s = Math.floor(seconds % 60);
   const parts: string[] = [];
   if (d > 0) parts.push(`${d}d`);
   if (h > 0) parts.push(`${h}h`);
@@ -598,18 +598,29 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
   const [perfSlowRequests, setPerfSlowRequests] = useState<PerfSlowRequest[]>([]);
   const [perfLoading, setPerfLoading] = useState(false);
 
+  interface PerfDashboardData {
+    overview: PerfOverviewData;
+    minutes: { minutes: PerfMinute[] };
+    endpoints: { endpoints: PerfEndpoint[] };
+    slow_requests: { slow_requests: PerfSlowRequest[] };
+    errors: PerfErrorSummary;
+  }
+
   const fetchPerfMetrics = useCallback(async () => {
     setPerfLoading(true);
     try {
-      const [o, , , s] = await Promise.allSettled([
-        adminFetch<PerfOverviewData>('/admin/metrics/overview', token),
-        adminFetch<{ minutes: PerfMinute[] }>('/admin/metrics/minutes?minutes=60', token),
-        adminFetch<{ endpoints: PerfEndpoint[] }>('/admin/metrics/endpoints?minutes=60', token),
-        adminFetch<{ slow_requests: PerfSlowRequest[] }>('/admin/metrics/slow-requests?limit=100', token),
-        adminFetch<PerfErrorSummary>('/admin/metrics/errors?minutes=60', token),
-      ]);
-      if (o.status === 'fulfilled') setPerfOverview(o.value);
-      if (s.status === 'fulfilled') setPerfSlowRequests(s.value.slow_requests);
+      const data = await adminFetch<PerfDashboardData>('/admin/metrics/dashboard?minutes=60&limit=100', token);
+      if (data?.overview) {
+        setPerfOverview({
+          ...data.overview,
+          features: Array.isArray(data.overview.features) ? data.overview.features : []
+        });
+      }
+      if (data?.slow_requests && Array.isArray(data.slow_requests.slow_requests)) {
+        setPerfSlowRequests(data.slow_requests.slow_requests);
+      } else {
+        setPerfSlowRequests([]);
+      }
     } catch {
       // ignore
     } finally {
@@ -620,7 +631,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
   useEffect(() => {
     if (tab === 'performance') {
       fetchPerfMetrics();
-      const interval = setInterval(fetchPerfMetrics, 10000); // 10s auto-refresh
+      const interval = setInterval(fetchPerfMetrics, 30000); // 30s auto-refresh
       return () => clearInterval(interval);
     }
   }, [tab, fetchPerfMetrics]);
@@ -656,11 +667,20 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
           recent_errors: val.recent_errors || [],
         });
       }
-      if (logsData.status === 'fulfilled') {
-        setLogs(logsData.value.logs);
-        setLogsTotal(logsData.value.total);
+      if (logsData.status === 'fulfilled' && logsData.value) {
+        setLogs(Array.isArray(logsData.value.logs) ? logsData.value.logs : []);
+        setLogsTotal(Number(logsData.value.total) || (Array.isArray(logsData.value.logs) ? logsData.value.logs.length : 0));
       }
-      if (overviewData.status === 'fulfilled') setDataOverview(overviewData.value);
+      if (overviewData.status === 'fulfilled' && overviewData.value) {
+        const ov = overviewData.value;
+        setDataOverview({
+          ...ov,
+          collections: Array.isArray(ov.collections) ? ov.collections : [],
+          total_items: Number(ov.total_items) || 0,
+          total_size_bytes: Number(ov.total_size_bytes) || 0,
+          server_start: ov.server_start || ''
+        });
+      }
 
       let localFeedbacks: FeedbackItem[] = [];
       try {
@@ -687,8 +707,16 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
       } else {
         setServerOnline(false);
       }
-      if (mailStatsData.status === 'fulfilled') setMailStats(mailStatsData.value);
-      if (betaUsersData.status === 'fulfilled') setBetaUsers(betaUsersData.value);
+      if (mailStatsData.status === 'fulfilled' && mailStatsData.value) {
+        const ms = mailStatsData.value;
+        setMailStats({
+          ...ms,
+          recent_activity: Array.isArray(ms.recent_activity) ? ms.recent_activity : []
+        });
+      }
+      if (betaUsersData.status === 'fulfilled') {
+        setBetaUsers(Array.isArray(betaUsersData.value) ? betaUsersData.value : []);
+      }
       setLastRefresh(new Date());
     } catch {
       setServerOnline(false);
@@ -1167,7 +1195,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                   <BarChart3 className="w-3.5 h-3.5 text-emerald-400" /> Status Code Distribution
                 </h3>
                 <div className="space-y-2">
-                  {Object.entries(stats.status_breakdown).sort().map(([bucket, count]) => {
+                  {Object.entries(stats.status_breakdown || {}).sort().map(([bucket, count]) => {
                     const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
                     const barColor = bucket.startsWith('2') ? 'bg-emerald-500' : bucket.startsWith('3') ? 'bg-sky-500' : bucket.startsWith('4') ? 'bg-amber-500' : 'bg-red-500';
                     return (
@@ -1191,7 +1219,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                   <Globe className="w-3.5 h-3.5 text-indigo-400" /> Browser Breakdown
                 </h3>
                 <div className="space-y-2">
-                  {Object.entries(stats.browser_breakdown).sort((a, b) => b[1] - a[1]).map(([browser, count]) => {
+                  {Object.entries(stats.browser_breakdown || {}).sort((a, b) => b[1] - a[1]).map(([browser, count]) => {
                     const pct = stats.total > 0 ? Math.round((count / stats.total) * 100) : 0;
                     return (
                       <div key={browser}>
@@ -1217,7 +1245,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
               <div className="bg-[#111827] border border-slate-700/40 rounded-xl p-5">
                 <h3 className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3">Most Requested Endpoints</h3>
                 <div className="space-y-1">
-                  {stats.top_endpoints.map((ep, i) => (
+                  {(stats.top_endpoints || []).map((ep, i) => (
                     <div key={i} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-700/40">
                       <span className="text-xs text-slate-300 font-mono truncate flex-1">{ep.endpoint}</span>
                       <span className="text-xs text-amber-400 font-semibold ml-3 tabular-nums font-mono">{ep.count} reqs</span>
@@ -1230,7 +1258,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
               <div className="bg-[#111827] border border-slate-700/40 rounded-xl p-5">
                 <h3 className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3">Slowest Endpoints (Avg Latency)</h3>
                 <div className="space-y-1">
-                  {stats.slowest_endpoints.map((ep, i) => (
+                  {(stats.slowest_endpoints || []).map((ep, i) => (
                     <div key={i} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-slate-800/50 transition-colors border border-transparent hover:border-slate-700/40">
                       <span className="text-xs text-slate-300 font-mono truncate flex-1">{ep.endpoint}</span>
                       <span className={`text-xs font-semibold ml-3 tabular-nums font-mono ${ep.avg_ms > 500 ? 'text-red-400' : ep.avg_ms > 100 ? 'text-amber-400' : 'text-emerald-400'}`}>{ep.avg_ms}ms</span>
@@ -1242,13 +1270,13 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
             </div>
 
             {/* Live Error Inspector */}
-            {stats.recent_errors.length > 0 && (
+            {(stats.recent_errors || []).length > 0 && (
               <div className="bg-[#111827] border border-red-500/30 rounded-xl p-5">
                 <h3 className="text-xs uppercase tracking-wider text-red-400 font-semibold mb-3 flex items-center gap-2">
                   <AlertOctagon className="w-4 h-4" /> Live Failed Requests (4xx / 5xx Errors)
                 </h3>
                 <div className="space-y-1.5">
-                  {stats.recent_errors.map((err) => (
+                  {(stats.recent_errors || []).map((err) => (
                     <div key={err.id} className="flex items-center justify-between py-2 px-3 bg-red-950/20 border border-red-500/20 rounded-lg text-xs">
                       <div className="flex items-center gap-2 truncate">
                         <span className="px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 font-mono text-[10px] font-bold">{err.status}</span>
@@ -1272,7 +1300,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
         {tab === 'sources' && stats && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-white">All Active Request Origins ({stats.ip_breakdown.length} Unique IPs)</h2>
+              <h2 className="text-sm font-semibold text-white">All Active Request Origins ({(stats.ip_breakdown || []).length} Unique IPs)</h2>
               <span className="text-xs text-slate-500 font-mono">Real-time source tracking from server logs</span>
             </div>
 
@@ -1291,7 +1319,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                     </tr>
                   </thead>
                   <tbody>
-                    {stats.ip_breakdown.map((item, index) => (
+                    {(stats.ip_breakdown || []).map((item, index) => (
                       <tr key={item.ip} className="border-b border-slate-800/40 hover:bg-slate-800/30 transition-colors">
                         <td className="py-3 px-4 text-slate-600 font-mono">{index + 1}</td>
                         <td className="py-3 px-4 font-mono font-semibold text-white">{item.ip}</td>
@@ -1458,11 +1486,11 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
               <StatCard icon={Database} label="Total Items" value={dataOverview.total_items.toLocaleString()} />
               <StatCard icon={HardDrive} label="Total Size" value={formatBytes(dataOverview.total_size_bytes)} />
-              <StatCard icon={Server} label="Collections" value={dataOverview.collections.length} />
+              <StatCard icon={Server} label="Collections" value={(dataOverview.collections || []).length} />
             </div>
 
             <div className="space-y-3">
-              {dataOverview.collections.map(col => (
+              {(dataOverview.collections || []).map(col => (
                 <div key={col.name} className="bg-[#111827] border border-slate-700/40 rounded-xl overflow-hidden">
                   <button
                     onClick={() => {
@@ -1794,13 +1822,13 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
             </div>
             
             {/* Recent Activity */}
-            {mailStats && mailStats.recent_activity.length > 0 && (
+            {mailStats && (mailStats.recent_activity || []).length > 0 && (
               <div className="bg-[#111827] border border-slate-700/40 rounded-xl p-5">
                 <h3 className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-4 flex items-center gap-2">
                   <Activity className="w-4 h-4 text-emerald-400" /> Recent Send Activity
                 </h3>
                 <div className="space-y-2">
-                  {mailStats.recent_activity.map(act => (
+                  {(mailStats.recent_activity || []).map(act => (
                     <div key={act.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg bg-slate-800/40 border border-slate-700/30 text-xs">
                       <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2 sm:mb-0">
                         <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${act.status === 'success' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
@@ -1841,17 +1869,17 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                   </div>
                   <div className="bg-slate-800/30 border border-slate-700/40 p-4 rounded-xl">
                     <div className="text-xs text-slate-400 mb-1">Current RPM (1m)</div>
-                    <div className="text-xl font-medium text-amber-400">{perfOverview.current?.rpm.toFixed(1) || '0'}</div>
+                    <div className="text-xl font-medium text-amber-400">{perfOverview.current?.rpm?.toFixed(1) || '0'}</div>
                   </div>
                   <div className="bg-slate-800/30 border border-slate-700/40 p-4 rounded-xl">
                     <div className="text-xs text-slate-400 mb-1">Avg Latency (1m)</div>
-                    <div className="text-xl font-medium text-emerald-400">{perfOverview.current?.avg_ms.toFixed(1) || '0'} ms</div>
-                    <div className="text-[10px] text-slate-500 mt-1">p95: {perfOverview.current?.p95_ms.toFixed(1) || '0'}ms</div>
+                    <div className="text-xl font-medium text-emerald-400">{perfOverview.current?.avg_ms?.toFixed(1) || '0'} ms</div>
+                    <div className="text-[10px] text-slate-500 mt-1">p95: {perfOverview.current?.p95_ms?.toFixed(1) || '0'}ms</div>
                   </div>
                   <div className="bg-slate-800/30 border border-slate-700/40 p-4 rounded-xl">
                     <div className="text-xs text-slate-400 mb-1">Error Rate (1m)</div>
                     <div className={`text-xl font-medium ${perfOverview.current?.error_rate && perfOverview.current.error_rate > 5 ? 'text-red-400' : 'text-slate-200'}`}>
-                      {perfOverview.current?.error_rate.toFixed(1) || '0'}%
+                      {perfOverview.current?.error_rate?.toFixed(1) || '0'}%
                     </div>
                   </div>
                 </div>
@@ -1877,19 +1905,19 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-800/50">
-                        {perfOverview.features.map(f => (
+                        {(perfOverview.features || []).map(f => (
                           <tr key={f.feature} className="hover:bg-slate-800/30 transition-colors">
                             <td className="px-4 py-3 font-medium text-slate-200">{f.feature}</td>
                             <td className="px-4 py-3 text-slate-400">{f.requests}</td>
-                            <td className="px-4 py-3 text-slate-300">{f.latency.avg.toFixed(1)}</td>
-                            <td className="px-4 py-3 text-amber-400/80">{f.latency.p95.toFixed(1)}</td>
+                            <td className="px-4 py-3 text-slate-300">{f.latency?.avg?.toFixed(1) || 0}</td>
+                            <td className="px-4 py-3 text-amber-400/80">{f.latency?.p95?.toFixed(1) || 0}</td>
                             <td className="px-4 py-3">
-                              <span className={f.error_rate > 5 ? 'text-red-400' : 'text-emerald-400/80'}>{f.error_rate.toFixed(1)}%</span>
+                              <span className={f.error_rate > 5 ? 'text-red-400' : 'text-emerald-400/80'}>{f.error_rate?.toFixed(1) || 0}%</span>
                             </td>
                             <td className="px-4 py-3 text-orange-400/80">{f.slow_count}</td>
                           </tr>
                         ))}
-                        {perfOverview.features.length === 0 && (
+                        {(perfOverview.features || []).length === 0 && (
                           <tr><td colSpan={6} className="px-4 py-6 text-center text-slate-500">No feature metrics recorded yet.</td></tr>
                         )}
                       </tbody>
@@ -1898,7 +1926,7 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                 </div>
 
                 {/* Slow Requests Table */}
-                {perfSlowRequests.length > 0 && (
+                {(perfSlowRequests || []).length > 0 && (
                   <div className="bg-slate-800/40 border border-slate-700/50 rounded-2xl overflow-hidden mt-6">
                     <div className="p-4 border-b border-slate-700/40">
                       <h3 className="text-sm font-medium text-slate-200 flex items-center gap-2">
@@ -1917,14 +1945,14 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-800/50">
-                          {perfSlowRequests.slice(0, 10).map((req, i) => (
+                          {(perfSlowRequests || []).slice(0, 10).map((req, i) => (
                             <tr key={i} className="hover:bg-slate-800/30 transition-colors">
                               <td className="px-4 py-3 text-slate-400 text-xs">{new Date(req.timestamp).toLocaleTimeString()}</td>
                               <td className="px-4 py-3 text-slate-200 font-mono text-[10px]">{req.method} {req.path}</td>
                               <td className="px-4 py-3 text-red-400 font-medium">{req.total_ms}ms {req.cold_start && <span className="text-xs">(Cold)</span>}</td>
                               <td className="px-4 py-3">
                                 <div className="flex gap-2 flex-wrap max-w-sm">
-                                  {Object.entries(req.endpoint_timings).map(([k, v]) => (
+                                  {Object.entries(req.endpoint_timings || {}).map(([k, v]) => (
                                     <span key={k} className="bg-slate-700/50 text-slate-300 px-1.5 py-0.5 rounded text-[10px]">
                                       {k}: {v}ms
                                     </span>

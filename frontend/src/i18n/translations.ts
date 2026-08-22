@@ -30,6 +30,21 @@ export const translations = {
     modalTitle: "পরিক্রমা নির্বাচন করুন",
     modalFooterTag: "শিউলি দুর্গাপূজা ভ্রমণ সহায়িকা",
 
+    // Trending Pandals Intelligence Modal
+    trendingModalTag: "ট্রেন্ড ও গভীর বিশ্লেষণ",
+    trendingModalTitle: "কলকাতার সেরা ৫০ ট্রেন্ডিং পুজো",
+    trendingModalSubtitle: "জনপ্রিয়তার সূত্র, স্থাপত্যের বিস্ময় ও শিল্পকৌশল ভিত্তিক বিস্তারিত বিশ্লেষণ",
+    trendingTabPandals: "সেরা ৫০ প্যান্ডেল",
+    trendingTabFramework: "জনপ্রিয়তার সূত্র ও ব্লুপ্রিন্ট",
+    trendingTabTrends: "প্রবণতা ও পর্যবেক্ষণ",
+    trendingSearchPlaceholder: "প্যান্ডেলের নাম, অঞ্চল বা ক্যাটাগরি দিয়ে খুঁজুন...",
+    trendingAllCategories: "সকল ক্যাটাগরি",
+    trendingAllZones: "সকল অঞ্চল",
+    trendingKeySellingPoint: "মূল আকর্ষণ ও বিশেষত্ব",
+    trendingStandout: "অনন্য বৈশিষ্ট্য",
+    trendingDrivers: "জনপ্রিয়তার চালিকাশক্তি",
+    trendingExploreTour: "ট্যুর দেখুন",
+
     // Zones
     zoneNorthName: "উত্তর কলকাতা",
     zoneNorthSubtitle: "North Calcutta Tour",
@@ -150,6 +165,21 @@ export const translations = {
     modalGuideTag: "Tour Directory",
     modalTitle: "Select Puja Tour",
     modalFooterTag: "Shiuli Durga Puja Tour Guide",
+
+    // Trending Pandals Intelligence Modal
+    trendingModalTag: "Popularity Intelligence & Trends",
+    trendingModalTitle: "Kolkata Top 50 Trending Pandals",
+    trendingModalSubtitle: "Comprehensive analytical synthesis of crowd popularity, spectacle, and artistic excellence",
+    trendingTabPandals: "Top 50 Pandals",
+    trendingTabFramework: "Popularity Blueprint",
+    trendingTabTrends: "Trends & Insights",
+    trendingSearchPlaceholder: "Search by pandal name, zone, theme or category...",
+    trendingAllCategories: "All Categories",
+    trendingAllZones: "All Zones",
+    trendingKeySellingPoint: "Key Selling Point",
+    trendingStandout: "What Makes It Stand Out",
+    trendingDrivers: "Primary Popularity Drivers",
+    trendingExploreTour: "Explore Tour",
 
     // Zones
     zoneNorthName: "North Kolkata",

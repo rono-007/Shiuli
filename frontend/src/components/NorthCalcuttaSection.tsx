@@ -3,7 +3,7 @@ import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid,
 const PandalMap = React.lazy(() => import('./PandalMap'));
 import fallbackData from '../data/north_cords.json';
 import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
-import { getNearestFacilities } from '../utils/nearbyFacilities';
+import { getNearestFacilities, getNearestMetro } from '../utils/nearbyFacilities';
 import { secureGetItem, secureSetItem } from '../utils/storage';
 
 interface Pandal {
@@ -220,15 +220,22 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
                   href={facilities.metro?.url || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-bengali-red/5 p-2.5 rounded-xl border border-bengali-red/20 hover:border-bengali-red/50 text-[11px] text-ink/80 transition-all group col-span-2"
+                  className="flex items-center gap-2.5 bg-bengali-red/5 p-3 rounded-2xl border border-bengali-red/25 hover:border-bengali-red/60 text-xs text-ink/80 transition-all group col-span-2 shadow-xs"
                 >
-                  <Train className="w-4 h-4 text-bengali-red flex-shrink-0" />
+                  <div className="w-8 h-8 rounded-xl bg-bengali-red text-white flex items-center justify-center flex-shrink-0 shadow-xs">
+                    <Train className="w-4 h-4" />
+                  </div>
                   <div className="truncate flex-1">
                     <div className="font-serif font-bold text-bengali-red group-hover:underline truncate flex items-center justify-between">
-                      <span>🚇 {facilities.metro?.title || 'নিকটবর্তী মেট্রো স্টেশন'}</span>
+                      <span className="truncate">🚇 {facilities.metro?.title || 'নিকটবর্তী মেট্রো স্টেশন'}</span>
+                      <span className="text-[10px] font-mono bg-bengali-red/15 text-bengali-red px-2 py-0.5 rounded-full font-bold ml-2 shrink-0">
+                        {facilities.metro ? `${facilities.metro.distanceText} • ~${facilities.metro.estimatedWalkMinutes}m হাঁটা` : 'মেট্রো নেটওয়ার্ক'}
+                      </span>
                     </div>
-                    <div className="text-[9px] font-mono text-ink/60 mt-0.5 truncate">
-                      {facilities.metro ? `${facilities.metro.distanceMeters}m দূরে • ${facilities.metro.address || ''}` : 'মেট্রো নেটওয়ার্ক'}
+                    <div className="text-[10px] font-sans text-ink/60 mt-0.5 truncate flex items-center gap-1.5">
+                      {facilities.metro?.subTitle && <span className="font-semibold text-bengali-red/80">{facilities.metro.subTitle}</span>}
+                      {facilities.metro?.subTitle && <span>•</span>}
+                      <span className="truncate">{facilities.metro?.address || 'Kolkata Metro'}</span>
                     </div>
                   </div>
                 </a>
@@ -606,6 +613,23 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
                         <MapPin className="w-3 h-3 text-bengali-red flex-shrink-0 mt-0.5" />
                         <span className="line-clamp-2">{pandal.address}</span>
                       </p>
+
+                      {/* Nearest Metro Pill on Card */}
+                      {(() => {
+                        const nearestMetro = getNearestMetro(pandal.lat, pandal.lon);
+                        if (!nearestMetro) return null;
+                        return (
+                          <div className="mt-3 pt-2.5 border-t border-ink/8 flex items-center justify-between text-[11px]">
+                            <div className="flex items-center gap-1.5 font-serif font-bold text-bengali-red truncate">
+                              <span className="text-xs">🚇</span>
+                              <span className="truncate">{nearestMetro.title}</span>
+                            </div>
+                            <span className="font-mono text-[10px] font-bold bg-bengali-red/10 text-bengali-red px-2 py-0.5 rounded-full shrink-0 ml-2">
+                              {nearestMetro.distanceText}
+                            </span>
+                          </div>
+                        );
+                      })()}
                     </div>
 
                     {/* Expanded Detail Panel - rendered right after the card */}

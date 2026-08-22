@@ -366,9 +366,18 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
   useEffect(() => {
     if (!map.current || !isMapLoaded) return;
 
-    // Clear facility markers & 1km proximity circle
+    // Clear facility markers & 1km proximity circle & connector line
     facilityMarkersRef.current.forEach(m => m.remove());
     facilityMarkersRef.current = [];
+
+    ['facility-connector-dash', 'facility-connector-line', 'facility-connector-casing'].forEach(id => {
+      if (map.current!.getLayer(id)) {
+        map.current!.removeLayer(id);
+      }
+    });
+    if (map.current.getSource('facility-connector-src')) {
+      map.current.removeSource('facility-connector-src');
+    }
 
     if (map.current.getLayer('pandal-highlight-zone-stroke')) {
       map.current.removeLayer('pandal-highlight-zone-stroke');
@@ -412,9 +421,69 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     });
   }, [activePandal?.pandal.name, isMapLoaded]);
 
-  // Function to highlight a single clicked facility/eatery on the map!
-  const highlightSingleItemOnMap = (
-    item: { title: string; lat: number; lng: number; url?: string | null; distanceMeters?: number } | null | undefined,
+  // In-memory cache for road walking routes to guarantee instant 0ms responses on repeated clicks
+  const roadRouteCache = useRef<Map<string, { coordinates: [number, number][], distanceMeters: number, durationSec: number }>>(new Map());
+
+  const clearFacilityRouteLayers = () => {
+    if (!map.current) return;
+    ['facility-connector-dash', 'facility-connector-line', 'facility-connector-casing'].forEach(id => {
+      if (map.current!.getLayer(id)) {
+        map.current!.removeLayer(id);
+      }
+    });
+    if (map.current.getSource('facility-connector-src')) {
+      map.current.removeSource('facility-connector-src');
+    }
+  };
+
+  // Helper to fetch actual shortest walking path along roads from OSRM Foot API
+  const fetchRoadWalkingRoute = async (
+    lon1: number,
+    lat1: number,
+    lon2: number,
+    lat2: number
+  ): Promise<{ coordinates: [number, number][], distanceMeters: number, durationSec: number }> => {
+    const key = `${lon1.toFixed(5)},${lat1.toFixed(5)}-${lon2.toFixed(5)},${lat2.toFixed(5)}`;
+    if (roadRouteCache.current.has(key)) {
+      return roadRouteCache.current.get(key)!;
+    }
+
+    const url = `https://router.project-osrm.org/route/v1/foot/${lon1},${lat1};${lon2},${lat2}?overview=full&geometries=geojson`;
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 4000);
+      const res = await fetch(url, { signal: controller.signal });
+      clearTimeout(timer);
+
+      if (res.ok) {
+        const data = await res.json();
+        if (data.code === 'Ok' && data.routes && data.routes.length > 0) {
+          const route = data.routes[0];
+          const result = {
+            coordinates: route.geometry.coordinates as [number, number][],
+            distanceMeters: Math.round(route.distance),
+            durationSec: Math.round(route.duration)
+          };
+          roadRouteCache.current.set(key, result);
+          return result;
+        }
+      }
+    } catch (err) {
+      console.warn("Road routing fetch failed, falling back to direct line:", err);
+    }
+
+    // Direct fallback if network is offline
+    const directFallback = {
+      coordinates: [[lon1, lat1], [lon2, lat2]] as [number, number][],
+      distanceMeters: 0,
+      durationSec: 0
+    };
+    return directFallback;
+  };
+
+  // Function to highlight a single clicked facility/eatery on the map with REAL road walking route!
+  const highlightSingleItemOnMap = async (
+    item: { title: string; lat: number; lng: number; url?: string | null; distanceMeters?: number; distanceText?: string } | null | undefined,
     icon: string,
     color: string
   ) => {
@@ -422,17 +491,18 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
     setSelectedFacilityTitle(item.title);
 
-    // Remove existing facility markers
+    // Remove existing facility markers & route layers
     facilityMarkersRef.current.forEach(m => m.remove());
     facilityMarkersRef.current = [];
+    clearFacilityRouteLayers();
 
     const fEl = document.createElement('div');
     fEl.className = 'facility-map-icon-highlighted';
     fEl.style.display = 'flex';
     fEl.style.alignItems = 'center';
     fEl.style.justifyContent = 'center';
-    fEl.style.width = '34px';
-    fEl.style.height = '34px';
+    fEl.style.width = '36px';
+    fEl.style.height = '36px';
     fEl.style.background = '#FAF6ED';
     fEl.style.border = `3px solid ${color}`;
     fEl.style.borderRadius = '50%';
@@ -446,10 +516,14 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
     const mapUrl = item.url || `https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lng}`;
 
+    let distLabel = item.distanceText || (item.distanceMeters ? (item.distanceMeters < 1000 ? `${item.distanceMeters}m` : `${(item.distanceMeters / 1000).toFixed(1)} km`) : '');
+
     const fPopup = new maplibregl.Popup({ offset: 14, closeOnClick: false }).setHTML(`
-      <div style="font-family: 'Tiro Bangla', Georgia, serif; padding: 4px; font-size: 11px; max-width: 200px;">
+      <div style="font-family: 'Tiro Bangla', Georgia, serif; padding: 4px; font-size: 11px; max-width: 220px;">
         <div style="font-weight: bold; color: ${color}; font-size: 12px; margin-bottom: 3px;">${icon} ${item.title}</div>
-        ${item.distanceMeters ? `<div style="color: #666; font-size: 10px; margin-bottom: 6px;">দূরত্ব: ${item.distanceMeters}m</div>` : ''}
+        <div id="facility-popup-dist" style="color: #666; font-size: 10px; margin-bottom: 6px; font-weight: 600;">
+          ${distLabel ? `দূরত্ব: ${distLabel}` : 'দূরত্ব হিসাব হচ্ছে...'}
+        </div>
         <a href="${mapUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 4px; background: #8B1E2D; color: #FAF6ED; padding: 5px 10px; border-radius: 8px; font-weight: bold; font-size: 10px; text-decoration: none; box-shadow: 0 2px 6px rgba(139,30,45,0.3);">
           <span>Google Maps GPS এ অবস্থান দেখুন ↗</span>
         </a>
@@ -463,27 +537,134 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
 
     facilityMarkersRef.current.push(fMarker);
 
-    // Automatically open the popup on the map!
+    // Fetch and Draw REAL Walking Route via Roads
+    let routeCoords: [number, number][] = [[item.lng, item.lat]];
+    if (activePandal) {
+      const roadRoute = await fetchRoadWalkingRoute(
+        activePandal.pandal.lon,
+        activePandal.pandal.lat,
+        item.lng,
+        item.lat
+      );
+
+      routeCoords = roadRoute.coordinates;
+
+      // Update popup with real road distance & walk time if available
+      if (roadRoute.distanceMeters > 0) {
+        const roadDistText = roadRoute.distanceMeters < 1000 ? `${roadRoute.distanceMeters}m` : `${(roadRoute.distanceMeters / 1000).toFixed(1)} km`;
+        const roadWalkMins = Math.max(1, Math.ceil(roadRoute.durationSec / 60));
+        const distEl = document.getElementById('facility-popup-dist');
+        if (distEl) {
+          distEl.innerHTML = `দূরত্ব: <span style="color:${color}; font-weight:bold;">${roadDistText}</span> (~${roadWalkMins} min হাঁটা)`;
+        }
+      }
+
+      if (map.current) {
+        const lineGeoJSON = {
+          type: 'Feature' as const,
+          geometry: {
+            type: 'LineString' as const,
+            coordinates: routeCoords
+          },
+          properties: {}
+        };
+
+        if (map.current.getSource('facility-connector-src')) {
+          (map.current.getSource('facility-connector-src') as maplibregl.GeoJSONSource).setData(lineGeoJSON);
+        } else {
+          map.current.addSource('facility-connector-src', {
+            type: 'geojson',
+            data: lineGeoJSON
+          });
+
+          // 1. Casing Layer (Solid white/cream underlayer for contrast against streets)
+          map.current.addLayer({
+            id: 'facility-connector-casing',
+            type: 'line',
+            source: 'facility-connector-src',
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
+            paint: {
+              'line-color': '#FAF6ED',
+              'line-width': 7,
+              'line-opacity': 0.95
+            }
+          });
+
+          // 2. Main Road Route Line
+          map.current.addLayer({
+            id: 'facility-connector-line',
+            type: 'line',
+            source: 'facility-connector-src',
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
+            paint: {
+              'line-color': color || '#8B1E2D',
+              'line-width': 4.5,
+              'line-opacity': 0.9
+            }
+          });
+
+          // 3. Dashed Indicator along the Road
+          map.current.addLayer({
+            id: 'facility-connector-dash',
+            type: 'line',
+            source: 'facility-connector-src',
+            layout: {
+              'line-join': 'round',
+              'line-cap': 'round'
+            },
+            paint: {
+              'line-color': '#FAF6ED',
+              'line-width': 2,
+              'line-dasharray': [2, 3],
+              'line-opacity': 0.85
+            }
+          });
+        }
+      }
+    }
+
+    // Open popup
     setTimeout(() => {
       fMarker.togglePopup();
     }, 100);
 
-    // Fly camera to focus on this facility
+    // Frame camera across the entire road path smoothly
     const isMobile = window.innerWidth < 640;
-    map.current.flyTo({
-      center: [item.lng, item.lat],
-      zoom: 16.5,
-      duration: 1000,
-      padding: {
-        right: isMobile ? 20 : 380,
-        top: 20,
-        bottom: 20,
-        left: 20,
-      },
-      essential: true,
-    });
+    if (activePandal && map.current && routeCoords.length > 0) {
+      const bounds = new maplibregl.LngLatBounds();
+      routeCoords.forEach(([lng, lat]) => bounds.extend([lng, lat]));
+      map.current.fitBounds(bounds, {
+        padding: {
+          top: 70,
+          bottom: 70,
+          left: 50,
+          right: isMobile ? 50 : 420
+        },
+        maxZoom: 17,
+        duration: 1000
+      });
+    } else if (map.current) {
+      map.current.flyTo({
+        center: [item.lng, item.lat],
+        zoom: 16.5,
+        duration: 1000,
+        padding: {
+          right: isMobile ? 20 : 380,
+          top: 20,
+          bottom: 20,
+          left: 20,
+        },
+        essential: true,
+      });
+    }
 
-    // On mobile, scroll up to map to view the highlighted pin!
+    // On mobile, scroll up to map
     if (isMobile && mapContainer.current) {
       mapContainer.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
@@ -629,19 +810,26 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
                 <button
                   type="button"
                   onClick={() => highlightSingleItemOnMap(activeFacilities?.metro, '🚇', '#8B1E2D')}
-                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group col-span-2 ${selectedFacilityTitle === activeFacilities?.metro?.title
+                  className={`flex items-center gap-2.5 bg-paper p-2.5 rounded-xl border text-left transition-all group col-span-2 shadow-xs ${selectedFacilityTitle === activeFacilities?.metro?.title
                       ? 'border-bengali-red ring-2 ring-bengali-red/30 bg-bengali-red/10 shadow-sm'
-                      : 'border-ink/5 hover:border-bengali-red/30 text-ink/70'
+                      : 'border-ink/10 hover:border-bengali-red/40 text-ink/80'
                     }`}
                 >
-                  <Train className="w-3.5 h-3.5 text-bengali-red flex-shrink-0" />
+                  <div className="w-7 h-7 rounded-lg bg-bengali-red/10 text-bengali-red flex items-center justify-center flex-shrink-0">
+                    <Train className="w-4 h-4 text-bengali-red" />
+                  </div>
                   <div className="truncate flex-1">
                     <div className="font-serif font-bold text-bengali-red group-hover:underline truncate flex items-center justify-between">
-                      <span>🚇 {activeFacilities?.metro?.title || 'নিকটবর্তী মেট্রো স্টেশন'}</span>
+                      <span className="truncate">🚇 {activeFacilities?.metro?.title || 'নিকটবর্তী মেট্রো স্টেশন'}</span>
+                      <span className="text-[9px] font-mono font-bold bg-bengali-red text-white px-2 py-0.5 rounded-full ml-1 shrink-0">
+                        {activeFacilities?.metro?.distanceText || 'কাছে'}
+                      </span>
                     </div>
                     <div className="text-[9px] font-mono text-ink/60 flex items-center justify-between mt-0.5">
-                      <span>{activeFacilities?.metro ? `${activeFacilities.metro.distanceMeters}m দূরে` : 'মেট্রো'}</span>
-                      <span className="text-bengali-red font-bold">📍 মানচিত্রে দেখুন</span>
+                      <span className="truncate">
+                        {activeFacilities?.metro?.subTitle ? `${activeFacilities.metro.subTitle} • ` : ''}~{activeFacilities?.metro?.estimatedWalkMinutes || 5} min হাঁটা
+                      </span>
+                      <span className="text-bengali-red font-bold flex-shrink-0 ml-1">📍 মানচিত্রে রুট</span>
                     </div>
                   </div>
                 </button>

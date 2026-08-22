@@ -1,338 +1,758 @@
 [
   {
     "name": "Dakshineswar",
+    "subTitle": "দক্ষিণেশ্বর",
     "api_name": "Dakshineswar",
-    "address": "May Dibas Pally, Dakshineswar, West Bengal 700035, India",
-    "lat": 22.6538276,
-    "lon": 88.36369770000002,
+    "line": "Blue Line (Line 1)",
+    "address": "May Dibas Pally, Dakshineswar, Kolkata, West Bengal 700035",
+    "lat": 22.653828,
+    "lon": 88.363698,
+    "location": {
+      "lat": 22.653828,
+      "lng": 88.363698
+    },
     "status": "found"
   },
   {
     "name": "Baranagar",
+    "subTitle": "বরাহনগর",
     "api_name": "Baranagar",
-    "address": "Dunlop, Bonhooghly, Baranagar, West Bengal 700056, India",
+    "line": "Blue Line (Line 1)",
+    "address": "Dunlop, Bonhooghly, Baranagar, Kolkata, West Bengal 700056",
     "lat": 22.653226,
     "lon": 88.380472,
+    "location": {
+      "lat": 22.653226,
+      "lng": 88.380472
+    },
     "status": "found"
   },
   {
     "name": "Noapara",
+    "subTitle": "নোয়াপাড়া",
     "api_name": "Noapara",
-    "address": "North Dum Dum, New Nawpara, North Dumdum, Kolkata, West Bengal 700090, India",
+    "line": "Blue Line (Line 1)",
+    "address": "North Dum Dum, New Nawpara, Kolkata, West Bengal 700090",
     "lat": 22.63985,
-    "lon": 88.39409400000001,
+    "lon": 88.394094,
+    "location": {
+      "lat": 22.63985,
+      "lng": 88.394094
+    },
     "status": "found"
   },
   {
     "name": "Dum Dum",
-    "api_name": "Dumdum",
-    "address": "S Sinthee Rd, South Sinthee, Biswanath Colony, Dum Dum, Kolkata, West Bengal 700030, India",
-    "lat": 22.621461399999998,
-    "lon": 88.3928043,
+    "subTitle": "দমদম",
+    "api_name": "Dum Dum",
+    "line": "Blue Line (Line 1)",
+    "address": "S Sinthee Rd, South Sinthee, Dum Dum, Kolkata, West Bengal 700030",
+    "lat": 22.621461,
+    "lon": 88.392804,
+    "location": {
+      "lat": 22.621461,
+      "lng": 88.392804
+    },
     "status": "found"
   },
   {
     "name": "Belgachia",
+    "subTitle": "বেলগাছিয়া",
     "api_name": "Belgachia",
-    "address": "Khudiram Bose Sarani, Block C, MIG Housing, Kolkata, West Bengal 700037, India",
+    "line": "Blue Line (Line 1)",
+    "address": "Khudiram Bose Sarani, Block C, MIG Housing, Kolkata, West Bengal 700037",
     "lat": 22.605973,
     "lon": 88.386353,
+    "location": {
+      "lat": 22.605973,
+      "lng": 88.386353
+    },
     "status": "found"
   },
   {
     "name": "Shyambazar",
+    "subTitle": "শ্যামবাজার",
     "api_name": "Shyambazar",
-    "address": "Bhupendra Bose Ave, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004, India",
-    "lat": 22.6006027,
-    "lon": 88.3702928,
+    "line": "Blue Line (Line 1)",
+    "address": "Bhupendra Bose Ave, Hati Bagan, Shyam Bazar, Kolkata, West Bengal 700004",
+    "lat": 22.600603,
+    "lon": 88.370293,
+    "location": {
+      "lat": 22.600603,
+      "lng": 88.370293
+    },
     "status": "found"
   },
   {
     "name": "Shobhabazar Sutanuti",
-    "api_name": "Shovabazar Sutanuti",
-    "address": "Sovabazar, Shobhabazar 700005, Grey Street, Sovabazar, Darjipara, Shobhabazar, Raja Nabakrishna Street, Sovabazar, Shobhabazar, Kolkata, West Bengal 700006, India",
-    "lat": 22.5960254,
-    "lon": 88.3652848,
+    "subTitle": "শোভাবাজার সুতানুটি",
+    "api_name": "Shobhabazar Sutanuti",
+    "line": "Blue Line (Line 1)",
+    "address": "Grey Street, Sovabazar, Darjipara, Kolkata, West Bengal 700005",
+    "lat": 22.596025,
+    "lon": 88.365285,
+    "location": {
+      "lat": 22.596025,
+      "lng": 88.365285
+    },
     "status": "found"
   },
   {
     "name": "Girish Park",
+    "subTitle": "গিরিশ পার্ক",
     "api_name": "Girish Park",
-    "address": "Near Girish Park crossing, Chittaranjan Ave, Manicktala, Azad Hind Bag, Kolkata, West Bengal 700006, India",
-    "lat": 22.587141499999998,
-    "lon": 88.3630842,
+    "line": "Blue Line (Line 1)",
+    "address": "Chittaranjan Ave, Manicktala, Azad Hind Bag, Kolkata, West Bengal 700006",
+    "lat": 22.587141,
+    "lon": 88.363084,
+    "location": {
+      "lat": 22.587141,
+      "lng": 88.363084
+    },
     "status": "found"
   },
   {
     "name": "Mahatma Gandhi Road",
+    "subTitle": "মহাত্মা গান্ধী রোড (এমজি রোড)",
     "api_name": "Mahatma Gandhi Road",
-    "address": "CR Avenue Road, College Street Market, Jorasanko, Raja Katra, College Street Market, College Street, Kolkata, West Bengal 700007, India",
+    "line": "Blue Line (Line 1)",
+    "address": "CR Avenue, College Street Market, Jorasanko, Kolkata, West Bengal 700007",
     "lat": 22.580696,
-    "lon": 88.36138129999999,
+    "lon": 88.361381,
+    "location": {
+      "lat": 22.580696,
+      "lng": 88.361381
+    },
     "status": "found"
   },
   {
     "name": "Central",
+    "subTitle": "সেন্ট্রাল",
     "api_name": "Central",
-    "address": "Chittaranjan Ave, Haltu, Calcutta Medical College, College Square, Kolkata, West Bengal 700012, India",
-    "lat": 22.572523699999998,
-    "lon": 88.3582423,
+    "line": "Blue Line (Line 1)",
+    "address": "Chittaranjan Ave, Bowbazar, College Square, Kolkata, West Bengal 700012",
+    "lat": 22.572524,
+    "lon": 88.358242,
+    "location": {
+      "lat": 22.572524,
+      "lng": 88.358242
+    },
     "status": "found"
   },
   {
     "name": "Chandni Chowk",
+    "subTitle": "চাঁদনী চক",
     "api_name": "Chandni Chowk",
-    "address": "12, Chittaranjan Ave, Esplanade, Chandni Chawk, Bowbazar, Kolkata, West Bengal 700072, India",
-    "lat": 22.566796999999998,
-    "lon": 88.3538026,
+    "line": "Blue Line (Line 1)",
+    "address": "Chittaranjan Ave, Esplanade, Chandni Chawk, Kolkata, West Bengal 700072",
+    "lat": 22.566797,
+    "lon": 88.353803,
+    "location": {
+      "lat": 22.566797,
+      "lng": 88.353803
+    },
     "status": "found"
   },
   {
     "name": "Esplanade",
+    "subTitle": "এসপ্ল্যানেড",
     "api_name": "Esplanade",
-    "address": "Esplanade Metro, Jawaharlal Nehru Rd, Esplanade, Dharmatala, Esplanade, Kolkata, West Bengal 700013, India",
-    "lat": 22.564941899999997,
-    "lon": 88.35169870000001,
+    "line": "Blue / Green Line Interchange",
+    "address": "Jawaharlal Nehru Rd, Esplanade, Kolkata, West Bengal 700013",
+    "lat": 22.564942,
+    "lon": 88.351699,
+    "location": {
+      "lat": 22.564942,
+      "lng": 88.351699
+    },
     "status": "found"
   },
   {
     "name": "Park Street",
+    "subTitle": "পার্ক স্ট্রিট",
     "api_name": "Park Street",
-    "address": "29, Chowringee Rd, Colootola, New Market Area, Dharmatala, Taltala, Kolkata, West Bengal 700016",
-    "lat": 22.556539346845177,
-    "lon": 88.35047033828948,
+    "line": "Blue Line (Line 1)",
+    "address": "Chowringhee Rd, Park Street area, Kolkata, West Bengal 700016",
+    "lat": 22.55445,
+    "lon": 88.34985,
+    "location": {
+      "lat": 22.55445,
+      "lng": 88.34985
+    },
     "status": "found"
   },
   {
     "name": "Maidan",
+    "subTitle": "ময়দান",
     "api_name": "Maidan",
-    "address": "Middleton St, Maidan, Park Street area, Kolkata, West Bengal 700071, India",
-    "lat": 22.5493137,
-    "lon": 88.3485261,
+    "line": "Blue Line (Line 1)",
+    "address": "Middleton St, Maidan, Kolkata, West Bengal 700071",
+    "lat": 22.549314,
+    "lon": 88.348526,
+    "location": {
+      "lat": 22.549314,
+      "lng": 88.348526
+    },
     "status": "found"
   },
   {
     "name": "Rabindra Sadan",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "রবীন্দ্র সদন (এক্সাইড)",
+    "api_name": "Rabindra Sadan",
+    "line": "Blue Line (Line 1)",
+    "address": "Exide Crossing, Chowringhee Rd, Bhowanipore, Kolkata, West Bengal 700020",
+    "lat": 22.541225,
+    "lon": 88.347274,
+    "location": {
+      "lat": 22.541225,
+      "lng": 88.347274
+    },
+    "status": "found"
   },
   {
     "name": "Netaji Bhavan",
+    "subTitle": "নেতাজি ভবন",
     "api_name": "Netaji Bhavan",
-    "address": "Ashutosh Mukherjee Rd, Bhowanipore, Kolkata, West Bengal 700025, India",
+    "line": "Blue Line (Line 1)",
+    "address": "Ashutosh Mukherjee Rd, Bhowanipore, Kolkata, West Bengal 700025",
     "lat": 22.532977,
-    "lon": 88.3457124,
+    "lon": 88.345712,
+    "location": {
+      "lat": 22.532977,
+      "lng": 88.345712
+    },
     "status": "found"
   },
   {
     "name": "Jatin Das Park",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "যতীন দাস পার্ক (হাজরা)",
+    "api_name": "Jatin Das Park",
+    "line": "Blue Line (Line 1)",
+    "address": "SP Mukherjee Rd, Hazra, Kalighat, Kolkata, West Bengal 700026",
+    "lat": 22.524262,
+    "lon": 88.346489,
+    "location": {
+      "lat": 22.524262,
+      "lng": 88.346489
+    },
+    "status": "found"
   },
   {
     "name": "Kalighat",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "কালীঘাট (রাসবিহারী মোড়)",
+    "api_name": "Kalighat",
+    "line": "Blue Line (Line 1)",
+    "address": "Shyama Prasad Mukherjee Rd, Lake Market, Kalighat, Kolkata, West Bengal 700026",
+    "lat": 22.516653,
+    "lon": 88.346003,
+    "location": {
+      "lat": 22.516653,
+      "lng": 88.346003
+    },
+    "status": "found"
   },
   {
     "name": "Rabindra Sarobar",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "রবীন্দ্র সরোবর",
+    "api_name": "Rabindra Sarobar",
+    "line": "Blue Line (Line 1)",
+    "address": "Shyama Prasad Mukherjee Rd, Charu Market, Tollygunge, Kolkata, West Bengal 700033",
+    "lat": 22.50788,
+    "lon": 88.345544,
+    "location": {
+      "lat": 22.50788,
+      "lng": 88.345544
+    },
+    "status": "found"
   },
   {
     "name": "Mahanayak Uttam Kumar",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "মহানায়ক উত্তম কুমার (টালিগঞ্জ)",
+    "api_name": "Mahanayak Uttam Kumar",
+    "line": "Blue Line (Line 1)",
+    "address": "Deshpran Sasmal Rd, Tollygunge, Kolkata, West Bengal 700033",
+    "lat": 22.494452,
+    "lon": 88.345154,
+    "location": {
+      "lat": 22.494452,
+      "lng": 88.345154
+    },
+    "status": "found"
   },
   {
     "name": "Netaji",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "নেতাজি (কুঁদঘাট)",
+    "api_name": "Netaji",
+    "line": "Blue Line (Line 1)",
+    "address": "Chandi Ghosh Rd, Banerjee Para, Kudghat, Tollygunge, Kolkata, West Bengal 700040",
+    "lat": 22.480936,
+    "lon": 88.345961,
+    "location": {
+      "lat": 22.480936,
+      "lng": 88.345961
+    },
+    "status": "found"
   },
   {
     "name": "Masterda Surya Sen",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "মাস্টারদা সূর্য সেন (বাঁশদ্রোণী)",
+    "api_name": "Masterda Surya Sen",
+    "line": "Blue Line (Line 1)",
+    "address": "Bansdroni Post Office Rd, NSC Bose Rd, Kolkata, West Bengal 700070",
+    "lat": 22.473488,
+    "lon": 88.360804,
+    "location": {
+      "lat": 22.473488,
+      "lng": 88.360804
+    },
+    "status": "found"
   },
   {
     "name": "Gitanjali",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "গীতাঞ্জলি (নাকতলা)",
+    "api_name": "Gitanjali",
+    "line": "Blue Line (Line 1)",
+    "address": "Netaji Subhas Chandra Bose Rd, Naktala, Garia, Kolkata, West Bengal 700047",
+    "lat": 22.469425,
+    "lon": 88.369922,
+    "location": {
+      "lat": 22.469425,
+      "lng": 88.369922
+    },
+    "status": "found"
   },
   {
     "name": "Kavi Nazrul",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "কবি নজরুল (গড়িয়া বাজার)",
+    "api_name": "Kavi Nazrul",
+    "line": "Blue Line (Line 1)",
+    "address": "Garia Bazar, Raja SC Mullick Rd, Garia, Kolkata, West Bengal 700084",
+    "lat": 22.4578,
+    "lon": 88.3792,
+    "location": {
+      "lat": 22.4578,
+      "lng": 88.3792
+    },
+    "status": "found"
   },
   {
     "name": "Shahid Khudiram",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "শহিদ ক্ষুদিরাম (বীরজি / ঢালাই ব্রিজ)",
+    "api_name": "Shahid Khudiram",
+    "line": "Blue Line (Line 1)",
+    "address": "Birji, Dhalai Bridge, Garia, Kolkata, West Bengal 700094",
+    "lat": 22.4497,
+    "lon": 88.3897,
+    "location": {
+      "lat": 22.4497,
+      "lng": 88.3897
+    },
+    "status": "found"
   },
   {
     "name": "Kavi Subhash",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "কবি সুভাষ (নিউ গড়িয়া)",
+    "api_name": "Kavi Subhash",
+    "line": "Blue / Orange Line Interchange",
+    "address": "Panchasayar Main Rd, New Garia, Pancha Sayar, Kolkata, West Bengal 700094",
+    "lat": 22.472736,
+    "lon": 88.397671,
+    "location": {
+      "lat": 22.472736,
+      "lng": 88.397671
+    },
+    "status": "found"
   },
   {
     "name": "Howrah Maidan",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "হাওড়া ময়দান",
+    "api_name": "Howrah Maidan",
+    "line": "Green Line (Line 2)",
+    "address": "MG Road, Howrah Maidan, Howrah, West Bengal 711101",
+    "lat": 22.5847,
+    "lon": 88.3263,
+    "location": {
+      "lat": 22.5847,
+      "lng": 88.3263
+    },
+    "status": "found"
   },
   {
     "name": "Howrah",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "হাওড়া রেলওয়ে স্টেশন",
+    "api_name": "Howrah",
+    "line": "Green Line (Line 2)",
+    "address": "Howrah Railway Station Complex, Howrah, West Bengal 711101",
+    "lat": 22.5833,
+    "lon": 88.3424,
+    "location": {
+      "lat": 22.5833,
+      "lng": 88.3424
+    },
+    "status": "found"
   },
   {
     "name": "Mahakaran",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "মহাকরণ (বিবাদী বাগ)",
+    "api_name": "Mahakaran",
+    "line": "Green Line (Line 2)",
+    "address": "Binoy Badal Dinesh Bag E, Lal Bazar, BBD Bagh, Kolkata, West Bengal 700001",
+    "lat": 22.572441,
+    "lon": 88.350661,
+    "location": {
+      "lat": 22.572441,
+      "lng": 88.350661
+    },
+    "status": "found"
   },
   {
     "name": "Sealdah",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "শিয়ালদহ",
+    "api_name": "Sealdah",
+    "line": "Green Line (Line 2)",
+    "address": "Sealdah Station Area, Raja Bazar, Kolkata, West Bengal 700014",
+    "lat": 22.566562,
+    "lon": 88.370694,
+    "location": {
+      "lat": 22.566562,
+      "lng": 88.370694
+    },
+    "status": "found"
   },
   {
     "name": "Phoolbagan",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "ফুলবাগান",
+    "api_name": "Phoolbagan",
+    "line": "Green Line (Line 2)",
+    "address": "Phoolbagan Crossing, Kankurgachi, Kolkata, West Bengal 700054",
+    "lat": 22.572115,
+    "lon": 88.389398,
+    "location": {
+      "lat": 22.572115,
+      "lng": 88.389398
+    },
+    "status": "found"
   },
   {
     "name": "Salt Lake Stadium",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "সল্টলেক স্টেডিয়াম",
+    "api_name": "Salt Lake Stadium",
+    "line": "Green Line (Line 2)",
+    "address": "EM Bypass, Kadapara, Phoolbagan, Salt Lake, Kolkata, West Bengal 700054",
+    "lat": 22.573016,
+    "lon": 88.403025,
+    "location": {
+      "lat": 22.573016,
+      "lng": 88.403025
+    },
+    "status": "found"
   },
   {
     "name": "Bengal Chemical",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "বেঙ্গল কেমিক্যাল",
+    "api_name": "Bengal Chemical",
+    "line": "Green Line (Line 2)",
+    "address": "Maniktala Main Rd, Sector III, Salt Lake, Kolkata, West Bengal 700054",
+    "lat": 22.5746,
+    "lon": 88.4095,
+    "location": {
+      "lat": 22.5746,
+      "lng": 88.4095
+    },
+    "status": "found"
   },
   {
     "name": "City Centre",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "সিটি সেন্টার (সল্টলেক)",
+    "api_name": "City Centre",
+    "line": "Green Line (Line 2)",
+    "address": "DC Block, Sector 1, Bidhannagar, Kolkata, West Bengal 700064",
+    "lat": 22.5878,
+    "lon": 88.4087,
+    "location": {
+      "lat": 22.5878,
+      "lng": 88.4087
+    },
+    "status": "found"
   },
   {
     "name": "Central Park",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "সেন্ট্রাল পার্ক",
+    "api_name": "Central Park",
+    "line": "Green Line (Line 2)",
+    "address": "Central Park, Karunamoyee, Salt Lake, Kolkata, West Bengal 700091",
+    "lat": 22.5886,
+    "lon": 88.4172,
+    "location": {
+      "lat": 22.5886,
+      "lng": 88.4172
+    },
+    "status": "found"
   },
   {
     "name": "Karunamoyee",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "করুণাময়ী",
+    "api_name": "Karunamoyee",
+    "line": "Green Line (Line 2)",
+    "address": "Karunamoyee Bus Station, Sector 2, Salt Lake, Kolkata, West Bengal 700091",
+    "lat": 22.5872,
+    "lon": 88.4237,
+    "location": {
+      "lat": 22.5872,
+      "lng": 88.4237
+    },
+    "status": "found"
   },
   {
     "name": "Salt Lake Sector-V",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "সল্টলেক সেক্টর ৫",
+    "api_name": "Salt Lake Sector-V",
+    "line": "Green Line (Line 2)",
+    "address": "Sector V, Salt Lake, Bidhannagar, Kolkata, West Bengal 700091",
+    "lat": 22.5806,
+    "lon": 88.4332,
+    "location": {
+      "lat": 22.5806,
+      "lng": 88.4332
+    },
+    "status": "found"
   },
   {
     "name": "Joka",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "জোকা",
+    "api_name": "Joka",
+    "line": "Purple Line (Line 3)",
+    "address": "Diamond Harbour Rd, Joka, Kolkata, West Bengal 700104",
+    "lat": 22.4502,
+    "lon": 88.2974,
+    "location": {
+      "lat": 22.4502,
+      "lng": 88.2974
+    },
+    "status": "found"
   },
   {
     "name": "Thakurpukur",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "ঠাকুরপুকুর",
+    "api_name": "Thakurpukur",
+    "line": "Purple Line (Line 3)",
+    "address": "Diamond Harbour Rd, Thakurpukur, Kolkata, West Bengal 700063",
+    "lat": 22.4658,
+    "lon": 88.3039,
+    "location": {
+      "lat": 22.4658,
+      "lng": 88.3039
+    },
+    "status": "found"
   },
   {
     "name": "Sakherbazar",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "সখেরবাজার",
+    "api_name": "Sakherbazar",
+    "line": "Purple Line (Line 3)",
+    "address": "Diamond Harbour Rd, Silpara, Purba Barisha, Kolkata, West Bengal 700008",
+    "lat": 22.47476,
+    "lon": 88.309927,
+    "location": {
+      "lat": 22.47476,
+      "lng": 88.309927
+    },
+    "status": "found"
   },
   {
     "name": "Behala Chowrasta",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "বেহালা চৌরাস্তা",
+    "api_name": "Behala Chowrasta",
+    "line": "Purple Line (Line 3)",
+    "address": "Diamond Harbour Rd, Behala Chowrasta, Kolkata, West Bengal 700034",
+    "lat": 22.48706,
+    "lon": 88.313193,
+    "location": {
+      "lat": 22.48706,
+      "lng": 88.313193
+    },
+    "status": "found"
   },
   {
     "name": "Behala Bazar",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "বেহালা বাজার",
+    "api_name": "Behala Bazar",
+    "line": "Purple Line (Line 3)",
+    "address": "Diamond Harbour Rd, Behala Bazar, Kolkata, West Bengal 700034",
+    "lat": 22.4983,
+    "lon": 88.3175,
+    "location": {
+      "lat": 22.4983,
+      "lng": 88.3175
+    },
+    "status": "found"
   },
   {
     "name": "Taratala",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "তারাতলা",
+    "api_name": "Taratala",
+    "line": "Purple Line (Line 3)",
+    "address": "National Highway 117, Taratala, Behala, Kolkata, West Bengal 700060",
+    "lat": 22.507687,
+    "lon": 88.320279,
+    "location": {
+      "lat": 22.507687,
+      "lng": 88.320279
+    },
+    "status": "found"
   },
   {
     "name": "Majerhat",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "মাঝেরহাট",
+    "api_name": "Majerhat",
+    "line": "Purple Line (Line 3)",
+    "address": "Remount Rd, Majherhat Railway Station area, Mominpore, Kolkata, West Bengal 700053",
+    "lat": 22.519219,
+    "lon": 88.323742,
+    "location": {
+      "lat": 22.519219,
+      "lng": 88.323742
+    },
+    "status": "found"
   },
   {
     "name": "Satyajit Ray",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "সত্যজিৎ রায় (হাইল্যান্ড পার্ক)",
+    "api_name": "Satyajit Ray",
+    "line": "Orange Line (Line 6)",
+    "address": "EM Bypass, Highland Park area, Chak Garia, Pancha Sayar, Kolkata, West Bengal 700094",
+    "lat": 22.484608,
+    "lon": 88.392619,
+    "location": {
+      "lat": 22.484608,
+      "lng": 88.392619
+    },
+    "status": "found"
   },
   {
     "name": "Jyotirindra Nath Nandy",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "জ্যোতিরিন্দ্র নন্দী (মুকুন্দপুর)",
+    "api_name": "Jyotirindra Nath Nandy",
+    "line": "Orange Line (Line 6)",
+    "address": "Mukundapur Crossing, EM Bypass, Nitai Nagar, Santoshpur, Kolkata, West Bengal 700099",
+    "lat": 22.49595,
+    "lon": 88.398611,
+    "location": {
+      "lat": 22.49595,
+      "lng": 88.398611
+    },
+    "status": "found"
   },
   {
     "name": "Kavi Sukanta",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "কবি সুকান্ত (কালিকাপুর)",
+    "api_name": "Kavi Sukanta",
+    "line": "Orange Line (Line 6)",
+    "address": "Kalikapur, Sector H, East Kolkata Twp, Kolkata, West Bengal 700107",
+    "lat": 22.505602,
+    "lon": 88.401066,
+    "location": {
+      "lat": 22.505602,
+      "lng": 88.401066
+    },
+    "status": "found"
   },
   {
     "name": "Hemanta Mukherjee (Ruby)",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "হেমন্ত মুখোপাধ্যায় (রুবি মোড়)",
+    "api_name": "Hemanta Mukherjee (Ruby)",
+    "line": "Orange Line (Line 6)",
+    "address": "Ruby More, Sector I, East Kolkata Twp, Kolkata, West Bengal 700107",
+    "lat": 22.514684,
+    "lon": 88.401604,
+    "location": {
+      "lat": 22.514684,
+      "lng": 88.401604
+    },
+    "status": "found"
+  },
+  {
+    "name": "Ritwik Ghatak",
+    "subTitle": "ঋত্বিক ঘটক (ভিআইপি বাজার)",
+    "api_name": "Ritwik Ghatak",
+    "line": "Orange Line (Line 6)",
+    "address": "VIP Bazar, Uttar Panchanna Gram, EM Bypass, Kolkata, West Bengal 700100",
+    "lat": 22.532913,
+    "lon": 88.39644,
+    "location": {
+      "lat": 22.532913,
+      "lng": 88.39644
+    },
+    "status": "found"
+  },
+  {
+    "name": "Barun Sengupta",
+    "subTitle": "বরুণ সেনগুপ্ত (সায়েন্স সিটি)",
+    "api_name": "Barun Sengupta",
+    "line": "Orange Line (Line 6)",
+    "address": "Dhapa, Science City area, EM Bypass, Kolkata, West Bengal 700105",
+    "lat": 22.54387,
+    "lon": 88.399343,
+    "location": {
+      "lat": 22.54387,
+      "lng": 88.399343
+    },
+    "status": "found"
+  },
+  {
+    "name": "Beleghata",
+    "subTitle": "বেলেঘাটা",
+    "api_name": "Beleghata",
+    "line": "Orange Line (Line 6)",
+    "address": "Tangra, Beleghata Connector, EM Bypass, Kolkata, West Bengal 700105",
+    "lat": 22.5507,
+    "lon": 88.404036,
+    "location": {
+      "lat": 22.5507,
+      "lng": 88.404036
+    },
+    "status": "found"
   },
   {
     "name": "Dum Dum Cantonment",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "দমদম ক্যান্টনমেন্ট",
+    "api_name": "Dum Dum Cantonment",
+    "line": "Yellow Line (Line 4)",
+    "address": "Dum Dum Cantonment Station Area, Kolkata, West Bengal 700065",
+    "lat": 22.6322,
+    "lon": 88.4086,
+    "location": {
+      "lat": 22.6322,
+      "lng": 88.4086
+    },
+    "status": "found"
   },
   {
     "name": "Jessore Road",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "যশোহর রোড",
+    "api_name": "Jessore Road",
+    "line": "Yellow Line (Line 4)",
+    "address": "Jessore Road, Dum Dum, Kolkata, West Bengal 700079",
+    "lat": 22.6394,
+    "lon": 88.4289,
+    "location": {
+      "lat": 22.6394,
+      "lng": 88.4289
+    },
+    "status": "found"
   },
   {
     "name": "Jai Hind (Airport)",
-    "status": "not_found",
-    "lat": null,
-    "lon": null
+    "subTitle": "জয় হিন্দ (বিমানবন্দর)",
+    "api_name": "Jai Hind (Airport)",
+    "line": "Yellow Line (Line 4)",
+    "address": "Netaji Subhash Chandra Bose International Airport, Kolkata, West Bengal 700052",
+    "lat": 22.6465,
+    "lon": 88.4414,
+    "location": {
+      "lat": 22.6465,
+      "lng": 88.4414
+    },
+    "status": "found"
   }
 ]

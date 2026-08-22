@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { X, Sparkles } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import TrendingModal from './TrendingModal';
 
 interface HeroSectionProps {
   onSearch: (query: string) => void;
@@ -17,10 +18,42 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
   const isBn = language === 'bn';
 
   const zones = [
-    { id: 'north', serial: 'NO-A', name: t.zoneNorthName, subtitle: t.zoneNorthSubtitle, desc: t.zoneNorthDesc, active: true, stampColor: 'bg-[#983335]' },
-    { id: 'central', serial: 'CE-B', name: t.zoneCentralName, subtitle: t.zoneCentralSubtitle, desc: t.zoneCentralDesc, active: true, stampColor: 'bg-[#983335]' },
-    { id: 'south', serial: 'SO-C', name: t.zoneSouthName, subtitle: t.zoneSouthSubtitle, desc: t.zoneSouthDesc, active: true, stampColor: 'bg-[#983335]' },
-    { id: 'bonedi', serial: 'BN-D', name: t.zoneBonediName, subtitle: t.zoneBonediSubtitle, desc: t.zoneBonediDesc, active: true, stampColor: 'bg-[#983335]' }
+    { 
+      id: 'north', 
+      serial: 'NO-A', 
+      name: t.zoneNorthName, 
+      subtitle: t.zoneNorthSubtitle, 
+      desc: t.zoneNorthDesc, 
+      active: true, 
+      bgImage: '/tour_card_north.png' 
+    },
+    { 
+      id: 'central', 
+      serial: 'CE-B', 
+      name: t.zoneCentralName, 
+      subtitle: t.zoneCentralSubtitle, 
+      desc: t.zoneCentralDesc, 
+      active: true, 
+      bgImage: '/tour_card_central.png' 
+    },
+    { 
+      id: 'south', 
+      serial: 'SO-C', 
+      name: t.zoneSouthName, 
+      subtitle: t.zoneSouthSubtitle, 
+      desc: t.zoneSouthDesc, 
+      active: true, 
+      bgImage: '/tour_card_south.png' 
+    },
+    { 
+      id: 'bonedi', 
+      serial: 'BN-D', 
+      name: t.zoneBonediName, 
+      subtitle: t.zoneBonediSubtitle, 
+      desc: t.zoneBonediDesc, 
+      active: true, 
+      bgImage: '/tour_card_bonedi.png' 
+    }
   ];
 
   return (
@@ -103,7 +136,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
         >
           <div 
             onClick={(e) => e.stopPropagation()}
-            className="bg-[#F7F2E7] text-[#3D2C22] w-full max-w-md p-8 border-2 border-[#A0353A]/30 shadow-2xl relative rounded-2xl overflow-hidden"
+            className="bg-[#F8F4EA] text-[#3D2C22] w-full max-w-[560px] p-4.5 xs:p-6 sm:p-8 border-2 border-[#D4A24C]/40 shadow-2xl relative rounded-[1.75rem] sm:rounded-[2rem] overflow-hidden"
           >
 
             {/* Close Button */}
@@ -119,15 +152,15 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
               <X className="w-5 h-5" />
             </button>
 
-            <div className="space-y-6 relative z-10">
-              <div className="text-center pb-4 border-b border-[#3D2C22]/10 space-y-1">
+            <div className="space-y-5 sm:space-y-6 relative z-10">
+              <div className="text-center pb-3 sm:pb-4 border-b border-[#3D2C22]/10 space-y-1">
                 <span className="text-xs font-mono uppercase tracking-[0.25em] text-[#7A1F26] font-semibold block">{t.modalGuideTag}</span>
-                <h3 className="text-2xl sm:text-3xl text-[#7A1F26] font-bold tracking-tight">
+                <h3 className="text-2xl sm:text-3xl font-serif text-[#63141A] font-bold tracking-tight">
                   {t.modalTitle}
                 </h3>
               </div>
 
-              <div className="space-y-3.5">
+              <div className="space-y-3 sm:space-y-3.5">
                 {zones.map((zone) => (
                   <button
                     key={zone.id}
@@ -138,21 +171,27 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
                         setIsModalOpen(false);
                       }
                     }}
-                    className={`w-full text-left relative overflow-hidden flex items-center border rounded-xl p-4 transition-all duration-300 ${zone.active
-                      ? 'border-[#7A1F26]/20 bg-white hover:border-[#7A1F26] hover:shadow-md cursor-pointer'
-                      : 'border-[#3D2C22]/10 bg-[#3D2C22]/5 opacity-60 cursor-not-allowed'
-                      }`}
+                    className="group w-full text-left relative overflow-hidden rounded-2xl transition-all duration-300 shadow-sm hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.99] cursor-pointer border border-amber-900/10 focus:outline-none focus:ring-2 focus:ring-[#7A1F26]/30 aspect-[1179/290] bg-[#FAF6ED]"
                   >
-                    <div className="flex-1 space-y-1">
-                      <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold text-[#7A1F26]">
+                    {/* Background Artwork without distortion or cropping */}
+                    <img
+                      src={zone.bgImage}
+                      alt={zone.name}
+                      className="absolute inset-0 w-full h-full object-cover object-left select-none pointer-events-none transition-transform duration-500 group-hover:scale-[1.01]"
+                      loading="eager"
+                    />
+
+                    {/* Text placed cleanly inside the cream placeholder box */}
+                    <div className="absolute inset-y-0 left-[30%] xs:left-[30%] sm:left-[29.5%] md:left-[29%] right-[3.5%] sm:right-[5%] flex flex-col justify-center px-1 xs:px-2 sm:px-3.5 z-10 select-none">
+                      <div className="flex items-center justify-between gap-1.5 mb-0.5 sm:mb-1">
+                        <h4 className="text-[12.5px] xs:text-[14px] sm:text-base md:text-lg font-bold text-[#63141A] tracking-tight font-serif truncate drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]">
                           {zone.name}
-                        </span>
-                        <span className="text-[10px] font-mono text-[#7A1F26] bg-[#7A1F26]/10 px-2 py-0.5 rounded-md font-semibold">
+                        </h4>
+                        <span className="text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs font-mono font-bold text-[#7A1F26] bg-[#7A1F26]/10 border border-[#7A1F26]/20 px-1.5 py-0.5 rounded sm:rounded-md tracking-wider flex-shrink-0">
                           {zone.serial}
                         </span>
                       </div>
-                      <p className="text-xs text-[#3D2C22]/70 leading-normal">
+                      <p className="text-[8.5px] xs:text-[10px] sm:text-xs md:text-[13px] text-[#45271A]/90 font-sans leading-tight sm:leading-snug line-clamp-1 sm:line-clamp-2">
                         {zone.desc}
                       </p>
                     </div>
@@ -170,63 +209,12 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
         </div>
       )}
 
-      {/* Trending Pandals Coming Soon Modal */}
-      {isTrendingModalOpen && (
-        <div 
-          onClick={() => setIsTrendingModalOpen(false)}
-          className="fixed inset-0 bg-[#1A090B]/80 backdrop-blur-md flex items-center justify-center p-4 z-50 animate-fade-in-fast"
-        >
-          <div 
-            onClick={(e) => e.stopPropagation()}
-            className="bg-[#FAF6ED] text-[#3D0D11] w-full max-w-md p-7 sm:p-9 border-2 border-[#D4A24C]/60 shadow-2xl relative rounded-[2rem] overflow-hidden text-center font-serif"
-          >
-            {/* Background Decorative Glow */}
-            <div className="absolute -top-12 -right-12 w-32 h-32 bg-[#941F28]/15 rounded-full blur-2xl pointer-events-none" />
-            <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-[#DFB86C]/20 rounded-full blur-2xl pointer-events-none" />
-
-            {/* Close Button */}
-            <button
-              type="button"
-              onClick={() => setIsTrendingModalOpen(false)}
-              aria-label="Close modal"
-              className="absolute top-4 right-4 w-9 h-9 rounded-full border border-[#3D0D11]/15 bg-white/80 hover:bg-white text-[#3D0D11]/70 hover:text-[#7A1F26] flex items-center justify-center transition-all duration-200 z-20 cursor-pointer shadow-xs active:scale-95"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            {/* Festive Icon / Emblem */}
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#7A1F26]/10 to-[#D4A24C]/20 border border-[#D4A24C]/40 flex items-center justify-center text-[#7A1F26] mx-auto mb-4 shadow-xs">
-              <Sparkles className="w-8 h-8 text-[#D4A24C] animate-pulse" />
-            </div>
-
-            {/* Tag Pill */}
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#7A1F26]/10 border border-[#7A1F26]/20 text-[#7A1F26] text-xs font-mono font-bold tracking-wider uppercase mb-3">
-              <span>{isBn ? 'ট্রেন্ডিং পুজো ২০২৬' : 'TRENDING PANDALS 2026'}</span>
-            </div>
-
-            {/* Title */}
-            <h3 className="text-2xl sm:text-3xl font-bold text-[#3D0D11] mb-2 tracking-tight">
-              {isBn ? 'শীঘ্রই আসছে' : 'Coming Soon'}
-            </h3>
-
-            {/* Description */}
-            <p className="text-xs sm:text-sm text-[#3D0D11]/75 font-sans leading-relaxed mb-6">
-              {isBn
-                ? 'আমরা এই বছরের সেরা, ভাইরাল ও সবচেয়ে জনপ্রিয় পুজো প্যান্ডেলগুলির বিশেষ লাইভ তালিকা প্রস্তুত করছি। খুব শীঘ্রই ফিচারটি উন্মুক্ত করা হবে!'
-                : 'We are curating the most viral and trending Kolkata Durga Puja pandals for this year. This exclusive feature is releasing very soon!'}
-            </p>
-
-            {/* CTA Button */}
-            <button
-              type="button"
-              onClick={() => setIsTrendingModalOpen(false)}
-              className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#7A1F26] via-[#941F28] to-[#7A1F26] hover:from-[#66161C] hover:to-[#66161C] text-[#FAF6ED] font-serif font-bold text-sm sm:text-base flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-[0.99] cursor-pointer"
-            >
-              <span>{isBn ? 'ঠিক আছে, বুঝেছি' : 'Got It'}</span>
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Trending Pandals Intelligence Modal */}
+      <TrendingModal
+        isOpen={isTrendingModalOpen}
+        onClose={() => setIsTrendingModalOpen(false)}
+        onSelectZone={onSelectZone}
+      />
     </section>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, ArrowUp } from 'lucide-react';
 const PandalMap = React.lazy(() => import('./PandalMap'));
 import fallbackData from '../data/bonedi_kolkata.json';
+import { getNearestMetro } from '../utils/nearbyFacilities';
 import { secureGetItem, secureSetItem } from '../utils/storage';
 
 interface Pandal {
@@ -299,10 +300,16 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
                       </h3>
                     </div>
 
-                    {/* Bottom Row: Post Office / Year */}
-                    <div className="text-[7px] font-sans text-ink/40 text-center uppercase tracking-[0.2em] border-t border-ink/10 pt-1.5 relative z-10">
-                      KOLKATA • 2026
-                    </div>
+                    {/* Bottom Row: Nearest Metro & Distance */}
+                    {(() => {
+                      const nearestMetro = getNearestMetro(pandal.lat, pandal.lon);
+                      return (
+                        <div className="text-[8px] font-sans text-ink/70 text-center uppercase tracking-tight border-t border-ink/10 pt-1.5 relative z-10 truncate flex items-center justify-center gap-1">
+                          <span className="text-bengali-red font-bold">🚇 {nearestMetro ? nearestMetro.title : 'METRO'}</span>
+                          {nearestMetro && <span className="font-mono text-bengali-red/80 font-bold">• {nearestMetro.distanceText}</span>}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               ))}

@@ -1,6 +1,78 @@
 {
   "history": [
     {
+      "id": "592703f3-11a2-4ee4-9ee2-55c7b08cf6ce",
+      "name": "Sreeja Basu",
+      "email": "sreejabasu115@gmail.com",
+      "status": "sent",
+      "action": "resend",
+      "timestamp": "2026-08-23T19:03:04.430397+00:00",
+      "error": null
+    },
+    {
+      "id": "ad1d7778-2053-4481-8d9e-f733b3a4cee8",
+      "name": "Sreeja Basu",
+      "email": "sreejabasu115@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-23T18:23:47.055247+00:00",
+      "error": null
+    },
+    {
+      "id": "adefba9e-d4f4-4a92-9c24-87a63e464f20",
+      "name": "Asheem Ray",
+      "email": "yinaje8132@playboot.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-23T18:23:40.414406+00:00",
+      "error": null
+    },
+    {
+      "id": "1da65646-6295-46fe-8e22-7e759d3f1987",
+      "name": "Priyanshu Dey",
+      "email": "deypriyanshu80@gmail.com",
+      "status": "sent",
+      "action": "resend",
+      "timestamp": "2026-08-23T18:23:34.105755+00:00",
+      "error": null
+    },
+    {
+      "id": "d4f5ac22-6a70-4e54-b3bf-6a182eb131b8",
+      "name": "Priyanshu Dey",
+      "email": "deypriyanshu80@gmail.com",
+      "status": "failed",
+      "action": "send",
+      "timestamp": "2026-08-23T18:23:19.404790+00:00",
+      "error": "Connection unexpectedly closed: The read operation timed out"
+    },
+    {
+      "id": "3936b73f-9a5e-4ab7-8b0d-c48477f92c0b",
+      "name": "Sayak Saha",
+      "email": "sayaksaha2006@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-23T18:23:04.073327+00:00",
+      "error": null
+    },
+    {
+      "id": "464fcd43-8ef8-401b-b9f5-8ef5824d6603",
+      "name": "Ojas Das",
+      "email": "dasojas99@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-23T18:22:55.556240+00:00",
+      "error": null
+    },
+    {
+      "id": "c14449c3-f0ce-4aa9-aa04-8c288c96f593",
+      "name": "Soumik Kumar Basu",
+      "email": "soumikbasu18@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-23T18:22:45.090463+00:00",
+      "error": null
+    },
+    {
       "id": "43fbc134-841f-498b-a082-d7fa8f54d74b",
       "name": "Sneha Banerjee",
       "email": "banerjeesneha203@gmail.com",

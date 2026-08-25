@@ -59,8 +59,11 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch Event: Cache-First for static assets
+// Fetch Event: Smart network/cache strategy
 self.addEventListener('fetch', (event) => {
+  // Only handle HTTP/HTTPS requests
+  if (!event.request.url.startsWith('http')) return;
+
   const url = new URL(event.request.url);
 
   // API Requests: Stale-While-Revalidate with transparent encryption
@@ -95,20 +98,38 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Static Assets / HTML: Stale-While-Revalidate
-  event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      const fetchPromise = fetch(event.request)
+  // Navigation requests (HTML pages): Network-First to avoid stale index.html chunk references
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
         .then((networkResponse) => {
-          if (networkResponse.ok && event.request.method === 'GET') {
+          if (networkResponse.ok) {
             const cloned = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cloned));
           }
           return networkResponse;
         })
-        .catch(() => cachedResponse);
+        .catch(() => caches.match(event.request).then((cached) => cached || caches.match('/index.html')))
+    );
+    return;
+  }
 
-      return cachedResponse || fetchPromise;
-    })
-  );
+  // Static Assets: Stale-While-Revalidate
+  if (event.request.method === 'GET') {
+    event.respondWith(
+      caches.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request)
+          .then((networkResponse) => {
+            if (networkResponse.ok) {
+              const cloned = networkResponse.clone();
+              caches.open(CACHE_NAME).then((cache) => cache.put(event.request, cloned));
+            }
+            return networkResponse;
+          })
+          .catch(() => cachedResponse);
+
+        return cachedResponse || fetchPromise;
+      })
+    );
+  }
 });

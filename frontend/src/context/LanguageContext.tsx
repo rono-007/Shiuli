@@ -13,20 +13,46 @@ interface LanguageContextType {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguageState] = useState<Language>('bn');
-  const [isLanguageChosen, setIsLanguageChosen] = useState<boolean>(true);
-  const [showLanguageModal, setShowLanguageModal] = useState<boolean>(false);
+  const [language, setLanguageState] = useState<Language>(() => {
+    try {
+      const savedLang = localStorage.getItem('shiuli_lang') as Language | null;
+      return (savedLang === 'bn' || savedLang === 'en') ? savedLang : 'bn';
+    } catch {
+      return 'bn';
+    }
+  });
+
+  const [isLanguageChosen, setIsLanguageChosen] = useState<boolean>(() => {
+    try {
+      const savedLang = localStorage.getItem('shiuli_lang');
+      return !!(savedLang === 'bn' || savedLang === 'en');
+    } catch {
+      return true;
+    }
+  });
+
+  const [showLanguageModal, setShowLanguageModal] = useState<boolean>(() => {
+    try {
+      const savedLang = localStorage.getItem('shiuli_lang');
+      return !(savedLang === 'bn' || savedLang === 'en');
+    } catch {
+      return false;
+    }
+  });
 
   useEffect(() => {
-    const savedLang = localStorage.getItem('shiuli_lang') as Language | null;
-    if (savedLang && (savedLang === 'bn' || savedLang === 'en')) {
-      setLanguageState(savedLang);
-      setIsLanguageChosen(true);
-      setShowLanguageModal(false);
-    } else {
-      // First time visitor - prompt language choice
-      setIsLanguageChosen(false);
-      setShowLanguageModal(true);
+    try {
+      const savedLang = localStorage.getItem('shiuli_lang') as Language | null;
+      if (savedLang && (savedLang === 'bn' || savedLang === 'en')) {
+        setLanguageState(savedLang);
+        setIsLanguageChosen(true);
+        setShowLanguageModal(false);
+      } else {
+        setIsLanguageChosen(false);
+        setShowLanguageModal(true);
+      }
+    } catch {
+      // localStorage disabled or not available
     }
   }, []);
 

@@ -10,7 +10,6 @@ import { LanguageToggle } from './components/LanguageToggle';
 import BetaAccessModal from './components/BetaAccessModal';
 import BetaModal from './components/BetaModal';
 import { verifyBetaAccessAsync } from './config/betaKeys';
-import { secureSetItem } from './utils/storage';
 
 const NorthCalcuttaSection = lazy(() => import('./components/NorthCalcuttaSection'));
 const SouthCalcuttaSection = lazy(() => import('./components/SouthCalcuttaSection'));
@@ -21,6 +20,7 @@ const AdminPanel = lazy(() => import('./components/AdminPanel'));
 const StorySection = lazy(() => import('./components/StorySection'));
 const RoutePlanner = lazy(() => import('./components/RoutePlanner'));
 const MedicalFacilitiesSection = lazy(() => import('./components/MedicalFacilitiesSection'));
+import ZoneTourModal from './components/ZoneTourModal';
 
 function SectionLoader() {
   return (
@@ -321,6 +321,7 @@ function AppContent() {
   const isBn = language === 'bn';
   const [showBetaNotice, setShowBetaNotice] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [isTourModalOpen, setIsTourModalOpen] = useState(false);
 
   const [view, setViewState] = useState<ViewType>(() => {
     const params = new URLSearchParams(window.location.search);
@@ -352,8 +353,15 @@ function AppContent() {
     }
   };
 
-  // Handle Back button action (pops browser history or returns home)
+  // Handle Back button action (pops browser history or returns home / opens tour directory)
   const handleBack = () => {
+    // If returning from one of the 4 puja tour zones, return home and open the Puja Tour list modal
+    if (['north', 'south', 'central', 'bonedi'].includes(view)) {
+      changeView('home');
+      setIsTourModalOpen(true);
+      return;
+    }
+
     if (window.history.state && window.history.state.view && window.history.state.view !== 'home') {
       window.history.back();
     } else {
@@ -400,45 +408,9 @@ function AppContent() {
 
     window.addEventListener('popstate', handlePopState);
 
-    // Background prefetch /api/home when on homepage or just launching
-    const prefetchTimeout = setTimeout(() => {
-      const CACHE_TIME_KEY = 'pujopath_home_cache_time';
-      const ONE_HOUR_MS = 60 * 60 * 1000;
-      const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
-      
-      if (!cachedTime || (Date.now() - parseInt(cachedTime, 10)) > ONE_HOUR_MS) {
-        const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
-        fetch(`${baseUrl}/api/home`)
-          .then(res => res.json())
-          .then(data => {
-            if (data.north) {
-              secureSetItem('pujopath_north_pandals_cache', data.north);
-              localStorage.setItem('pujopath_north_pandals_cache_time', Date.now().toString());
-              localStorage.setItem('pujopath_north_pandals_cache_source', 'fastapi');
-            }
-            if (data.south) {
-              secureSetItem('pujopath_south_pandals_cache', data.south);
-              localStorage.setItem('pujopath_south_pandals_cache_time', Date.now().toString());
-              localStorage.setItem('pujopath_south_pandals_cache_source', 'fastapi');
-            }
-            if (data.central) {
-              secureSetItem('pujopath_central_pandals_cache', data.central);
-              localStorage.setItem('pujopath_central_pandals_cache_time', Date.now().toString());
-              localStorage.setItem('pujopath_central_pandals_cache_source', 'fastapi');
-            }
-            if (data.bonedi) {
-              secureSetItem('pujopath_bonedi_pandals_cache', data.bonedi);
-              localStorage.setItem('pujopath_bonedi_pandals_cache_time', Date.now().toString());
-              localStorage.setItem('pujopath_bonedi_pandals_cache_source', 'fastapi');
-            }
-            localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
-          })
-          .catch(err => console.warn('Background prefetch failed:', err));
-      }
-    }, 2000); // Wait 2s to not block initial paint
+    // Removed background prefetch /api/home as it is now served via static JSON on-demand
 
     return () => {
-      clearTimeout(prefetchTimeout);
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
       window.removeEventListener('popstate', handlePopState);
@@ -559,44 +531,47 @@ function AppContent() {
           <AdminPanel onBack={handleBack} />
         ) : (
           <main className="w-full relative">
-            {view === 'north' ? (
-              <NorthCalcuttaSection onBack={handleBack} />
-            ) : view === 'south' ? (
-              <SouthCalcuttaSection onBack={handleBack} />
-            ) : view === 'central' ? (
-              <CentralCalcuttaSection onBack={handleBack} />
-            ) : view === 'bonedi' ? (
-              <BonediCalcuttaSection onBack={handleBack} />
-            ) : view === 'facilities' ? (
-              <FacilitiesSection onBack={handleBack} />
-            ) : view === 'route-planner' ? (
-              <RoutePlanner onBack={handleBack} />
-            ) : view === 'medical' ? (
-              <MedicalFacilitiesSection onBack={handleBack} />
-            ) : (
-              <>
-                <HeroSection
-                  onSearch={setSearchQuery}
-                  onFilterChange={setActiveFilter}
-                  activeFilter={activeFilter}
-                  onSelectZone={(zone) => changeView(zone as ViewType)}
+            {view === 'north' && <NorthCalcuttaSection onBack={handleBack} />}
+            {view === 'south' && <SouthCalcuttaSection onBack={handleBack} />}
+            {view === 'central' && <CentralCalcuttaSection onBack={handleBack} />}
+            {view === 'bonedi' && <BonediCalcuttaSection onBack={handleBack} />}
+            {view === 'facilities' && <FacilitiesSection onBack={handleBack} />}
+            {view === 'route-planner' && <RoutePlanner onBack={handleBack} />}
+            {view === 'medical' && <MedicalFacilitiesSection onBack={handleBack} />}
+
+            {/* Persistent Home View: Kept mounted so hero and section background images never reload */}
+            <div className={view === 'home' ? 'block' : 'hidden'}>
+              <HeroSection
+                onSearch={setSearchQuery}
+                onFilterChange={setActiveFilter}
+                activeFilter={activeFilter}
+                onSelectZone={(zone) => changeView(zone as ViewType)}
+                onSelectFacilities={() => changeView('facilities')}
+              />
+
+              {/* Global / Persistent Tour Directory Modal when returning from tours */}
+              <ZoneTourModal
+                isOpen={isTourModalOpen}
+                onClose={() => setIsTourModalOpen(false)}
+                onSelectZone={(zone) => {
+                  changeView(zone as ViewType);
+                  setIsTourModalOpen(false);
+                }}
+              />
+
+              <SectionDivider />
+
+              {/* CONTENT SECTION */}
+              <div className="w-full">
+                <PujaGuideSection
+                  onSelectRoutePlanner={() => changeView('route-planner')}
                   onSelectFacilities={() => changeView('facilities')}
+                  onSelectMedical={() => changeView('medical')}
                 />
 
-                <SectionDivider />
-
-                {/* CONTENT SECTION */}
-                <div className="w-full">
-                  <PujaGuideSection
-                    onSelectRoutePlanner={() => changeView('route-planner')}
-                    onSelectFacilities={() => changeView('facilities')}
-                    onSelectMedical={() => changeView('medical')}
-                  />
-
-                  <StorySection />
-                </div>
-              </>
-            )}
+                <StorySection />
+              </div>
+            </div>
 
             {/* Footer Design - Mobile & Desktop Responsive Backgrounds */}
             <footer

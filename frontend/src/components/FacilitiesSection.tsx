@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, Star, Phone, Clock, Loader2 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import { startBackgroundPreload, isFoodCacheReady, queryLocalFood } from '../utils/foodCache';
+import { 
+  queryLocalFood, 
+  startBackgroundPreload, 
+  isFoodCacheReady,
+  getFoodCategories
+} from '../utils/foodCache';
 
 interface EateryLocation {
   lat: number;
@@ -60,45 +65,35 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [dynamicCategoryTags, setDynamicCategoryTags] = useState<string[]>(['All']);
 
-  // Fetch categories when zone changes
+  // Fetch categories when zone changes or cache is ready
   useEffect(() => {
-    fetch(`${baseUrl}/api/food/categories?zone=${selectedZone}`)
-      .then(res => res.json())
-      .then(resData => {
-        if (resData && resData.categories) {
-          setDynamicCategoryTags(resData.categories);
-        }
-      })
-      .catch(err => console.error("Failed to load food categories", err));
-  }, [selectedZone, baseUrl]);
+    if (isFoodCacheReady()) {
+      setDynamicCategoryTags(getFoodCategories(selectedZone));
+    }
+  }, [selectedZone, data]); // re-run if data changes (meaning cache is now ready)
 
-// Start background preload early
-useEffect(() => {
-  startBackgroundPreload(baseUrl);
-}, [baseUrl]);
+  // Fetch paginated food data entirely from static JSON cache
+  useEffect(() => {
+    let isMounted = true;
+    
+    const loadStaticData = async () => {
+      if (page === 1) setLoading(true);
+      else setLoadingMore(true);
 
-// Fetch paginated food data (from local cache if ready, else from API)
-useEffect(() => {
-  let isMounted = true;
-  
-  if (page === 1) {
-    setLoading(true);
-  } else {
-    setLoadingMore(true);
-  }
+      // Ensure cache is populated
+      await startBackgroundPreload();
 
-  // Check if background preload cache is ready for instant 0ms response
-  if (isFoodCacheReady()) {
-    const resData = queryLocalFood({
-      page,
-      limit: 24,
-      zone: selectedZone,
-      category: selectedCategory,
-      minRating,
-      search: searchQuery
-    });
+      if (!isMounted) return;
 
-    if (isMounted) {
+      const resData = queryLocalFood({
+        page,
+        limit: 24,
+        zone: selectedZone,
+        category: selectedCategory,
+        minRating,
+        search: searchQuery
+      });
+
       if (page === 1) {
         setData(resData.data);
       } else {
@@ -108,59 +103,17 @@ useEffect(() => {
           return [...prev, ...uniqueNewItems];
         });
       }
+      
       setTotalCount(resData.pagination.total);
       setHasMore(page < resData.pagination.total_pages);
       setLoading(false);
       setLoadingMore(false);
-    }
-    return;
-  }
+    };
 
-  // Fallback to Server API if background cache is not ready yet
-  const params = new URLSearchParams({
-    page: page.toString(),
-    limit: '24',
-    zone: selectedZone,
-    category: selectedCategory,
-    minRating: minRating.toString(),
-    search: searchQuery
-  });
+    loadStaticData();
 
-  fetch(`${baseUrl}/api/food?${params.toString()}`)
-    .then(res => res.json())
-    .then(resData => {
-      if (!isMounted) return;
-      
-      const newItems = resData.data || [];
-      if (page === 1) {
-        setData(newItems);
-      } else {
-        setData(prev => {
-          const existingIds = new Set(prev.map(i => i.id || i.title));
-          const uniqueNewItems = newItems.filter((i: any) => !existingIds.has(i.id || i.title));
-          return [...prev, ...uniqueNewItems];
-        });
-      }
-      
-      const pagination = resData.pagination;
-      if (pagination) {
-        setTotalCount(pagination.total);
-        setHasMore(page < pagination.total_pages);
-      }
-
-      // Trigger background preload for subsequent searches
-      startBackgroundPreload(baseUrl);
-    })
-    .catch(err => console.error("Failed to fetch food data", err))
-    .finally(() => {
-      if (isMounted) {
-        setLoading(false);
-        setLoadingMore(false);
-      }
-    });
-    
-  return () => { isMounted = false; };
-}, [page, selectedZone, selectedCategory, minRating, searchQuery, baseUrl]);
+    return () => { isMounted = false; };
+  }, [page, selectedZone, selectedCategory, minRating, searchQuery, baseUrl]);
 
   // Reset page to 1 when filters change
   useEffect(() => {
@@ -362,32 +315,74 @@ useEffect(() => {
                 >
                   <div>
                     
-                    {/* Cover Image (Compact h-32) */}
+                    {/* Cover Image */}
                     {item.imageUrl ? (
-                      <div className="w-full h-32 overflow-hidden relative bg-ink/5">
+                      <div className="w-full h-36 overflow-hidden relative bg-[#FAF6ED] border-b border-ink/10">
                         <img
                           src={item.imageUrl}
                           alt={item.title}
+                          loading="lazy"
                           referrerPolicy="no-referrer"
+                          crossOrigin="anonymous"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           onError={(e) => {
                             const target = e.currentTarget;
-                            target.onerror = null;
-                            const cat = (item.categoryName || '').toLowerCase();
-                            if (cat.includes('biryani')) {
-                              target.src = 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=500&auto=format&fit=crop&q=80';
-                            } else if (cat.includes('cafe') || cat.includes('coffee')) {
-                              target.src = 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=500&auto=format&fit=crop&q=80';
-                            } else if (cat.includes('bakery') || cat.includes('cake') || cat.includes('sweet')) {
-                              target.src = 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=500&auto=format&fit=crop&q=80';
-                            } else if (cat.includes('chinese') || cat.includes('noodle')) {
-                              target.src = 'https://images.unsplash.com/photo-1585032226651-759b368d7246?w=500&auto=format&fit=crop&q=80';
-                            } else {
-                              target.src = 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&auto=format&fit=crop&q=80';
+
+                            // Stage 1: Try CDN image proxy
+                            if (!target.dataset.proxyAttempt && item.imageUrl) {
+                              target.dataset.proxyAttempt = '1';
+                              target.src = `https://images.weserv.nl/?url=${encodeURIComponent(item.imageUrl)}&w=500&h=350&fit=cover&output=webp`;
+                              return;
                             }
+
+                            // Stage 2: Deterministic unique photo per restaurant
+                            target.onerror = null;
+
+                            // 30 diverse, curated food/restaurant/cafe photos
+                            const pool = [
+                              'photo-1517248135467-4c7edcad34c4', // elegant restaurant interior
+                              'photo-1552566626-52f8b828add9', // colorful indian thali
+                              'photo-1555396273-367ea4eb4db5', // warm restaurant ambiance
+                              'photo-1414235077428-338989a2e8c0', // fine dining plate
+                              'photo-1504674900247-0877df9cc836', // grilled food close-up
+                              'photo-1476224203421-9ac39bcb3327', // rustic meal setup
+                              'photo-1540189549336-e6e99c3679fe', // indian street food
+                              'photo-1565299624946-b28f40a0ae38', // pizza / flatbread
+                              'photo-1565958011703-44f9829ba187', // dessert plate
+                              'photo-1567620905732-2d1ec7ab7445', // plated dish
+                              'photo-1546069901-ba9599a7e63c', // indian curry spread
+                              'photo-1585032226651-759b368d7246', // noodles bowl
+                              'photo-1563379091339-03b21ab4a4f8', // biryani
+                              'photo-1626777552726-4a6b54c97e46', // bengali thali
+                              'photo-1554118811-1e0d58224f24', // cafe interior
+                              'photo-1509440159596-0249088772ff', // bakery bread
+                              'photo-1610192244261-3f33de3f55e4', // dosa
+                              'photo-1512621776951-a57141f2eefd', // fresh salad plate
+                              'photo-1498654896293-37aacf113fd9', // food platter
+                              'photo-1473093295043-cdd812d0e601', // pasta dish
+                              'photo-1559847844-5315695dadae', // tandoori chicken
+                              'photo-1601050690597-df0568f70950', // samosa
+                              'photo-1551218808-94e220e084d2', // coffee and pastry
+                              'photo-1571091718767-18b5b1457add', // burger
+                              'photo-1569058242253-92a9c755a0ec', // chaat
+                              'photo-1505253716362-afaea1d3d1af', // colorful curry bowls
+                              'photo-1466978913421-dad2ebd01d17', // cafe latte art
+                              'photo-1484723091739-30a097e8f929', // pancakes
+                              'photo-1588166524941-3bf61a9c41db', // momos
+                              'photo-1606491956689-2ea866880049', // kebabs
+                            ];
+
+                            // Simple hash from title to pick a unique image
+                            const name = item.title || '';
+                            let hash = 0;
+                            for (let i = 0; i < name.length; i++) {
+                              hash = ((hash << 5) - hash + name.charCodeAt(i)) | 0;
+                            }
+                            const idx = Math.abs(hash) % pool.length;
+                            target.src = `https://images.unsplash.com/${pool[idx]}?w=500&auto=format&fit=crop&q=80`;
                           }}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
                         
                         {/* Price Pill */}
                         {item.price && (

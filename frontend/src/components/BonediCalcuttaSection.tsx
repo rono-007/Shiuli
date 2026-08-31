@@ -1,9 +1,10 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, ArrowUp } from 'lucide-react';
 const PandalMap = React.lazy(() => import('./PandalMap'));
-import fallbackData from '../data/bonedi_kolkata.json';
 import { getNearestMetro } from '../utils/nearbyFacilities';
 import { secureGetItem, secureSetItem } from '../utils/storage';
+
+import fallbackData from '../data/bonedi_kolkata.json';
 
 interface Pandal {
   name: string;
@@ -22,7 +23,7 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
   const getInitialPandals = () => {
     try {
       const cachedData = secureGetItem<Pandal[]>('pujopath_bonedi_pandals_cache');
-      if (Array.isArray(cachedData) && cachedData.length > 0) {
+      if (Array.isArray(cachedData) && cachedData.length > 0 && cachedData[0].name) {
         return cachedData;
       }
     } catch (e) {}
@@ -63,28 +64,27 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
       return;
     }
 
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
     try {
-      const response = await fetch(`${baseUrl}/api/pandals/bonedi`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      setPandals(data);
-
-      // Save to localStorage cache
-      try {
-        secureSetItem(CACHE_KEY, data);
-        localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
-      } catch (err) {
-        console.warn('Failed to save to localStorage cache:', err);
+      const response = await fetch('/data/bonedi_pandals.json');
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0 && data[0].name) {
+          setPandals(data);
+          try {
+            secureSetItem(CACHE_KEY, data);
+            localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+          } catch (err) {}
+          return;
+        }
       }
     } catch (e: any) {
-      console.warn('FastAPI backend not reachable, using local fallback:', e);
-      setPandals(fallbackData as Pandal[]);
+      console.warn('Static data fetch failed, using bundled fallback');
     } finally {
       setLoading(false);
     }
+
+    // Ensure fallbackData is used if fetch failed or was empty
+    setPandals(prev => (prev.length > 0 ? prev : (fallbackData as Pandal[])));
   };
 
 
@@ -262,8 +262,11 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
                 >
                   {/* The Inner Stamp Edge */}
                   <div 
-                    className="p-3 border-[3px] border-dotted border-ink/20 h-full aspect-square flex flex-col justify-between relative overflow-hidden bg-cover bg-center bg-no-repeat"
-                    style={{ backgroundImage: "linear-gradient(rgba(250, 246, 237, 0.85), rgba(250, 246, 237, 0.85)), url('/icon1.png')" }}
+                    className="p-3 border-[3px] border-dotted border-[#D4A24C]/40 h-full aspect-square flex flex-col justify-between relative overflow-hidden bg-cover bg-center bg-no-repeat rounded-lg"
+                    style={{ 
+                      backgroundImage: "url('/pandal-card.png')",
+                      backgroundSize: '100% 100%'
+                    }}
                   >
                     
                     {/* Faded Background Postmark */}

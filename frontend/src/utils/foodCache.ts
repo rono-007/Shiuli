@@ -43,7 +43,7 @@ interface QueryResult {
 let foodCache: Eatery[] | null = null;
 let preloadPromise: Promise<Eatery[]> | null = null;
 
-const STORAGE_KEY = 'pujopoth_food_cache_v1';
+const STORAGE_KEY = 'pujopoth_food_cache_v2';
 
 // Initialize cache from sessionStorage if available
 try {
@@ -59,7 +59,42 @@ export function isFoodCacheReady(): boolean {
   return foodCache !== null && foodCache.length > 0;
 }
 
-export function startBackgroundPreload(baseUrl: string): Promise<Eatery[]> {
+export function getFoodCategories(zone: string): string[] {
+  if (!foodCache) return ['All'];
+  
+  // Curated list of high-value categories for the UI chips
+  const ALLOWED_CATEGORIES = new Set([
+    'Bengali restaurant',
+    'Cafe',
+    'Coffee shop',
+    'Biryani restaurant',
+    'Mughlai restaurant',
+    'Chinese restaurant',
+    'South Indian restaurant',
+    'North Indian restaurant',
+    'Fast food restaurant',
+    'Vegetarian restaurant',
+    'Dessert shop',
+    'Dessert restaurant',
+    'Bakery',
+    'Indian restaurant',
+    'Continental restaurant',
+    'Pizza restaurant'
+  ]);
+
+  const categories = new Set<string>();
+  foodCache.forEach(item => {
+    if (zone !== 'all' && item.zone !== zone) return;
+    if (item.categoryName && ALLOWED_CATEGORIES.has(item.categoryName)) {
+      categories.add(item.categoryName);
+    }
+  });
+  
+  const sorted = Array.from(categories).sort();
+  return ['All', ...sorted];
+}
+
+export function startBackgroundPreload(): Promise<Eatery[]> {
   if (isFoodCacheReady()) {
     return Promise.resolve(foodCache!);
   }
@@ -70,11 +105,11 @@ export function startBackgroundPreload(baseUrl: string): Promise<Eatery[]> {
 
   const fetchTask = async (): Promise<Eatery[]> => {
     try {
-      const res = await fetch(`${baseUrl}/api/food/all_light`);
+      const res = await fetch(`/data/eateries_light.json`);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
-      if (json && Array.isArray(json.data)) {
-        foodCache = json.data;
+      if (Array.isArray(json)) {
+        foodCache = json;
         try {
           sessionStorage.setItem(STORAGE_KEY, JSON.stringify(foodCache));
         } catch (e) {

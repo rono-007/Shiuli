@@ -24,27 +24,26 @@ interface PandalMapProps {
 const KOLKATA_CENTER: [number, number] = [88.37, 22.60];
 const DEFAULT_ZOOM = 12.5;
 
-// Free CARTO Voyager raster basemap specification
+// OpenStreetMap Standard Raster Tiles (Free & No API Key Required)
 const MAP_STYLE: maplibregl.StyleSpecification = {
   version: 8,
   sources: {
-    'carto-voyager': {
+    'osm-tiles': {
       type: 'raster',
       tiles: [
-        'https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
-        'https://b.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
-        'https://c.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
-        'https://d.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}@2x.png',
+        'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+        'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png',
       ],
       tileSize: 256,
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     },
   },
   layers: [
     {
-      id: 'carto-voyager-layer',
+      id: 'osm-tiles-layer',
       type: 'raster',
-      source: 'carto-voyager',
+      source: 'osm-tiles',
       minzoom: 0,
       maxzoom: 19,
     },

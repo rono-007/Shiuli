@@ -1,4 +1,3 @@
-import staticMetros from '../data/metros.json';
 
 export interface NearbyMetroStation {
   title: string;
@@ -35,49 +34,41 @@ export interface NearestFacilitiesGroup {
 }
 
 let facilitiesCache: any[] | null = null;
-let metrosCache: any[] = staticMetros || [];
+let metrosCache: any[] = [];
 let loadPromise: Promise<[any[], any[]]> | null = null;
 
 export async function preloadFacilitiesData(): Promise<[any[], any[]]> {
   if (facilitiesCache && metrosCache.length > 0) return [facilitiesCache, metrosCache];
   if (!loadPromise) {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
     loadPromise = (async () => {
       try {
         const [northFRes, southFRes, mRes] = await Promise.all([
-          fetch(`${baseUrl}/api/facilities/north`),
-          fetch(`${baseUrl}/api/facilities/south`),
-          fetch(`${baseUrl}/api/metro-stations`)
+          fetch(`/data/north_facilities_light.json`),
+          fetch(`/data/south_facilities_light.json`),
+          fetch(`/data/metro_stations.json`)
         ]);
         if (northFRes.ok && southFRes.ok) {
           const northF = await northFRes.json();
           const southF = await southFRes.json();
-          const mData = mRes.ok ? await mRes.json() : staticMetros;
+          const mData = mRes.ok ? await mRes.json() : [];
           if (Array.isArray(northF) && Array.isArray(southF)) {
             const combinedFacilities = [...northF, ...southF];
-            const finalMetros = Array.isArray(mData) && mData.length > 0 ? mData : staticMetros;
+            const finalMetros = Array.isArray(mData) && mData.length > 0 ? mData : [];
             return [combinedFacilities, finalMetros] as [any[], any[]];
           }
         }
-        throw new Error('API response invalid');
+        throw new Error('Static JSON response invalid or not found');
       } catch (err) {
-        console.warn('Backend facilities fetch failed, loading local JSON fallbacks:', err);
-        const [northF, southF] = await Promise.all([
-          import('../data/north_other_facilities.json').then(m => ((m.default || m) as any[])).catch(() => []),
-          import('../data/south_other_facilities.json').then(m => ((m.default || m) as any[])).catch(() => [])
-        ]);
-        return [[...northF, ...southF], staticMetros] as [any[], any[]];
+        console.warn('Failed to fetch facilities static JSON:', err);
+        return [[], []] as [any[], any[]];
       }
     })();
   }
   const [fData, mData] = await loadPromise;
   facilitiesCache = fData;
-  metrosCache = mData && mData.length > 0 ? mData : staticMetros;
+  metrosCache = mData && mData.length > 0 ? mData : [];
   return [facilitiesCache, metrosCache];
 }
-
-// Trigger background preload
-preloadFacilitiesData().catch(() => {});
 
 // Accurate Haversine Distance in meters
 export function getDistanceMeters(lat1: number, lon1: number, lat2: number, lon2: number): number {
@@ -99,7 +90,7 @@ export function formatDistance(meters: number): string {
 }
 
 export function getNearestMetro(lat: number, lon: number): NearbyMetroStation | null {
-  const list = (metrosCache && metrosCache.length > 0 ? metrosCache : staticMetros) as any[];
+  const list = metrosCache;
   if (!list || list.length === 0 || !lat || !lon) return null;
 
   let closestMetro: NearbyMetroStation | null = null;

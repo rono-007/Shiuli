@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { MedicalMap } from './MedicalMap';
-import { secureGetItem, secureSetItem } from '../utils/storage';
+import { secureGetItem } from '../utils/storage';
 
 export interface MedicalFacility {
   title: string;
@@ -91,27 +91,18 @@ const MedicalFacilitiesSection: React.FC<MedicalFacilitiesSectionProps> = ({ onB
   };
 
   const fetchFromApiOrFallback = async (isBackground = false) => {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
     try {
-      const res = await fetch(`${baseUrl}/api/medical-facilities`);
-      if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-      const result = await res.json();
-      if (result && Array.isArray(result.north) && Array.isArray(result.south)) {
-        setData(result);
-        secureSetItem(CACHE_KEY, { timestamp: Date.now(), data: result });
-        if (!isBackground) setLoading(false);
-        return;
-      }
-      throw new Error('Invalid backend data format');
-    } catch (err: any) {
-      console.warn('Backend fetch failed for medical facilities, attempting local dataset fallback:', err);
-      try {
-        const [northF, southF] = await Promise.all([
-          import('../data/north_other_facilities.json').then(m => ((m.default || m) as any[])).catch(() => []),
-          import('../data/south_other_facilities.json').then(m => ((m.default || m) as any[])).catch(() => [])
-        ]);
+      const [northRes, southRes] = await Promise.all([
+        fetch('/data/north_facilities_light.json'),
+        fetch('/data/south_facilities_light.json')
+      ]);
+      
+      if (!northRes.ok || !southRes.ok) throw new Error('Failed to fetch static facilities');
+      
+      const northF = await northRes.json();
+      const southF = await southRes.json();
 
-        const officialHelplines = [
+      const officialHelplines = [
           {
             title: "Kolkata Police Emergency Control Room (Lalbazar)",
             subTitle: "24x7 Central Emergency Control Room",
@@ -195,10 +186,9 @@ const MedicalFacilitiesSection: React.FC<MedicalFacilitiesSectionProps> = ({ onB
 
         setData(fallbackResult);
         localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data: fallbackResult }));
-      } catch (fallbackErr) {
+      } catch (err) {
         if (!isBackground) setError(isBn ? 'ডাটা লোড করা সম্ভব হয়নি।' : 'Failed to load emergency & medical facilities data.');
-      }
-    } finally {
+      } finally {
       if (!isBackground) setLoading(false);
     }
   };

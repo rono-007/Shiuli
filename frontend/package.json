@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "optimize-data": "python ../backend/scripts/optimize_data.py",
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run optimize-data && tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },

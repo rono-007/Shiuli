@@ -1,9 +1,5 @@
 import { useState, useEffect } from 'react';
-import metrosData from '../data/metros.json';
-import northPandals from '../data/north_cords.json';
-import southPandals from '../data/south_kolkata.json';
-import centralPandals from '../data/central_kolkata.json';
-import bonediPandals from '../data/bonedi_kolkata.json';
+// Data fetched asynchronously to avoid bundling large JSONs
 import { ArrowLeft, Map, Clock, Zap, Coffee, CheckCircle, MapPin, Navigation } from 'lucide-react';
 
 interface MetroStation {
@@ -54,7 +50,7 @@ function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): 
 }
 
 // Client-side route generator fallback guarantees 100% offline/fast performance with exact Kolkata street accuracy
-function generateLocalRoute(
+async function generateLocalRoute(
   selectedRegion: string,
   startMetroName: string,
   startLat: number,
@@ -63,23 +59,25 @@ function generateLocalRoute(
   viewingPaceMin: number,
   restaurantBreakMin: number,
   endPref: string
-): RoutePlanResponse {
+): Promise<RoutePlanResponse> {
+  
+  // Fetch required region data on demand
+  const regionsToLoad = selectedRegion === 'all' 
+    ? ['north', 'south', 'central', 'bonedi'] 
+    : [selectedRegion];
+    
   let pool: PandalItem[] = [];
-  if (selectedRegion === 'north') {
-    pool = [...(northPandals as PandalItem[])];
-  } else if (selectedRegion === 'south') {
-    pool = [...(southPandals as PandalItem[])];
-  } else if (selectedRegion === 'central') {
-    pool = [...(centralPandals as PandalItem[])];
-  } else if (selectedRegion === 'bonedi') {
-    pool = [...(bonediPandals as PandalItem[])];
-  } else {
-    pool = [
-      ...(northPandals as PandalItem[]),
-      ...(southPandals as PandalItem[]),
-      ...(centralPandals as PandalItem[]),
-      ...(bonediPandals as PandalItem[])
-    ];
+  
+  for (const region of regionsToLoad) {
+    try {
+      const res = await fetch(`/data/${region}_pandals.json`);
+      if (res.ok) {
+        const data = await res.json();
+        pool = [...pool, ...data];
+      }
+    } catch (e) {
+      console.warn(`Failed to load ${region} pandals for routing`, e);
+    }
   }
 
   pool = pool.filter(p => p.lat && p.lon);
@@ -90,14 +88,9 @@ function generateLocalRoute(
   let currentLat = startLat;
   let currentLon = startLon;
   if (!currentLat || !currentLon) {
-    const metroObj = (metrosData as any[]).find((m: any) => m.title === startMetroName);
-    if (metroObj?.location?.lat && metroObj?.location?.lng) {
-      currentLat = metroObj.location.lat;
-      currentLon = metroObj.location.lng;
-    } else {
-      currentLat = 22.5726; // Default Kolkata center
-      currentLon = 88.3639;
-    }
+    // If no coordinates passed (shouldn't happen typically), default to Kolkata center
+    currentLat = 22.5726; 
+    currentLon = 88.3639;
   }
 
   const usableTime = Math.max(30, totalBudgetMin - restaurantBreakMin);
@@ -194,29 +187,21 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
 
   useEffect(() => {
     // Load from local JSON data instead of backend API
-    const loadMetros = () => {
+    // Load from local JSON data instead of backend API
+    const loadMetros = async () => {
       try {
-        const formattedMetros = (metrosData as any[])
-          .map((m: any) => {
-            const lat = m.location?.lat ?? m.lat;
-            const lon = m.location?.lng ?? m.lon ?? m.lng;
-            return {
-              name: m.title || m.name,
-              subTitle: m.subTitle || '',
-              api_name: m.title || m.name,
-              address: m.address || '',
-              lat: Number(lat) || 0,
-              lon: Number(lon) || 0
-            };
-          })
-          .filter(m => m.lat !== 0 && m.lon !== 0);
-        setMetros(formattedMetros);
+        const res = await fetch('/data/metros.json');
+        if (res.ok) {
+          const data = await res.json();
+          setMetros(data as MetroStation[]);
+        }
       } catch (err) {
         console.error("Failed to load metros", err);
       } finally {
         setLoadingMetros(false);
       }
     };
+
     loadMetros();
   }, []);
 
@@ -281,7 +266,7 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
       }
       
       // Fallback to client-side route calculation if API returns 0 stops or fails
-      const fallbackResult = generateLocalRoute(
+      const fallbackResult = await generateLocalRoute(
         selectedRegion,
         metroName,
         startLat,
@@ -294,7 +279,7 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
       setRouteResult(fallbackResult);
     } catch (err) {
       console.warn("Backend API unavailable/timeout, using instant local route engine", err);
-      const fallbackResult = generateLocalRoute(
+      const fallbackResult = await generateLocalRoute(
         selectedRegion,
         metroName,
         startLat,

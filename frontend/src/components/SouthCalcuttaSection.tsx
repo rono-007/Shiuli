@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, Utensils, Fuel, CreditCard, Hospital, Bath, Star, AlertCircle, X, Navigation, Pill, Train } from 'lucide-react';
 const PandalMap = React.lazy(() => import('./PandalMap'));
-import fallbackData from '../data/south_kolkata.json';
 import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
 import { getNearestFacilities, getNearestMetro } from '../utils/nearbyFacilities';
 import { secureGetItem, secureSetItem } from '../utils/storage';
+
+import fallbackData from '../data/south_kolkata.json';
 
 interface Pandal {
   name: string;
@@ -23,8 +24,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
   const getInitialPandals = () => {
     try {
       const cachedData = secureGetItem<Pandal[]>('pujopath_south_pandals_cache');
-      const cachedSource = localStorage.getItem('pujopath_south_pandals_cache_source');
-      if (cachedSource === 'fastapi' && Array.isArray(cachedData) && cachedData.length > 0) {
+      if (Array.isArray(cachedData) && cachedData.length > 0 && cachedData[0].name) {
         return cachedData;
       }
     } catch (e) {}
@@ -63,42 +63,33 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
     const cachedTime = localStorage.getItem(CACHE_TIME_KEY);
     const cachedSource = localStorage.getItem('pujopath_south_pandals_cache_source');
     
-    if (cachedSource === 'fastapi' && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
+    if (cachedSource === 'static' && cachedTime && (Date.now() - parseInt(cachedTime, 10)) < ONE_HOUR_MS) {
       setLoading(false);
       return;
     }
 
-    const baseUrl = import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com';
     try {
-      const response = await fetch(`${baseUrl}/api/pandals/south`);
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const data = await response.json();
-      if (Array.isArray(data) && data.length > 0) {
-        setPandals(data);
-
-        // Save to localStorage cache
-        try {
-          secureSetItem(CACHE_KEY, data);
-          localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
-          localStorage.setItem('pujopath_south_pandals_cache_source', 'fastapi');
-        } catch (err) {
-          console.warn('Failed to save to localStorage cache:', err);
+      const response = await fetch('/data/south_pandals.json');
+      if (response.ok) {
+        const data = await response.json();
+        if (Array.isArray(data) && data.length > 0 && data[0].name) {
+          setPandals(data);
+          try {
+            secureSetItem(CACHE_KEY, data);
+            localStorage.setItem(CACHE_TIME_KEY, Date.now().toString());
+            localStorage.setItem('pujopath_south_pandals_cache_source', 'static');
+          } catch (err) {}
+          return;
         }
-      } else {
-        setPandals(fallbackData as Pandal[]);
-        localStorage.setItem('pujopath_south_pandals_cache_source', 'fallback');
       }
     } catch (e: any) {
-      console.warn('FastAPI backend not reachable, using local fallback:', e);
-      setPandals(fallbackData as Pandal[]);
-      try {
-        localStorage.setItem('pujopath_south_pandals_cache_source', 'fallback');
-      } catch (err) { }
+      console.warn('Static data fetch failed, using bundled fallback');
     } finally {
       setLoading(false);
     }
+
+    // If fetch failed or returned empty, ensure fallbackData is used
+    setPandals(prev => (prev.length > 0 ? prev : (fallbackData as Pandal[])));
   };
 
 
@@ -557,14 +548,20 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
                     {/* Compact Pandal Card */}
                     <div
                       onClick={() => setExpandedPandalIdx(isExpanded ? null : idx)}
-                      className={`bg-paper border rounded-2xl p-4 shadow-sm hover:shadow-lg transition-all cursor-pointer group relative overflow-hidden ${isExpanded
+                      style={{ 
+                        backgroundImage: "url('/pandal-card.png')",
+                        backgroundSize: '100% 100%',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat'
+                      }}
+                      className={`border rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 cursor-pointer group relative overflow-hidden ${isExpanded
                           ? 'border-bengali-red/40 ring-2 ring-bengali-red/20 shadow-lg'
-                          : 'border-ink/10 hover:border-bengali-red/20'
+                          : 'border-[#D4A24C]/40 hover:border-bengali-red/40'
                         }`}
                     >
                       {/* Accent top bar when selected */}
                       {isExpanded && (
-                        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-bengali-red to-[#E5B05C]"></div>
+                        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-bengali-red to-[#E5B05C]"></div>
                       )}
 
                       {/* Stamp Top Row */}

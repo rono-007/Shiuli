@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import TrendingModal from './TrendingModal';
 import ZoneTourModal from './ZoneTourModal';
@@ -16,45 +15,6 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTrendingModalOpen, setIsTrendingModalOpen] = useState(false);
   const { t, language } = useLanguage();
-
-  const zones = [
-    { 
-      id: 'north', 
-      serial: 'NO-A', 
-      name: t.zoneNorthName, 
-      subtitle: t.zoneNorthSubtitle, 
-      desc: t.zoneNorthDesc, 
-      active: true, 
-      bgImage: '/tour_card_north.png' 
-    },
-    { 
-      id: 'central', 
-      serial: 'CE-B', 
-      name: t.zoneCentralName, 
-      subtitle: t.zoneCentralSubtitle, 
-      desc: t.zoneCentralDesc, 
-      active: true, 
-      bgImage: '/tour_card_central.png' 
-    },
-    { 
-      id: 'south', 
-      serial: 'SO-C', 
-      name: t.zoneSouthName, 
-      subtitle: t.zoneSouthSubtitle, 
-      desc: t.zoneSouthDesc, 
-      active: true, 
-      bgImage: '/tour_card_south.png' 
-    },
-    { 
-      id: 'bonedi', 
-      serial: 'BN-D', 
-      name: t.zoneBonediName, 
-      subtitle: t.zoneBonediSubtitle, 
-      desc: t.zoneBonediDesc, 
-      active: true, 
-      bgImage: '/tour_card_bonedi.png' 
-    }
-  ];
 
   return (
     <section className="relative w-full min-h-fit lg:h-[100svh] lg:min-h-[700px] bg-[#F7F2E7] flex flex-col justify-center items-center overflow-hidden pt-20 pb-[12vw] sm:pt-16 lg:pb-0 px-4 sm:px-8 lg:px-12 selection:bg-[#983335] selection:text-white">

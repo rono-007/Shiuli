@@ -1683,11 +1683,48 @@ async def plan_puja_route(request: RoutePlanRequest):
         current_lat = best_pandal["lat"]
         current_lon = best_pandal["lon"]
 
+    # 4. Handle Ending Metro Station Preference
+    if request.end_preference == "start_metro" and stops and start_lat and start_lon:
+        return_dist_m = haversine_distance(current_lat, current_lon, start_lat, start_lon)
+        return_travel_min = max(4, int(return_dist_m / 60) + 3)
+        cumulative_time += return_travel_min
+        stops.append(RouteStop(
+            name=f"{request.metro_station_name} (প্রারম্ভিক মেট্রোতে প্রত্যাবর্তন)",
+            address="যাত্রা সমাপ্তি ও প্রারম্ভিক মেট্রো স্টেশনে প্রত্যাবর্তন",
+            lat=start_lat,
+            lon=start_lon,
+            estimated_travel_min=return_travel_min,
+            cumulative_time_min=cumulative_time
+        ))
+    elif request.end_preference == "nearest_metro" and stops:
+        try:
+            metro_data = load_metro_stations_data()
+            nearest_metro = None
+            min_metro_dist = float('inf')
+            for m in metro_data:
+                d = haversine_distance(current_lat, current_lon, m["lat"], m["lon"])
+                if d < min_metro_dist:
+                    min_metro_dist = d
+                    nearest_metro = m
+            if nearest_metro:
+                metro_travel_min = max(4, int(min_metro_dist / 60) + 3)
+                cumulative_time += metro_travel_min
+                stops.append(RouteStop(
+                    name=f"{nearest_metro['name']} Metro Station (সমাপ্তি / End)",
+                    address=f"নিকটবর্তী মেট্রো স্টেশন - {nearest_metro.get('line', 'Kolkata Metro')}",
+                    lat=nearest_metro["lat"],
+                    lon=nearest_metro["lon"],
+                    estimated_travel_min=metro_travel_min,
+                    cumulative_time_min=cumulative_time
+                ))
+        except Exception as e:
+            logger.warning("Failed to append nearest metro: %s", e)
+
     return RoutePlanResponse(
         start_metro=request.metro_station_name,
         total_budget_min=request.total_minutes,
-        usable_time_min=usable_time,
-        total_pandals=len(stops),
+        usable_time_min=cumulative_time,
+        total_pandals=len([s for s in stops if not "মেট্রো" in s.name and not "Metro" in s.name]),
         restaurant_break_included=(request.restaurant_break_minutes > 0),
         end_preference=request.end_preference,
         stops=stops

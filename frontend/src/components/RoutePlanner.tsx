@@ -608,7 +608,7 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
             <div className="animate-in fade-in slide-in-from-right-4 duration-500">
               <div className="flex items-center gap-3 mb-2">
                 <MapPin className="w-8 h-8 text-[#8B1E2D]" />
-                <h2 className="text-2xl sm:text-3xl font-bold text-[#8B1E2D]">{t.rpRegionTitle}</h2>
+                <h1 className="text-2xl sm:text-3xl font-bold text-[#8B1E2D]">{t.rpRegionTitle}</h1>
               </div>
               <p className="text-sm text-[#3D0D11]/70 mb-8 font-sans font-medium">{t.rpRegionSubtitle}</p>
               

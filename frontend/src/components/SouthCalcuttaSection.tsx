@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, Utensils, Fuel, CreditCard, Hospital, Bath, Star, AlertCircle, X, Navigation, Pill, Train } from 'lucide-react';
 const PandalMap = React.lazy(() => import('./PandalMap'));
-import { getNearestEateriesWithFallback } from '../utils/nearbyEateries';
+import { useNearbyEateries } from '../hooks/useNearbyEateries';
 import { getNearestFacilities, getNearestMetro } from '../utils/nearbyFacilities';
 import { secureGetItem, secureSetItem } from '../utils/storage';
 
-import fallbackData from '../data/south_kolkata.json';
 
 interface Pandal {
   name: string;
@@ -28,7 +27,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
         return cachedData;
       }
     } catch (e) {}
-    return fallbackData as Pandal[];
+    return [];
   };
 
   const [pandals, setPandals] = useState<Pandal[]>(getInitialPandals);
@@ -88,8 +87,10 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
       setLoading(false);
     }
 
-    // If fetch failed or returned empty, ensure fallbackData is used
-    setPandals(prev => (prev.length > 0 ? prev : (fallbackData as Pandal[])));
+    // If fetch failed or returned empty, ensure it doesn't crash
+    if (pandals.length === 0) {
+        setPandals([]);
+    }
   };
 
 
@@ -115,10 +116,14 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
     );
   });
 
+  const expandedPandal = expandedPandalIdx !== null ? filteredPandals[expandedPandalIdx] : null;
+  const { eateries: eateriesData, loading: eateriesLoading, error: eateriesError } = useNearbyEateries(expandedPandal?.lat, expandedPandal?.lon, 6);
+
   // Detail panel for a specific pandal
   const renderDetailPanel = (pandal: Pandal, idx: number) => {
-    const { within1km, relativelyFar } = getNearestEateriesWithFallback(pandal.lat, pandal.lon, 6);
     const facilities = getNearestFacilities(pandal.lat, pandal.lon);
+    const within1km = eateriesData?.within1km || [];
+    const relativelyFar = eateriesData?.relativelyFar || [];
     const hasEateries = within1km.length > 0;
     const eateriesToShow = hasEateries ? within1km : relativelyFar;
 
@@ -335,66 +340,89 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
                 </span>
                 কাছাকাছি রেস্তোরাঁ ও ক্যাফে
               </h4>
-              <span className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold ${hasEateries
-                  ? 'bg-emerald-500/10 text-emerald-800 border border-emerald-500/20'
-                  : 'bg-amber-500/10 text-amber-800 border border-amber-500/20'
-                }`}>
-                {hasEateries ? `${within1km.length} টি (≤১ km)` : `দূরবর্তী ${relativelyFar.length} টি`}
-              </span>
+              {!eateriesLoading && !eateriesError && eateriesData && (
+                <span className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold ${hasEateries
+                    ? 'bg-emerald-500/10 text-emerald-800 border border-emerald-500/20'
+                    : 'bg-amber-500/10 text-amber-800 border border-amber-500/20'
+                  }`}>
+                  {hasEateries ? `${within1km.length} টি (≤১ km)` : `দূরবর্তী ${relativelyFar.length} টি`}
+                </span>
+              )}
             </div>
 
-            {/* Warning if no eateries within 1km */}
-            {!hasEateries && (
-              <div className="flex items-start gap-2 p-3 mb-4 bg-red-500/5 border border-red-500/15 rounded-xl text-red-900 text-xs font-serif">
-                <AlertCircle className="w-4 h-4 text-bengali-red flex-shrink-0 mt-0.5" />
-                <span>১ কিলোমিটারের মধ্যে কোনো ক্যাফে বা রেস্তোরাঁ পাওয়া যায়নি। কিছুটা দূরের তালিকা দেখানো হচ্ছে।</span>
+            {eateriesLoading ? (
+              <div className="flex flex-col items-center justify-center py-20 text-ink/50">
+                <div className="w-8 h-8 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin mb-4"></div>
+                <p className="text-xs font-sans">নিকটবর্তী খাবারের জায়গা খোঁজা হচ্ছে...</p>
               </div>
-            )}
-
-            {/* Eateries Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto pr-1 custom-scrollbar">
-              {eateriesToShow.map((eatery, eIdx) => (
-                <div
-                  key={eIdx}
-                  className="bg-paper p-4 rounded-2xl border border-ink/8 hover:border-bengali-red/30 hover:shadow-md transition-all group flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-start justify-between gap-2">
-                      <h5 className="text-sm font-serif font-bold text-ink group-hover:text-bengali-red transition-colors leading-snug">
-                        {eatery.title}
-                      </h5>
-                      <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold ${hasEateries
-                          ? 'bg-emerald-500/10 text-emerald-800 border border-emerald-500/20'
-                          : 'bg-amber-500/10 text-amber-800 border border-amber-500/20'
-                        }`}>
-                        {hasEateries ? `${eatery.distanceMeters}m` : `${(eatery.distanceMeters / 1000).toFixed(1)}km`}
-                      </span>
-                    </div>
-                    {eatery.subTitle && (
-                      <p className="text-[10px] text-bengali-red font-serif mt-0.5">({eatery.subTitle})</p>
-                    )}
-                    <div className="flex items-center gap-2 mt-2 text-[10px] text-ink/50 font-sans">
-                      <span className="bg-ink/5 px-2 py-0.5 rounded-full">{eatery.categoryName || 'Restaurant'}</span>
-                      {eatery.totalScore && (
-                        <span className="flex items-center gap-0.5 text-amber-700 font-mono font-bold">
-                          <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
-                          {eatery.totalScore.toFixed(1)}
-                        </span>
-                      )}
-                    </div>
+            ) : eateriesError ? (
+              <div className="flex flex-col items-center justify-center py-20 text-bengali-red/70">
+                <AlertCircle className="w-8 h-8 mb-4 opacity-50" />
+                <p className="text-xs font-sans">তথ্য লোড করতে সমস্যা হয়েছে।</p>
+              </div>
+            ) : (
+              <>
+                {/* Warning if no eateries within 1km */}
+                {!hasEateries && eateriesToShow.length > 0 && (
+                  <div className="flex items-start gap-2 p-3 mb-4 bg-red-500/5 border border-red-500/15 rounded-xl text-red-900 text-xs font-serif">
+                    <AlertCircle className="w-4 h-4 text-bengali-red flex-shrink-0 mt-0.5" />
+                    <span>১ কিলোমিটারের মধ্যে কোনো ক্যাফে বা রেস্তোরাঁ পাওয়া যায়নি। কিছুটা দূরের তালিকা দেখানো হচ্ছে।</span>
                   </div>
-                  <a
-                    href={eatery.url || '#'}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="mt-3 flex items-center justify-center gap-1.5 bg-ink/5 hover:bg-bengali-red hover:text-white text-ink/70 py-2 rounded-xl text-[11px] font-sans font-bold transition-all"
-                  >
-                    <ExternalLink className="w-3 h-3" />
-                    Google Maps GPS ({eatery.lat.toFixed(4)}, {eatery.lng.toFixed(4)}) ↗
-                  </a>
-                </div>
-              ))}
-            </div>
+                )}
+
+                {/* Eateries Grid */}
+                {eateriesToShow.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto pr-1 custom-scrollbar">
+                    {eateriesToShow.map((eatery, eIdx) => (
+                      <div
+                        key={eIdx}
+                        className="bg-paper p-4 rounded-2xl border border-ink/8 hover:border-bengali-red/30 hover:shadow-md transition-all group flex flex-col justify-between"
+                      >
+                        <div>
+                          <div className="flex items-start justify-between gap-2">
+                            <h5 className="text-sm font-serif font-bold text-ink group-hover:text-bengali-red transition-colors leading-snug">
+                              {eatery.title}
+                            </h5>
+                            <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold ${hasEateries
+                                ? 'bg-emerald-500/10 text-emerald-800 border border-emerald-500/20'
+                                : 'bg-amber-500/10 text-amber-800 border border-amber-500/20'
+                              }`}>
+                              {hasEateries ? `${eatery.distanceMeters}m` : `${(eatery.distanceMeters / 1000).toFixed(1)}km`}
+                            </span>
+                          </div>
+                          {eatery.subTitle && (
+                            <p className="text-[10px] text-bengali-red font-serif mt-0.5">({eatery.subTitle})</p>
+                          )}
+                          <div className="flex items-center gap-2 mt-2 text-[10px] text-ink/50 font-sans">
+                            <span className="bg-ink/5 px-2 py-0.5 rounded-full">{eatery.categoryName || 'Restaurant'}</span>
+                            {eatery.totalScore && (
+                              <span className="flex items-center gap-0.5 text-amber-700 font-mono font-bold">
+                                <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                                {eatery.totalScore.toFixed(1)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <a
+                          href={eatery.url || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-3 flex items-center justify-center gap-1.5 bg-ink/5 hover:bg-bengali-red hover:text-white text-ink/70 py-2 rounded-xl text-[11px] font-sans font-bold transition-all"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          Google Maps GPS ({eatery.lat.toFixed(4)}, {eatery.lng.toFixed(4)}) ↗
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-20 text-ink/50">
+                    <Utensils className="w-8 h-8 mb-4 opacity-20" />
+                    <p className="text-xs font-sans">কাছাকাছি কোনো খাবারের জায়গা পাওয়া যায়নি।</p>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -423,9 +451,9 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
 
             <div className="space-y-2">
               <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-ink/40">III • পরিক্রমা সূচী</span>
-              <h2 className="text-4xl md:text-5xl font-serif text-ink italic font-normal tracking-wide">
-                দক্ষিণ কলকাতার মণ্ডপসমূহ
-              </h2>
+              <h1 className="text-4xl md:text-5xl font-serif text-ink italic font-normal tracking-wide">
+                দক্ষিণ কলকাতার মণ্ডপসমূহ ও পরিক্রমা গাইড
+              </h1>
               <p className="text-xs font-sans text-ink/60 max-w-lg leading-relaxed">
                 গড়িয়াহাট থেকে বালিগঞ্জ, ঢাকুরিয়া ও যাদবপুরের ঐতিহ্যবাহী দুর্গাপুজো এবং তাদের সঠিক কাস্টম মানচিত্র নির্দেশিকা।
               </p>

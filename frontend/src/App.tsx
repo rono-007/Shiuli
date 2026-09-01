@@ -2,6 +2,7 @@ import { useState, useEffect, lazy, Suspense } from 'react';
 import HeroSection from './components/HeroSection';
 import PujaGuideSection from './components/PujaGuideSection';
 import SectionDivider from './components/SectionDivider';
+import SEOHead, { type SEOViewType } from './components/SEOHead';
 
 import { WifiOff, Mail, MapPin, Send, CheckCircle2, HelpCircle, Bug, Star, LogOut, User, ChevronDown, ChevronUp } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
@@ -20,6 +21,7 @@ const AdminPanel = lazy(() => import('./components/AdminPanel'));
 const StorySection = lazy(() => import('./components/StorySection'));
 const RoutePlanner = lazy(() => import('./components/RoutePlanner'));
 const MedicalFacilitiesSection = lazy(() => import('./components/MedicalFacilitiesSection'));
+const HistoryHeritageSection = lazy(() => import('./components/HistoryHeritageSection'));
 import ZoneTourModal from './components/ZoneTourModal';
 
 function SectionLoader() {
@@ -27,7 +29,7 @@ function SectionLoader() {
     <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center bg-[#FAF6ED] font-serif">
       <img
         src="/shiuli2.png"
-        alt="Loading"
+        alt="Shiuli loading animation"
         className="h-16 w-16 object-contain mb-4"
         style={{
           animation: 'shiuli-spin 1.5s linear infinite',
@@ -39,9 +41,86 @@ function SectionLoader() {
   );
 }
 
-type ViewType = 'home' | 'north' | 'south' | 'central' | 'bonedi' | 'facilities' | 'route-planner' | 'medical' | 'admin';
+export type ViewType = SEOViewType;
 
-const VALID_VIEWS: ViewType[] = ['home', 'north', 'south', 'central', 'bonedi', 'facilities', 'route-planner', 'medical', 'admin'];
+const VALID_VIEWS: ViewType[] = ['home', 'north', 'south', 'central', 'bonedi', 'facilities', 'route-planner', 'medical', 'admin', 'history', '404'];
+
+export function parseRouteFromUrl(): ViewType {
+  const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
+  const searchParams = new URLSearchParams(window.location.search);
+
+  if (searchParams.has('admin') || pathname === '/admin') return 'admin';
+
+  // 1. Query parameter fallback (?view=...)
+  const queryView = searchParams.get('view') as ViewType;
+  if (queryView && VALID_VIEWS.includes(queryView)) return queryView;
+
+  // 2. Direct clean path matching
+  if (pathname === '/' || pathname === '') return 'home';
+  if (pathname === '/history' || pathname === '/history-heritage') return 'history';
+  if (pathname === '/north' || pathname === '/pandals/north') return 'north';
+  if (pathname === '/south' || pathname === '/pandals/south') return 'south';
+  if (pathname === '/central' || pathname === '/pandals/central') return 'central';
+  if (pathname === '/bonedi' || pathname === '/pandals/bonedi') return 'bonedi';
+  if (pathname === '/pandals') return 'north';
+  if (pathname === '/facilities' || pathname === '/food') return 'facilities';
+  if (pathname === '/route-planner' || pathname === '/metro') return 'route-planner';
+  if (pathname === '/medical' || pathname === '/emergency') return 'medical';
+
+  // Return 404 for unknown pathnames
+  return '404';
+}
+
+export function getViewUrl(v: ViewType): string {
+  switch (v) {
+    case 'home': return '/';
+    case 'history': return '/history';
+    case 'north': return '/north';
+    case 'south': return '/south';
+    case 'central': return '/central';
+    case 'bonedi': return '/bonedi';
+    case 'facilities': return '/facilities';
+    case 'route-planner': return '/route-planner';
+    case 'medical': return '/medical';
+    case 'admin': return '/admin';
+    default: return '/';
+  }
+}
+
+function NotFoundSection({ onGoHome, onExplorePandals }: { onGoHome: () => void; onExplorePandals: () => void }) {
+  const { language } = useLanguage();
+  const isBn = language === 'bn';
+
+  return (
+    <section className="min-h-[70vh] flex flex-col items-center justify-center p-8 text-center bg-[#FAF6ED] font-serif pt-36 pb-24 relative z-10">
+      <span className="text-6xl sm:text-8xl text-[#8B1E2D] font-bold mb-4">৪০৪</span>
+      <h1 className="text-2xl sm:text-4xl font-bold text-[#3D0D11] mb-3">
+        {isBn ? 'পৃষ্ঠাটি খুঁজে পাওয়া যায়নি' : 'Page Not Found'}
+      </h1>
+      <p className="text-sm sm:text-base text-[#5C4D43] max-w-md mb-8 leading-relaxed font-sans">
+        {isBn
+          ? 'আপনি যে পাতাটি খুঁজছেন তা স্থানান্তরিত হয়েছে বা লিঙ্কটি সঠিক নয়। শিউলির সাথে কলকাতার পুজো পরিক্রমায় ফিরে যান।'
+          : 'The page you are looking for may have been moved or does not exist. Return to explore Kolkata Durga Puja with Shiuli.'}
+      </p>
+      <div className="flex flex-wrap items-center justify-center gap-4 font-sans">
+        <a
+          href="/"
+          onClick={(e) => { e.preventDefault(); onGoHome(); }}
+          className="bg-[#8B1E2D] hover:bg-[#A82531] text-[#FAF6ED] px-6 py-3 rounded-full text-xs sm:text-sm font-bold shadow-lg transition-all active:scale-95 cursor-pointer"
+        >
+          {isBn ? 'হোম পেজে ফিরে যান' : 'Return to Home'}
+        </a>
+        <a
+          href="/north"
+          onClick={(e) => { e.preventDefault(); onExplorePandals(); }}
+          className="bg-[#FAF6ED] hover:bg-white text-[#7A1F26] border border-[#7A1F26]/30 px-6 py-3 rounded-full text-xs sm:text-sm font-bold shadow-sm transition-all active:scale-95 cursor-pointer"
+        >
+          {isBn ? 'মণ্ডপ পরিক্রমা দেখুন' : 'Explore Pandals'}
+        </a>
+      </div>
+    </section>
+  );
+}
 
 // Sequential Modal Controller: Language Choice -> Beta Access Code -> Beta Phase Notice
 function ModalSequenceController({ view, showBetaNotice, onNoticeClosed }: { view: ViewType; showBetaNotice: boolean; onNoticeClosed: () => void }) {
@@ -323,34 +402,23 @@ function AppContent() {
   const [showProfile, setShowProfile] = useState(false);
   const [isTourModalOpen, setIsTourModalOpen] = useState(false);
 
-  const [view, setViewState] = useState<ViewType>(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.has('admin')) return 'admin';
-    const v = params.get('view') as ViewType;
-    return v && VALID_VIEWS.includes(v) ? v : 'home';
-  });
+  const [view, setViewState] = useState<ViewType>(() => parseRouteFromUrl());
   const [_searchQuery, setSearchQuery] = useState('');
   const [activeFilter, setActiveFilter] = useState('all');
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
-  // Navigate to a new view & push state to browser history
+  // Navigate to a new view & push clean state to browser history
   const changeView = (newView: ViewType, replace = false) => {
     if (newView === view && !replace) return;
     setViewState(newView);
-    const searchParams = new URLSearchParams(window.location.search);
-    if (newView === 'home') {
-      searchParams.delete('view');
-    } else {
-      searchParams.set('view', newView);
-    }
-    const newSearch = searchParams.toString();
-    const newUrl = newSearch ? `${window.location.pathname}?${newSearch}` : window.location.pathname;
+    const targetUrl = getViewUrl(newView);
 
     if (replace) {
-      window.history.replaceState({ view: newView }, '', newUrl);
+      window.history.replaceState({ view: newView }, '', targetUrl);
     } else {
-      window.history.pushState({ view: newView }, '', newUrl);
+      window.history.pushState({ view: newView }, '', targetUrl);
     }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   // Handle Back button action (pops browser history or returns home / opens tour directory)
@@ -390,9 +458,9 @@ function AppContent() {
     }
 
     // Initialize window history state if missing
-    const currentView = (searchParams.get('view') as ViewType) || (searchParams.has('admin') ? 'admin' : 'home');
-    if (!window.history.state) {
-      window.history.replaceState({ view: currentView }, '', window.location.href);
+    const initialRoute = parseRouteFromUrl();
+    if (!window.history.state || !window.history.state.view) {
+      window.history.replaceState({ view: initialRoute }, '', window.location.href);
     }
 
     // Listen to browser Back & Forward button events (popstate)
@@ -400,15 +468,11 @@ function AppContent() {
       if (e.state && e.state.view && VALID_VIEWS.includes(e.state.view)) {
         setViewState(e.state.view);
       } else {
-        const params = new URLSearchParams(window.location.search);
-        const v = params.get('view') as ViewType;
-        setViewState(v && VALID_VIEWS.includes(v) ? v : 'home');
+        setViewState(parseRouteFromUrl());
       }
     };
 
     window.addEventListener('popstate', handlePopState);
-
-    // Removed background prefetch /api/home as it is now served via static JSON on-demand
 
     return () => {
       window.removeEventListener('online', handleOnline);
@@ -419,6 +483,9 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-paper relative font-sans text-ink flex flex-col selection:bg-bengali-red/20 selection:text-ink overflow-x-hidden">
+      {/* Dynamic SEO Head Manager */}
+      <SEOHead view={view} language={language} />
+
       <ModalSequenceController
         view={view}
         showBetaNotice={showBetaNotice}
@@ -531,6 +598,12 @@ function AppContent() {
           <AdminPanel onBack={handleBack} />
         ) : (
           <main className="w-full relative">
+            {view === '404' && (
+              <NotFoundSection
+                onGoHome={() => changeView('home')}
+                onExplorePandals={() => changeView('north')}
+              />
+            )}
             {view === 'north' && <NorthCalcuttaSection onBack={handleBack} />}
             {view === 'south' && <SouthCalcuttaSection onBack={handleBack} />}
             {view === 'central' && <CentralCalcuttaSection onBack={handleBack} />}
@@ -538,6 +611,7 @@ function AppContent() {
             {view === 'facilities' && <FacilitiesSection onBack={handleBack} />}
             {view === 'route-planner' && <RoutePlanner onBack={handleBack} />}
             {view === 'medical' && <MedicalFacilitiesSection onBack={handleBack} />}
+            {view === 'history' && <HistoryHeritageSection onBack={handleBack} />}
 
             {/* Persistent Home View: Kept mounted so hero and section background images never reload */}
             <div className={view === 'home' ? 'block' : 'hidden'}>
@@ -567,6 +641,7 @@ function AppContent() {
                   onSelectRoutePlanner={() => changeView('route-planner')}
                   onSelectFacilities={() => changeView('facilities')}
                   onSelectMedical={() => changeView('medical')}
+                  onSelectHistory={() => changeView('history')}
                 />
 
                 <StorySection />
@@ -590,11 +665,15 @@ function AppContent() {
 
                   {/* Column 1: Brand Logo & Tagline */}
                   <div className="space-y-4 sm:col-span-2 lg:col-span-1">
-                    <div className="flex items-center gap-3">
+                    <a
+                      href="/"
+                      onClick={(e) => { e.preventDefault(); changeView('home'); }}
+                      className="flex items-center gap-3 cursor-pointer group"
+                    >
                       <img
                         src="/logo-shiuli.png"
-                        alt="Shiuli Logo"
-                        className="h-12 sm:h-16 w-auto object-contain"
+                        alt="Shiuli - Kolkata Durga Puja Digital Companion Logo"
+                        className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
                       />
                       <div>
                         <h2 className="text-xl sm:text-2xl font-bold text-[#FFFFFF] tracking-tight leading-none mb-1 font-serif">
@@ -604,7 +683,7 @@ function AppContent() {
                           {isBn ? 'কলকাতার পুজো সঙ্গী' : 'Kolkata Puja Companion'}
                         </p>
                       </div>
-                    </div>
+                    </a>
 
                     <p className="text-xs sm:text-sm text-[#F7F2E7]/85 leading-relaxed max-w-xs font-serif">
                       {isBn
@@ -619,11 +698,51 @@ function AppContent() {
                       {isBn ? 'পুজো অঞ্চল গাইড' : 'Puja Zone Guide'}
                     </h3>
                     <ul className="space-y-2 text-xs sm:text-sm text-[#F7F2E7]/85 font-serif">
-                      <li><button onClick={() => changeView('north')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'উত্তর কলকাতা পরিক্রমা' : 'North Kolkata Tour'}</button></li>
-                      <li><button onClick={() => changeView('south')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'দক্ষিণ কলকাতা পরিক্রমা' : 'South Kolkata Tour'}</button></li>
-                      <li><button onClick={() => changeView('central')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'মধ্য কলকাতা পরিক্রমা' : 'Central Kolkata Tour'}</button></li>
-                      <li><button onClick={() => changeView('bonedi')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'ঐতিহ্যবাহী বনেদি বাড়ির পুজো' : 'Traditional Bonedi Bari Pujas'}</button></li>
-                      <li><button onClick={() => changeView('route-planner')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'স্মার্ট রুট প্ল্যানার' : 'Smart Route Planner'}</button></li>
+                      <li>
+                        <a
+                          href="/north"
+                          onClick={(e) => { e.preventDefault(); changeView('north'); }}
+                          className="hover:text-[#E5B05C] transition-colors block text-left"
+                        >
+                          {isBn ? 'উত্তর কলকাতা পরিক্রমা' : 'North Kolkata Tour'}
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/south"
+                          onClick={(e) => { e.preventDefault(); changeView('south'); }}
+                          className="hover:text-[#E5B05C] transition-colors block text-left"
+                        >
+                          {isBn ? 'দক্ষিণ কলকাতা পরিক্রমা' : 'South Kolkata Tour'}
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/central"
+                          onClick={(e) => { e.preventDefault(); changeView('central'); }}
+                          className="hover:text-[#E5B05C] transition-colors block text-left"
+                        >
+                          {isBn ? 'মধ্য কলকাতা পরিক্রমা' : 'Central Kolkata Tour'}
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/bonedi"
+                          onClick={(e) => { e.preventDefault(); changeView('bonedi'); }}
+                          className="hover:text-[#E5B05C] transition-colors block text-left"
+                        >
+                          {isBn ? 'ঐতিহ্যবাহী বনেদি বাড়ির পুজো' : 'Traditional Bonedi Bari Pujas'}
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/route-planner"
+                          onClick={(e) => { e.preventDefault(); changeView('route-planner'); }}
+                          className="hover:text-[#E5B05C] transition-colors block text-left"
+                        >
+                          {isBn ? 'স্মার্ট রুট প্ল্যানার' : 'Smart Route Planner'}
+                        </a>
+                      </li>
                     </ul>
                   </div>
 
@@ -633,23 +752,43 @@ function AppContent() {
                       {isBn ? 'সেবা ও সহায়িকা' : 'Services & Guide'}
                     </h3>
                     <ul className="space-y-2 text-xs sm:text-sm text-[#F7F2E7]/85 font-serif">
-                      <li><button onClick={() => changeView('medical')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'জরুরি চিকিৎসা সেবা' : 'Emergency Medical Services'}</button></li>
-                      <li><button onClick={() => changeView('facilities')} className="hover:text-[#E5B05C] transition-colors text-left">{isBn ? 'রেস্তোরাঁ ও সুবিধা' : 'Food & Amenities'}</button></li>
                       <li>
-                        <button
-                          onClick={() => {
-                            changeView('home');
-                            setTimeout(() => {
-                              document.getElementById('stories')?.scrollIntoView({ behavior: 'smooth' });
-                            }, 100);
-                          }}
-                          className="hover:text-[#E5B05C] transition-colors text-left"
+                        <a
+                          href="/medical"
+                          onClick={(e) => { e.preventDefault(); changeView('medical'); }}
+                          className="hover:text-[#E5B05C] transition-colors block text-left"
+                        >
+                          {isBn ? 'জরুরি চিকিৎসা সেবা' : 'Emergency Medical Services'}
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/facilities"
+                          onClick={(e) => { e.preventDefault(); changeView('facilities'); }}
+                          className="hover:text-[#E5B05C] transition-colors block text-left"
+                        >
+                          {isBn ? 'রেস্তোরাঁ ও সুবিধা' : 'Food & Amenities'}
+                        </a>
+                      </li>
+                      <li>
+                        <a
+                          href="/history"
+                          onClick={(e) => { e.preventDefault(); changeView('history'); }}
+                          className="hover:text-[#E5B05C] transition-colors block text-left"
                         >
                           {isBn ? 'কলকাতার পুজো ইতিহাস' : 'Kolkata Puja History'}
-                        </button>
+                        </a>
                       </li>
-                      <li><a href="#" className="hover:text-[#E5B05C] transition-colors">{isBn ? 'প্রাইভেসি পলিসি' : 'Privacy Policy'}</a></li>
-                      <li><a href="#" className="hover:text-[#E5B05C] transition-colors">{isBn ? 'টার্মস & কন্ডিশনস' : 'Terms & Conditions'}</a></li>
+                      <li>
+                        <span className="text-[#F7F2E7]/60 cursor-default">
+                          {isBn ? 'প্রাইভেসি পলিসি' : 'Privacy Policy'}
+                        </span>
+                      </li>
+                      <li>
+                        <span className="text-[#F7F2E7]/60 cursor-default">
+                          {isBn ? 'টার্মস & কন্ডিশনস' : 'Terms & Conditions'}
+                        </span>
+                      </li>
                     </ul>
                   </div>
 
@@ -711,24 +850,25 @@ function AppContent() {
                   </p>
                   <div className="flex flex-wrap gap-2 text-xs font-serif text-[#F7F2E7]/80">
                     {[
-                      { name: isBn ? 'বাগবাজার সার্বজনীন' : 'Bagbazar Sarbojanin', view: 'north' },
-                      { name: isBn ? 'একডালিয়া এভারগ্রীন' : 'Ekdalia Evergreen', view: 'south' },
-                      { name: isBn ? 'সুরুচি সংঘ' : 'Suruchi Sangha', view: 'south' },
-                      { name: isBn ? 'শ্রীভূমি স্পোর্টিং' : 'Sreebhumi Sporting', view: 'north' },
-                      { name: isBn ? 'চেতলা অগ্রণী' : 'Chetla Agrani', view: 'south' },
-                      { name: isBn ? 'ছাতুবাবু লাহা বাড়ি' : 'Chhatubabu Laha Bari', view: 'bonedi' },
-                      { name: isBn ? 'শোভাবাজার রাজবাড়ি' : 'Shovabazar Rajbari', view: 'bonedi' },
-                      { name: isBn ? 'মোহাম্মদ আলী পার্ক' : 'Mohammad Ali Park', view: 'central' },
-                      { name: isBn ? 'মুদিয়ালি ক্লাব' : 'Mudiali Club', view: 'south' },
-                      { name: isBn ? 'বালিগঞ্জ কালচারাল' : 'Ballygunge Cultural', view: 'south' },
+                      { name: isBn ? 'বাগবাজার সার্বজনীন' : 'Bagbazar Sarbojanin', view: 'north', path: '/north' },
+                      { name: isBn ? 'একডালিয়া এভারগ্রীন' : 'Ekdalia Evergreen', view: 'south', path: '/south' },
+                      { name: isBn ? 'সুরুচি সংঘ' : 'Suruchi Sangha', view: 'south', path: '/south' },
+                      { name: isBn ? 'শ্রীভূমি স্পোর্টিং' : 'Sreebhumi Sporting', view: 'north', path: '/north' },
+                      { name: isBn ? 'চেতলা অগ্রণী' : 'Chetla Agrani', view: 'south', path: '/south' },
+                      { name: isBn ? 'ছাতুবাবু লাহা বাড়ি' : 'Chhatubabu Laha Bari', view: 'bonedi', path: '/bonedi' },
+                      { name: isBn ? 'শোভাবাজার রাজবাড়ি' : 'Shovabazar Rajbari', view: 'bonedi', path: '/bonedi' },
+                      { name: isBn ? 'মোহাম্মদ আলী পার্ক' : 'Mohammad Ali Park', view: 'central', path: '/central' },
+                      { name: isBn ? 'মুদিয়ালি ক্লাব' : 'Mudiali Club', view: 'south', path: '/south' },
+                      { name: isBn ? 'বালিগঞ্জ কালচারাল' : 'Ballygunge Cultural', view: 'south', path: '/south' },
                     ].map((puja, idx) => (
-                      <button
+                      <a
                         key={idx}
-                        onClick={() => changeView(puja.view as ViewType)}
-                        className="bg-[#2A090C]/80 hover:bg-[#581318] hover:text-[#E5B05C] border border-[#581318] px-2.5 py-1 rounded-full text-[11px] transition-colors text-left cursor-pointer"
+                        href={puja.path}
+                        onClick={(e) => { e.preventDefault(); changeView(puja.view as ViewType); }}
+                        className="bg-[#2A090C]/80 hover:bg-[#581318] hover:text-[#E5B05C] border border-[#581318] px-2.5 py-1 rounded-full text-[11px] transition-colors text-left cursor-pointer inline-block"
                       >
                         ❁ {puja.name}
-                      </button>
+                      </a>
                     ))}
                   </div>
                 </div>

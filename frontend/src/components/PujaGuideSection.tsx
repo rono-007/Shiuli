@@ -20,9 +20,10 @@ interface PujaGuideSectionProps {
   onSelectRoutePlanner?: () => void;
   onSelectFacilities?: () => void;
   onSelectMedical?: () => void;
+  onSelectHistory?: () => void;
 }
 
-export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRoutePlanner, onSelectFacilities, onSelectMedical }) => {
+export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRoutePlanner, onSelectFacilities, onSelectMedical, onSelectHistory }) => {
   const { t, language } = useLanguage();
   const [isEssentialModalOpen, setIsEssentialModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -42,7 +43,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       id: 'heritage',
       title: isBn ? 'ইতিহাস ও ঐতিহ্য' : 'History & Heritage',
       subtitle: isBn ? 'কলকাতার পুজোর গল্প ও ঐতিহ্য' : 'Stories & heritage of Kolkata Pujas',
-      isUnderDev: true,
+      isUnderDev: false,
       items: isBn ? [
         'পুজোর ইতিহাস ও বিবর্তন',
         'প্রসিদ্ধ পুজোর পুরস্কার',
@@ -248,29 +249,63 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
                 ))}
               </ul>
 
-              {/* Action Pill Button */}
+              {/* Action Pill Button / Anchor */}
               <div className="w-full pt-2 mt-auto">
-                <button 
-                  onClick={() => {
-                    if (card.id === 'food') {
+                {card.id === 'heritage' ? (
+                  <a 
+                    href="/history"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onSelectHistory?.();
+                    }}
+                    className={`w-full py-2.5 px-4 rounded-xl flex items-center justify-between text-xs font-serif font-bold transition-all duration-300 ${card.btnBg} cursor-pointer shadow-2xs group/btn`}
+                  >
+                    <span>{isBn ? 'বিস্তারিত দেখুন' : 'View Details'}</span> 
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+                  </a>
+                ) : card.id === 'food' ? (
+                  <a 
+                    href="/facilities"
+                    onClick={(e) => {
+                      e.preventDefault();
                       onSelectFacilities?.();
-                    } else if (card.id === 'safety') {
+                    }}
+                    className={`w-full py-2.5 px-4 rounded-xl flex items-center justify-between text-xs font-serif font-bold transition-all duration-300 ${card.btnBg} cursor-pointer shadow-2xs group/btn`}
+                  >
+                    <span>{isBn ? 'বিস্তারিত দেখুন' : 'View Details'}</span> 
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+                  </a>
+                ) : card.id === 'safety' ? (
+                  <a 
+                    href="/medical"
+                    onClick={(e) => {
+                      e.preventDefault();
                       onSelectMedical?.();
-                    } else if (card.id === 'emergency') {
-                      setIsEssentialModalOpen(true);
-                    } else {
-                      showDevToast(card.title);
-                    }
-                  }}
-                  className={`w-full py-2.5 px-4 rounded-xl flex items-center justify-between text-xs font-serif font-bold transition-all duration-300 ${card.btnBg} cursor-pointer shadow-2xs group/btn`}
-                >
-                  <span>
-                    {card.isUnderDev 
-                      ? (isBn ? 'উন্নয়নাধীন' : 'Under Development')
-                      : (isBn ? 'বিস্তারিত দেখুন' : 'View Details')}
-                  </span> 
-                  <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
-                </button>
+                    }}
+                    className={`w-full py-2.5 px-4 rounded-xl flex items-center justify-between text-xs font-serif font-bold transition-all duration-300 ${card.btnBg} cursor-pointer shadow-2xs group/btn`}
+                  >
+                    <span>{isBn ? 'বিস্তারিত দেখুন' : 'View Details'}</span> 
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+                  </a>
+                ) : (
+                  <button 
+                    onClick={() => {
+                      if (card.id === 'emergency') {
+                        setIsEssentialModalOpen(true);
+                      } else {
+                        showDevToast(card.title);
+                      }
+                    }}
+                    className={`w-full py-2.5 px-4 rounded-xl flex items-center justify-between text-xs font-serif font-bold transition-all duration-300 ${card.btnBg} cursor-pointer shadow-2xs group/btn`}
+                  >
+                    <span>
+                      {card.isUnderDev 
+                        ? (isBn ? 'উন্নয়নাধীন' : 'Under Development')
+                        : (isBn ? 'বিস্তারিত দেখুন' : 'View Details')}
+                    </span> 
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
+                  </button>
+                )}
               </div>
 
             </div>
@@ -294,22 +329,26 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
               <MapPin className="w-6 h-6 fill-[#921925] text-[#F0DCD0]" />
             </div>
             <div>
-              <h4 className="text-lg md:text-xl font-serif font-bold text-[#5B1015] mb-0.5">
+              <h3 className="text-lg md:text-xl font-serif font-bold text-[#5B1015] mb-0.5">
                 {t.routePlannerTitle}
-              </h4>
+              </h3>
               <p className="text-xs md:text-sm text-[#7A5B4C] font-serif max-w-lg">
                 {t.routePlannerSubtitle}
               </p>
             </div>
           </div>
 
-          <button 
-            onClick={onSelectRoutePlanner}
+          <a 
+            href="/route-planner"
+            onClick={(e) => {
+              e.preventDefault();
+              onSelectRoutePlanner?.();
+            }}
             className="w-full sm:w-auto justify-center bg-[#921925] hover:bg-[#78141D] text-white font-serif font-semibold text-xs md:text-sm px-6 py-3 rounded-xl flex items-center gap-2 transition-all shadow-md active:scale-95 cursor-pointer whitespace-nowrap"
           >
             <span>{t.routePlannerBtn}</span>
             <ArrowRight className="w-4 h-4" />
-          </button>
+          </a>
         </div>
 
         {/* Footer Tagline */}

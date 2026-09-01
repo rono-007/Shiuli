@@ -23,8 +23,9 @@ const HeroSection: React.FC<HeroSectionProps> = ({ onSelectZone }) => {
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
         <img
           src="/her-banner.png"
-          alt="Durga Puja Hero Banner"
+          alt="Durga Puja grand celebration and cultural heritage in Kolkata - Shiuli"
           className="w-full h-full object-cover object-[80%_center] sm:object-[75%_center] lg:object-fill lg:object-top"
+          fetchPriority="high"
         />
 
         {/* Mobile dark scrim overlay */}

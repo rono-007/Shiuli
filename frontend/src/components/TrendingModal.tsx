@@ -1,12 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { 
   X, Search, Sparkles, Award, Compass,
   Flame, MapPin, CheckCircle2, ChevronRight,
   Camera, Landmark, Palette, MessageSquare
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-import trendingData from '../data/trending.json';
-
 interface TrendingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -36,8 +34,24 @@ const TrendingModal: React.FC<TrendingModalProps> = ({ isOpen, onClose, onSelect
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedZone, setSelectedZone] = useState<string>('all');
 
-  // Load trending intelligence data directly from bundled frontend json
-  const [data] = useState<TrendingData>(trendingData as TrendingData);
+  const [data, setData] = useState<TrendingData | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && !data && !loading) {
+      setLoading(true);
+      fetch('/data/trending.json')
+        .then(res => res.json())
+        .then(resData => {
+          setData(resData);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error("Failed to load trending data", err);
+          setLoading(false);
+        });
+    }
+  }, [isOpen, data, loading]);
 
   const pandals: PandalTrending[] = data?.pandals || [];
 
@@ -233,6 +247,11 @@ const TrendingModal: React.FC<TrendingModalProps> = ({ isOpen, onClose, onSelect
           </div>
 
           {/* Pandals Grid */}
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="w-8 h-8 border-4 border-[#7A1F26]/20 border-t-[#7A1F26] rounded-full animate-spin"></div>
+            </div>
+          ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {filteredPandals.map((pandal) => {
               const CatIcon = getCategoryIcon(pandal.primary_category);
@@ -325,8 +344,9 @@ const TrendingModal: React.FC<TrendingModalProps> = ({ isOpen, onClose, onSelect
               );
             })}
           </div>
+          )}
 
-          {filteredPandals.length === 0 && (
+          {!loading && filteredPandals.length === 0 && (
             <div className="text-center py-16 bg-white border border-[#3D0D11]/10 rounded-2xl p-6">
               <Compass className="w-10 h-10 text-[#3D0D11]/30 mx-auto mb-2" />
               <h4 className="text-base font-bold text-[#3D0D11]">

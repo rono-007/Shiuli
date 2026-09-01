@@ -1,6 +1,267 @@
 {
   "history": [
     {
+      "id": "014ccb71-e5d4-4459-ab65-4cc7a0a16229",
+      "name": "UD",
+      "email": "uditduttabose@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:48:07.045052+00:00",
+      "error": null
+    },
+    {
+      "id": "92b24c26-0b68-4a3b-b7a4-c6cbfad98c6b",
+      "name": "AGNIK BOSE",
+      "email": "agnikbose3@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:48:02.098998+00:00",
+      "error": null
+    },
+    {
+      "id": "0648d3a3-43b7-48da-9814-90da71293a26",
+      "name": "Soumyajit Nath",
+      "email": "languagevid2025@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:47:56.533878+00:00",
+      "error": null
+    },
+    {
+      "id": "e43d7fb4-6954-45d5-b7ae-cadd97e285e4",
+      "name": "Amlan Bhowmik",
+      "email": "amlanbhowmik85@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:47:48.805133+00:00",
+      "error": null
+    },
+    {
+      "id": "a7d6f495-bf89-4652-8969-bb805c4ac0ef",
+      "name": "Sourav mandal",
+      "email": "souravmandal419@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:47:41.638068+00:00",
+      "error": null
+    },
+    {
+      "id": "77d8a275-f024-4646-ab41-6d2ccf970ba7",
+      "name": "SOURJO DEBNATH",
+      "email": "sourjodebnath04@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:47:35.577495+00:00",
+      "error": null
+    },
+    {
+      "id": "629ad8b1-aaf4-4453-884a-fadd86391de0",
+      "name": "Bittu shaw",
+      "email": "bikookie069@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:47:28.204647+00:00",
+      "error": null
+    },
+    {
+      "id": "64e02a11-c705-47ad-9da4-aeb0536cd90d",
+      "name": "Soumya Biswas",
+      "email": "soumyabiswas450@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:47:22.903515+00:00",
+      "error": null
+    },
+    {
+      "id": "cabd81d1-e317-4963-9839-96bfed0b620a",
+      "name": "JJ",
+      "email": "j@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:47:16.379849+00:00",
+      "error": null
+    },
+    {
+      "id": "b7f71522-54c3-4340-85c1-7ca16fd40a8e",
+      "name": "Dingdong",
+      "email": "subhh2004@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:46:48.545307+00:00",
+      "error": null
+    },
+    {
+      "id": "fe477a14-811b-414c-b796-85ee90f58636",
+      "name": "Deepanjan Banerjee",
+      "email": "deepban.13@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:46:32.292419+00:00",
+      "error": null
+    },
+    {
+      "id": "3a6e6308-aab2-437d-a888-520d16da02b1",
+      "name": "Reman Biswas",
+      "email": "myselfreman@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:46:24.277925+00:00",
+      "error": null
+    },
+    {
+      "id": "278432d2-b3e4-4b68-ae30-29de0c1d7eda",
+      "name": "vivek Mandal",
+      "email": "vivekmandal100100@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:46:18.843831+00:00",
+      "error": null
+    },
+    {
+      "id": "cdebccce-c4a7-4d9f-a541-9ae8ff3e58a5",
+      "name": "Tushar Panja",
+      "email": "tusharpanja508@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:46:10.506546+00:00",
+      "error": null
+    },
+    {
+      "id": "d5161fc0-38fa-4e18-a106-02d7944c5801",
+      "name": "Rudraksha Paul",
+      "email": "rudrakshapaul2006@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:45:53.014311+00:00",
+      "error": null
+    },
+    {
+      "id": "88e8ff0c-4944-4e93-9b21-07114f7d28a8",
+      "name": "Akash pathak",
+      "email": "iamakashpathak@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:45:26.544592+00:00",
+      "error": null
+    },
+    {
+      "id": "f3bb78ec-abd0-4125-81bf-3ea74141a020",
+      "name": "Nakshatra Bhunia",
+      "email": "digantasumitabhunia@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:45:07.936022+00:00",
+      "error": null
+    },
+    {
+      "id": "943144d2-9800-4cca-b1fc-c76be312778f",
+      "name": "Koushik Roy",
+      "email": "koushikapoor@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:44:38.912155+00:00",
+      "error": null
+    },
+    {
+      "id": "e847754f-4506-4e30-a0c3-40745d2c1aeb",
+      "name": "Siddartha Dey",
+      "email": "siddarthadey14@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:44:29.799557+00:00",
+      "error": null
+    },
+    {
+      "id": "17500fca-bdff-4cf6-816e-63fce3b97b68",
+      "name": "Anisha Sinha",
+      "email": "1977ssinha@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:44:22.797111+00:00",
+      "error": null
+    },
+    {
+      "id": "10f0b190-0ad2-425b-b9fc-4214b80f8d2b",
+      "name": "Debopam Roy",
+      "email": "roydebopam2005@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:44:00.170034+00:00",
+      "error": null
+    },
+    {
+      "id": "9ca55308-3562-4478-bc6a-9fcda0819fd8",
+      "name": "P Basak",
+      "email": "basakp15@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:43:46.802865+00:00",
+      "error": null
+    },
+    {
+      "id": "8177054e-ce08-40e3-af3b-573a61f2e12c",
+      "name": "Sunny Roy",
+      "email": "funnyfun0069@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:42:57.525112+00:00",
+      "error": null
+    },
+    {
+      "id": "0a22dec0-f29a-4f36-86ac-c9ab6c9155f0",
+      "name": "Ajoy",
+      "email": "dasajoykumar129@gmail.com",
+      "status": "failed",
+      "action": "send",
+      "timestamp": "2026-08-31T16:42:44.291266+00:00",
+      "error": "Connection unexpectedly closed: The read operation timed out"
+    },
+    {
+      "id": "1ddcde9a-f607-4747-8e7c-64e6836d106b",
+      "name": "Debargha Malakar",
+      "email": "malakar7debargha@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:42:28.787187+00:00",
+      "error": null
+    },
+    {
+      "id": "59bdb446-bbab-4a73-82ae-ef024c604034",
+      "name": "Ankur Mukherjee",
+      "email": "joy2710mukherjee@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:42:23.278812+00:00",
+      "error": null
+    },
+    {
+      "id": "1f41a49e-8b9e-422e-8793-cab63a58c565",
+      "name": "Gourav Chatterjee",
+      "email": "rgmod007@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:42:16.241790+00:00",
+      "error": null
+    },
+    {
+      "id": "6ae06463-a24c-452e-808c-b44d098ae4d0",
+      "name": "Rohan Saha",
+      "email": "rohansaha010120@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:42:09.212929+00:00",
+      "error": null
+    },
+    {
+      "id": "b9fe4d2b-738e-4584-b734-e7a4f3ab36ae",
+      "name": "Roudranil Das",
+      "email": "rudys.unofficial.email@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-08-31T16:42:02.554246+00:00",
+      "error": null
+    },
+    {
       "id": "592703f3-11a2-4ee4-9ee2-55c7b08cf6ce",
       "name": "Sreeja Basu",
       "email": "sreejabasu115@gmail.com",

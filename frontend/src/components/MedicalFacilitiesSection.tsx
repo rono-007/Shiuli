@@ -65,137 +65,140 @@ const MedicalFacilitiesSection: React.FC<MedicalFacilitiesSectionProps> = ({ onB
   const CACHE_KEY = 'shiuli_medical_facilities_cache';
   const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
 
-  const fetchMedicalFacilities = async () => {
-    setError(null);
+  const officialHelplines = [
+    {
+      title: "Kolkata Police Emergency Control Room (Lalbazar)",
+      subTitle: "24x7 Central Emergency Control Room",
+      categoryName: "Police & Emergency Control",
+      type: "Police & Helpline",
+      address: "Lalbazar Street, Bowbazar, Kolkata, West Bengal 700001",
+      phone: "100 / 033-2214-3024",
+      location: { lat: 22.5732, lng: 88.3533 },
+      url: "https://www.google.com/maps/search/?api=1&query=22.5732,88.3533"
+    },
+    {
+      title: "Kolkata Police Women Helpline",
+      subTitle: "24x7 Dedicated Women Safety Support",
+      categoryName: "Women Helpline",
+      type: "Police & Helpline",
+      address: "Lalbazar Headquarters, Kolkata, West Bengal 700001",
+      phone: "1091 / 033-2214-1913",
+      location: { lat: 22.5732, lng: 88.3533 },
+      url: "https://www.google.com/maps/search/?api=1&query=22.5732,88.3533"
+    },
+    {
+      title: "West Bengal Emergency Ambulance Service",
+      subTitle: "State Medical Emergency & Care Support",
+      categoryName: "Ambulance & Care Support",
+      type: "Ambulance & Care",
+      address: "Swasthya Bhawan, Salt Lake, Kolkata, West Bengal 700091",
+      phone: "102 / 033-2286-0000",
+      location: { lat: 22.5726, lng: 88.4312 },
+      url: "https://www.google.com/maps/search/?api=1&query=22.5726,88.4312"
+    },
+    {
+      title: "Kolkata Fire Brigade Control Room",
+      subTitle: "24x7 Fire & Disaster Emergency",
+      categoryName: "Fire Brigade",
+      type: "Police & Helpline",
+      address: "13D, Mirza Ghalib St, Esplanade, Kolkata, West Bengal 700016",
+      phone: "101 / 033-2252-1165",
+      location: { lat: 22.5552, lng: 88.3551 },
+      url: "https://www.google.com/maps/search/?api=1&query=22.5552,88.3551"
+    }
+  ];
 
-    // 1. Check valid localStorage cache first
+  const filterMedical = (dataset: any[]) => {
+    return dataset.filter(item => {
+      if (!item || !item.location) return false;
+      const cat = (item.categoryName || '').toLowerCase();
+      const title = (item.title || '').toLowerCase();
+      const rawCats = item.categories;
+      const catsStr = Array.isArray(rawCats) ? rawCats.join(' ').toLowerCase() : String(rawCats || '').toLowerCase();
+      const blob = `${title} ${cat} ${catsStr}`;
+      return blob.includes('hospital') || blob.includes('nursing') || blob.includes('clinic') || blob.includes('pharmacy') || blob.includes('chemist') || blob.includes('medicine') || blob.includes('police') || blob.includes('ambulance') || blob.includes('হাসপাতাল') || blob.includes('ফার্মেসি') || blob.includes('থানা') || blob.includes('পুলিশ');
+    }).map(item => {
+      const cat = (item.categoryName || '').toLowerCase();
+      const title = (item.title || '').toLowerCase();
+      let typeName = 'Pharmacy & Medical Store';
+      if (title.includes('hospital') || cat.includes('hospital') || title.includes('nursing') || cat.includes('nursing')) {
+        typeName = 'Hospital & Nursing Home';
+      } else if (title.includes('police') || cat.includes('police') || title.includes('থানা')) {
+        typeName = 'Police & Helpline';
+      } else if (title.includes('ambulance') || cat.includes('ambulance')) {
+        typeName = 'Ambulance & Care';
+      }
+
+      return {
+        title: item.title,
+        subTitle: item.subTitle,
+        categoryName: item.categoryName,
+        type: typeName,
+        address: item.address,
+        phone: item.phone,
+        location: item.location,
+        url: item.url || `https://www.google.com/maps/search/?api=1&query=${item.location.lat},${item.location.lng}`
+      };
+    });
+  };
+
+  const fetchMedicalFacilities = async (zone: 'north' | 'south') => {
+    // If we already have data for this zone, don't show full page loader again
+    if (data[zone] && data[zone].length > 0) {
+      setLoading(false);
+      return;
+    }
+
+    setError(null);
+    setLoading(true);
+
     try {
       const cached = secureGetItem<{ timestamp: number; data: any }>(CACHE_KEY);
-      if (cached) {
-        if (cached.data && (Date.now() - cached.timestamp < CACHE_TTL)) {
-          if (Array.isArray(cached.data.north) && Array.isArray(cached.data.south)) {
-            setData(cached.data);
-            setLoading(false);
-            // Fetch in background to update cache silently
-            fetchFromApiOrFallback(true);
-            return;
-          }
+      if (cached && cached.data && (Date.now() - cached.timestamp < CACHE_TTL)) {
+        if (Array.isArray(cached.data[zone]) && cached.data[zone].length > 0) {
+          setData(prev => ({ ...prev, [zone]: cached.data[zone] }));
+          setLoading(false);
+          fetchFromApiOrFallback(zone, true);
+          return;
         }
       }
     } catch (e) {
       console.warn('Medical facilities cache read error:', e);
     }
 
-    setLoading(true);
-    await fetchFromApiOrFallback(false);
+    await fetchFromApiOrFallback(zone, false);
   };
 
-  const fetchFromApiOrFallback = async (isBackground = false) => {
+  const fetchFromApiOrFallback = async (zone: 'north' | 'south', isBackground = false) => {
     try {
-      const [northRes, southRes] = await Promise.all([
-        fetch('/data/north_facilities_light.json'),
-        fetch('/data/south_facilities_light.json')
-      ]);
+      const res = await fetch(`/data/${zone}_facilities_light.json`);
+      if (!res.ok) throw new Error(`Failed to fetch static facilities for ${zone}`);
       
-      if (!northRes.ok || !southRes.ok) throw new Error('Failed to fetch static facilities');
+      const jsonData = await res.json();
+      const filtered = filterMedical(jsonData);
+      const result = [...officialHelplines, ...filtered];
+
+      setData(prev => {
+        const newData = { ...prev, [zone]: result };
+        // We persist both north and south data in one cache object if available
+        const cacheData = {
+          north: newData.north.length > 0 ? newData.north : (secureGetItem<{ data: any }>(CACHE_KEY)?.data?.north || []),
+          south: newData.south.length > 0 ? newData.south : (secureGetItem<{ data: any }>(CACHE_KEY)?.data?.south || [])
+        };
+        localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data: cacheData }));
+        return newData;
+      });
       
-      const northF = await northRes.json();
-      const southF = await southRes.json();
-
-      const officialHelplines = [
-          {
-            title: "Kolkata Police Emergency Control Room (Lalbazar)",
-            subTitle: "24x7 Central Emergency Control Room",
-            categoryName: "Police & Emergency Control",
-            type: "Police & Helpline",
-            address: "Lalbazar Street, Bowbazar, Kolkata, West Bengal 700001",
-            phone: "100 / 033-2214-3024",
-            location: { lat: 22.5732, lng: 88.3533 },
-            url: "https://www.google.com/maps/search/?api=1&query=22.5732,88.3533"
-          },
-          {
-            title: "Kolkata Police Women Helpline",
-            subTitle: "24x7 Dedicated Women Safety Support",
-            categoryName: "Women Helpline",
-            type: "Police & Helpline",
-            address: "Lalbazar Headquarters, Kolkata, West Bengal 700001",
-            phone: "1091 / 033-2214-1913",
-            location: { lat: 22.5732, lng: 88.3533 },
-            url: "https://www.google.com/maps/search/?api=1&query=22.5732,88.3533"
-          },
-          {
-            title: "West Bengal Emergency Ambulance Service",
-            subTitle: "State Medical Emergency & Care Support",
-            categoryName: "Ambulance & Care Support",
-            type: "Ambulance & Care",
-            address: "Swasthya Bhawan, Salt Lake, Kolkata, West Bengal 700091",
-            phone: "102 / 033-2286-0000",
-            location: { lat: 22.5726, lng: 88.4312 },
-            url: "https://www.google.com/maps/search/?api=1&query=22.5726,88.4312"
-          },
-          {
-            title: "Kolkata Fire Brigade Control Room",
-            subTitle: "24x7 Fire & Disaster Emergency",
-            categoryName: "Fire Brigade",
-            type: "Police & Helpline",
-            address: "13D, Mirza Ghalib St, Esplanade, Kolkata, West Bengal 700016",
-            phone: "101 / 033-2252-1165",
-            location: { lat: 22.5552, lng: 88.3551 },
-            url: "https://www.google.com/maps/search/?api=1&query=22.5552,88.3551"
-          }
-        ];
-
-        const filterMedical = (dataset: any[]) => {
-          return dataset.filter(item => {
-            if (!item || !item.location) return false;
-            const cat = (item.categoryName || '').toLowerCase();
-            const title = (item.title || '').toLowerCase();
-            const rawCats = item.categories;
-            const catsStr = Array.isArray(rawCats) ? rawCats.join(' ').toLowerCase() : String(rawCats || '').toLowerCase();
-            const blob = `${title} ${cat} ${catsStr}`;
-            return blob.includes('hospital') || blob.includes('nursing') || blob.includes('clinic') || blob.includes('pharmacy') || blob.includes('chemist') || blob.includes('medicine') || blob.includes('police') || blob.includes('ambulance') || blob.includes('হাসপাতাল') || blob.includes('ফার্মেসি') || blob.includes('থানা') || blob.includes('পুলিশ');
-          }).map(item => {
-            const cat = (item.categoryName || '').toLowerCase();
-            const title = (item.title || '').toLowerCase();
-            let typeName = 'Pharmacy & Medical Store';
-            if (title.includes('hospital') || cat.includes('hospital') || title.includes('nursing') || cat.includes('nursing')) {
-              typeName = 'Hospital & Nursing Home';
-            } else if (title.includes('police') || cat.includes('police') || title.includes('থানা')) {
-              typeName = 'Police & Helpline';
-            } else if (title.includes('ambulance') || cat.includes('ambulance')) {
-              typeName = 'Ambulance & Care';
-            }
-
-            return {
-              title: item.title,
-              subTitle: item.subTitle,
-              categoryName: item.categoryName,
-              type: typeName,
-              address: item.address,
-              phone: item.phone,
-              location: item.location,
-              url: item.url || `https://www.google.com/maps/search/?api=1&query=${item.location.lat},${item.location.lng}`
-            };
-          });
-        };
-
-        const fallbackResult = {
-          north: [...officialHelplines, ...filterMedical(northF)],
-          south: [...officialHelplines, ...filterMedical(southF)]
-        };
-
-        setData(fallbackResult);
-        localStorage.setItem(CACHE_KEY, JSON.stringify({ timestamp: Date.now(), data: fallbackResult }));
-      } catch (err) {
-        if (!isBackground) setError(isBn ? 'ডাটা লোড করা সম্ভব হয়নি।' : 'Failed to load emergency & medical facilities data.');
-      } finally {
+    } catch (err) {
+      if (!isBackground) setError(isBn ? 'ডাটা লোড করা সম্ভব হয়নি।' : 'Failed to load emergency & medical facilities data.');
+    } finally {
       if (!isBackground) setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchMedicalFacilities();
-  }, [isBn]);
+    fetchMedicalFacilities(activeZone);
+  }, [activeZone, isBn]);
 
   const currentList = data[activeZone] || [];
 
@@ -257,7 +260,7 @@ const MedicalFacilitiesSection: React.FC<MedicalFacilitiesSectionProps> = ({ onB
           {/* Action Bar */}
           <div className="flex items-center gap-3">
             <button 
-              onClick={fetchMedicalFacilities} 
+              onClick={() => fetchMedicalFacilities(activeZone)} 
               disabled={loading}
               className="flex items-center gap-2 bg-[#8C1D24] hover:bg-[#6E161C] text-white px-5 py-2.5 rounded-2xl text-xs font-serif font-bold transition-all cursor-pointer disabled:opacity-50 shadow-md active:scale-95"
             >

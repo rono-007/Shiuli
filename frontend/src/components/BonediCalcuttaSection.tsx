@@ -4,7 +4,6 @@ const PandalMap = React.lazy(() => import('./PandalMap'));
 import { getNearestMetro } from '../utils/nearbyFacilities';
 import { secureGetItem, secureSetItem } from '../utils/storage';
 
-import fallbackData from '../data/bonedi_kolkata.json';
 
 interface Pandal {
   name: string;
@@ -27,7 +26,7 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
         return cachedData;
       }
     } catch (e) {}
-    return fallbackData as Pandal[];
+    return [];
   };
 
   const [pandals, setPandals] = useState<Pandal[]>(getInitialPandals);
@@ -83,8 +82,10 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
       setLoading(false);
     }
 
-    // Ensure fallbackData is used if fetch failed or was empty
-    setPandals(prev => (prev.length > 0 ? prev : (fallbackData as Pandal[])));
+    // If fetch failed or returned empty, ensure it doesn't crash
+    if (pandals.length === 0) {
+        setPandals([]);
+    }
   };
 
 
@@ -121,11 +122,11 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
             
             <div className="space-y-2">
               <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-ink/40">III • পরিক্রমা সূচী</span>
-              <h2 className="text-4xl md:text-5xl font-serif text-ink italic font-normal tracking-wide">
-                বনেদি কলকাতার মণ্ডপসমূহ
-              </h2>
+              <h1 className="text-4xl md:text-5xl font-serif text-ink italic font-normal tracking-wide">
+                ঐতিহ্যবাহী বনেদি কলকাতার পুজো ও ঠাকুরদালান গাইড
+              </h1>
               <p className="text-xs font-sans text-ink/60 max-w-lg leading-relaxed">
-                ঐতিহ্যবাহী বাগবাজার থেকে শ্যামবাজার ও শোভাবাজারের শতাব্দীপ্রাচীন দুর্গাপুজো এবং তাদের সঠিক কাস্টম মানচিত্র নির্দেশিকা।
+                শোভাবাজার রাজবাড়ি, ছাতুবাবু লাহাবাড়ি ও দর্জিপাড়া মিত্রবাড়ি সহ কলকাতার শতাব্দীপ্রাচীন পারিবারিক ঐতিহ্যবাহী বনেদি পুজো নির্দেশিকা।
               </p>
             </div>
           </div>

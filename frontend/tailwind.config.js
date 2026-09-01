@@ -17,6 +17,7 @@ export default {
       fontFamily: {
         serif: ['"Noto Serif Bengali"', '"Tiro Bangla"', 'serif'],
         sans: ['"Noto Sans Bengali"', '"Anek Bangla"', '"Hind Siliguri"', 'sans-serif'],
+        playfair: ['"Playfair Display"', 'serif'],
       },
       animation: {
         'fade-in-slow': 'fadeInSlow 1.5s ease-out forwards',

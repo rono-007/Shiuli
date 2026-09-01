@@ -1,0 +1,1103 @@
+{
+  "page": {
+    "id": "history_heritage",
+    "title": "History & Heritage",
+    "subtitle": "Stories that shaped Kolkata's Puja culture",
+    "eyebrow": "KOLKATA DURGA PUJA ARCHIVE",
+    "intro": "Explore the history, people, traditions, artistry and neighbourhoods that transformed Durga Puja from an aristocratic household celebration into one of Kolkata's defining cultural expressions.",
+    "hero": {
+      "title": "A Living Tradition",
+      "description": "Kolkata's Durga Puja is not a single tradition frozen in time. It is a living cultural practice shaped by aristocratic households, neighbourhood communities, artists, artisans, musicians, designers and millions of visitors.",
+      "accent": "❁",
+      "image_suggestion": "Old Kolkata Durga Puja archival photograph with warm sepia and deep maroon treatment"
+    }
+  },
+
+  "heritage_highlight": {
+    "title": "A Festival Recognised as Living Heritage",
+    "year": 2021,
+    "recognition": "UNESCO Representative List of the Intangible Cultural Heritage of Humanity",
+    "description": "Durga Puja in Kolkata was inscribed on UNESCO's Representative List of the Intangible Cultural Heritage of Humanity in 2021. UNESCO describes the festival as a major public expression of religion and art, involving families, Puja committees, priests, drummers, artists, craftspersons and designers.",
+    "why_it_matters": [
+      "The tradition combines ritual, sculpture, architecture, music, food, performance and community participation.",
+      "Clay images are traditionally created by artisans in the months leading up to the festival.",
+      "The festival connects artistic production with religious practice and public participation.",
+      "Kolkata's neighbourhoods become temporary cultural spaces through pandals, installations and processions.",
+      "UNESCO highlighted the inclusive and collaborative character of the celebration."
+    ],
+    "inscribed_year": 2021,
+    "source_note": "UNESCO inscription: 16.COM 8.b.15",
+    "source_url": "https://ich.unesco.org/en/RL/durga-puja-in-kolkata-00703"
+  },
+
+  "sections": [
+    {
+      "id": "history_evolution",
+      "number": "01",
+      "title": "History & Evolution of Puja",
+      "subtitle": "From household worship to a city-wide celebration",
+      "intro": "Durga Puja in Bengal has a history stretching back several centuries, but the form that visitors associate with Kolkata Puja today developed gradually. What began in many places as a household-centred celebration became increasingly connected with public participation, neighbourhood organisation, craftsmanship, temporary architecture and eventually contemporary art. The story is therefore not simply about the history of a religious festival. It is also a story about how Kolkata itself changed—from aristocratic and zamindari households to an increasingly urban, community-oriented city.",
+      
+      "chapters": [
+        {
+          "chapter": "01",
+          "title": "Before the Modern Kolkata Puja",
+          "subtitle": "Durga worship before the city became Kolkata",
+          "body": [
+            "The autumnal celebration of Durga Puja has deep roots in Bengal, predating the emergence of modern Kolkata.",
+            "By the medieval period, worship of Durga had become established within Bengali Hindu religious culture. Over subsequent centuries, different social groups and regions developed their own forms of worship.",
+            "The form of Puja that later became associated with wealthy Bengali households was particularly important in the history of Kolkata. As Bengal's political and economic landscape changed, powerful landholding and merchant families increasingly used elaborate religious celebrations as important occasions for family, society and patronage.",
+            "The development of Kolkata under colonial rule created a particularly important environment for this transformation. The rise of wealthy Bengali zamindars and merchants coincided with the growing influence of the East India Company. Historical research describes this relationship between wealth, status, colonial power and public celebration as an important part of the development of elite Durga Puja in Calcutta."
+          ]
+        },
+        {
+          "chapter": "02",
+          "title": "The Era of the Zamindar and Bonedi Bari",
+          "subtitle": "When Puja belonged to the household",
+          "body": [
+            "Before community Puja became dominant in Kolkata's streets, elaborate celebrations were closely associated with wealthy and aristocratic families.",
+            "These celebrations were organised within the family's residence and often centred around a Thakur Dalan—a ceremonial courtyard or architectural space where the deity was worshipped.",
+            "The Puja became much more than a private religious ritual. It could bring together members of the extended family, priests, musicians, artisans, invited guests, performers, local workers, and business and political connections.",
+            "The scale of these celebrations could also communicate the wealth and social position of the family. Historical accounts of eighteenth- and nineteenth-century elite Puja describe extensive festivities, music, entertainment and lavish displays of wealth.",
+            "The household itself became part of the heritage. That is why many historic Bonedi Bari Pujas today are inseparable from the architecture and history of the families who maintain them."
+          ],
+          "flow_diagram": [
+            "HOUSE",
+            "THAKUR DALAN",
+            "FAMILY PUJA",
+            "RITUAL + MUSIC + FOOD + GATHERING",
+            "FAMILY & SOCIAL IDENTITY"
+          ]
+        },
+        {
+          "chapter": "03",
+          "title": "Shobhabazar Rajbari",
+          "subtitle": "One of Kolkata's defining aristocratic Pujas",
+          "year": "1757",
+          "body": [
+            "One of the most famous examples is Shobhabazar Rajbari. West Bengal Tourism identifies the Puja at Shobhabazar Rajbari with Raja Nabakrishna Deb and dates its beginning to 1757, immediately after the Battle of Plassey.",
+            "The Rajbari remains an important example of Kolkata's aristocratic heritage and contains a central courtyard known as the Nat Mandap.",
+            "The Puja became associated with the social world of eighteenth-century Calcutta, where wealthy Bengali families interacted with European officials and other members of the colonial elite."
+          ],
+          "historical_caution": {
+            "title": "An Important Historical Caution",
+            "note": "The popular story connecting Nabakrishna Deb's Puja directly to Robert Clive after the Battle of Plassey is widely repeated, and West Bengal Tourism presents the 1757 tradition. However, historians have questioned some details of the famous 'Company Puja' origin story, including the claim that Clive directly initiated or attended the first Puja in the way later narratives describe.",
+            "presentation_principle": "Shobhabazar Rajbari preserves one of Kolkata's oldest and most historically significant aristocratic Puja traditions, traditionally dated to 1757."
+          }
+        },
+        {
+          "chapter": "04",
+          "title": "The Shift Toward Community Worship",
+          "subtitle": "From one household to many participants (1759 Barowari Tradition)",
+          "year": "1759",
+          "body": [
+            "The most important transformation in the history of Kolkata Puja was the movement from household-centred worship toward collective celebration.",
+            "A major tradition associated with this transformation is Barowari Puja. The word is traditionally connected with baro (twelve) and yari (friendship).",
+            "The best-known origin account places an early Barowari Puja at Guptipara in Hooghly in 1759. According to the commonly told story, a group of twelve men organised a community celebration after people from outside a zamindar household were prevented from participating in its Puja.",
+            "This account is widely repeated, but the details should be treated as a traditional historical narrative rather than an absolutely established single-origin event.",
+            "Regardless of the details of the origin story, the broader development was important because Puja increasingly entered shared public space."
+          ],
+          "before_after": {
+            "before": ["Family", "Household", "Private courtyard"],
+            "after": ["Community", "Shared organisation", "Public space", "Collective participation"]
+          }
+        },
+        {
+          "chapter": "05",
+          "title": "What \"Barowari\" Changed",
+          "subtitle": "The beginning of a different social model",
+          "body": [
+            "Community organisation changed more than the location of the festival. It introduced a different way of financing and organising Puja.",
+            "Community members could contribute money and resources, committees could coordinate the celebration, and artisans could be commissioned to create the idol and decorations.",
+            "Historical reporting on the Guptipara tradition describes subscriptions and collective fundraising as part of the organisation of the early community Puja.",
+            "This created a model that could be reproduced in other communities. By the late eighteenth and nineteenth centuries, similar forms of collective celebration appeared in other parts of Bengal."
+          ]
+        },
+        {
+          "chapter": "06",
+          "title": "From Barowari to Sarbojanin",
+          "subtitle": "When \"community\" became \"for everyone\"",
+          "body": [
+            "The next major development was the emergence of Sarbojanin Puja.",
+            "The Bengali word 'sarbojanin' means for everyone.",
+            "While Barowari emphasised the collective organisation of the Puja, Sarbojanin increasingly came to express its broader public character.",
+            "The distinction should not be treated as a perfectly clean historical break—the terms have often been used interchangeably—but the development represents an important movement toward wider public participation."
+          ]
+        },
+        {
+          "chapter": "07",
+          "title": "1910 — Community Puja Comes to Calcutta",
+          "subtitle": "The Balaram Bose Ghat tradition",
+          "year": "1910",
+          "body": [
+            "A major milestone in Kolkata's community-Puja history came in 1910, when a Barowari Puja was organised near Balaram Bose Ghat, in the area where Bhawanipore and Kalighat meet.",
+            "Historical accounts identify this as the first Barowari Puja in Calcutta, and it became an important example of the transition toward the public, community-oriented form of Puja that would become widespread in the city.",
+            "The organisation of this Puja was significant because it was explicitly conceived as a celebration in which the wider public could participate."
+          ],
+          "transformation_flow": [
+            "ZAMINDAR PUJA",
+            "BAROWARI",
+            "COMMUNITY PUJA",
+            "SARBOJANIN",
+            "PARA PUJA"
+          ]
+        },
+        {
+          "chapter": "08",
+          "title": "Puja and the Nationalist Period",
+          "subtitle": "A festival in a changing society",
+          "body": [
+            "The early twentieth century was also a period of major political and social change in Bengal.",
+            "Community gatherings offered opportunities for people to meet and organise outside the formal structures of colonial administration.",
+            "Some historical research connects the growth of Sarbojanin Puja with the nationalist movement and describes community Puja spaces as places where social and political mobilisation could occur. The 1910 Balaram Bose Ghat Puja, in particular, has been discussed in this context.",
+            "This does not mean that every Puja was a nationalist political event. Rather, the important point is that the public character of the festival gave it a new social role: functioning simultaneously as religious celebration + community gathering + cultural event + public space."
+          ]
+        },
+        {
+          "chapter": "09",
+          "title": "The Para Becomes the Heart of Puja",
+          "subtitle": "From community organisation to neighbourhood identity",
+          "body": [
+            "As community Puja spread across Kolkata, the para—the neighbourhood—became one of its most important units.",
+            "Local residents, clubs and Puja committees began taking responsibility for organising annual celebrations. The Puja became something that belonged to the neighbourhood.",
+            "This created a strong connection between place and Puja. A person could identify a Puja not simply by the deity being worshipped, but by the neighbourhood, club or community that organised it."
+          ],
+          "contributions": [
+            "Subscriptions & community fundraising",
+            "Volunteering & local involvement",
+            "Decoration & artistic curation",
+            "Cultural programmes & music",
+            "Logistics & crowd management",
+            "Food distribution & community activities"
+          ]
+        },
+        {
+          "chapter": "10",
+          "title": "The Artisan Becomes Central",
+          "subtitle": "A larger festival created a larger artistic ecosystem (Kumartuli)",
+          "body": [
+            "The expansion of community Puja had an important effect on artisans. As more neighbourhoods organised their own celebrations, demand surged for Durga idols, decorative work, pandal construction, lighting, painting, sculpture and musical performances.",
+            "The community-Puja system therefore helped create an expanding network of people whose livelihoods became connected with the festival.",
+            "This is particularly visible in Kumartuli, Kolkata's historic idol-making district. Indian Express reporting specifically notes the increased demand for kumor/artisan work and the competitive development of clay artistry between neighbourhoods."
+          ],
+          "ecosystem_flow": [
+            "MORE COMMUNITY PUJAS",
+            "MORE IDOLS REQUIRED",
+            "GREATER DEMAND FOR ARTISANS",
+            "GROWTH OF IDOL-MAKING NETWORK",
+            "KUMARTULI'S CULTURAL IMPORTANCE"
+          ]
+        },
+        {
+          "chapter": "11",
+          "title": "Competition Changes the Festival",
+          "subtitle": "When neighbourhoods began trying to create something different",
+          "body": [
+            "As more neighbourhoods began organising Puja, another element emerged: competition.",
+            "Neighbourhoods wanted to attract visitors and create memorable celebrations. This encouraged continuous experimentation in idol design, decoration, lighting, pandal construction, and artistic presentation.",
+            "The modern visitor's experience of moving from one pandal to another—comparing architecture, lighting, idols and themes—is connected to this longer history of neighbourhood participation and artistic competition."
+          ]
+        },
+        {
+          "chapter": "12",
+          "title": "From Pandal to Temporary Architecture",
+          "subtitle": "The pandal becomes part of the story",
+          "body": [
+            "Originally, the temporary structure existed primarily as a space for the Puja. Over time, its design became increasingly central.",
+            "A pandal could now represent a traditional Bengali building, a temple, a village environment, a historic monument, a craft tradition, an imaginary structure, or a contemporary art installation.",
+            "The structure itself became part of the visitor's experience, creating an expansive new artistic language.",
+            "UNESCO's documentation of Kolkata's Durga Puja specifically recognises the festival's large temporary structures and the collaborative work of artists, designers and craftspersons."
+          ],
+          "formula": "PANDAL + IDOL + LIGHTING + SOUND + MATERIAL + STORY = THEME PUJA"
+        },
+        {
+          "chapter": "13",
+          "title": "The Rise of Theme Puja",
+          "subtitle": "When an idea became the centre of the celebration",
+          "body": [
+            "The modern theme Puja represents perhaps the most visible transformation of Kolkata's contemporary festival.",
+            "Instead of beginning with decoration and adding a theme later, the entire environment can be designed around a central concept.",
+            "The result is no longer simply a decorated Puja venue—it becomes a temporary narrative environment."
+          ],
+          "theme_categories": [
+            {
+              "name": "Heritage",
+              "description": "Recreating or reinterpreting a historic architectural tradition."
+            },
+            {
+              "name": "Folk Culture",
+              "description": "Using regional crafts, textiles or indigenous artistic practices."
+            },
+            {
+              "name": "Social Issues",
+              "description": "Using visual storytelling to raise awareness of contemporary concerns."
+            },
+            {
+              "name": "Environment",
+              "description": "Exploring pollution, climate, water, forests or ecological sustainability."
+            },
+            {
+              "name": "Literature",
+              "description": "Building an installation around a literary work or cultural narrative."
+            }
+          ]
+        },
+        {
+          "chapter": "14",
+          "title": "Kolkata Puja Today",
+          "subtitle": "Tradition and experimentation exist together",
+          "body": [
+            "Today's Kolkata Puja contains several different histories at the same time. These are not competing versions of the festival—they are different layers of the same evolving tradition."
+          ],
+          "layers": [
+            { "name": "Bonedi Bari Puja", "desc": "Centuries-old family traditions and inherited rituals" },
+            { "name": "Para Puja", "desc": "Neighbourhood participation and community warmth" },
+            { "name": "Theme Puja", "desc": "Contemporary art, architecture and conceptual installations" },
+            { "name": "Kumartuli", "desc": "Traditional craftsmanship and generational clay artistry" },
+            { "name": "Dhak & Rituals", "desc": "Inherited cultural practices and timeless percussion" },
+            { "name": "Modern Lighting & Technology", "desc": "Contemporary creative expression and illuminated spectacles" }
+          ]
+        },
+        {
+          "chapter": "15",
+          "title": "What Has Actually Changed?",
+          "subtitle": "The transformation in five stages",
+          "stages": [
+            {
+              "number": "01",
+              "question": "Who organised it?",
+              "then": "Primarily wealthy families and aristocratic patrons.",
+              "later": "Community committees and neighbourhood organisations.",
+              "today": "Large collaborative networks involving committees, artists, designers, artisans, sponsors and volunteers."
+            },
+            {
+              "number": "02",
+              "question": "Where did it happen?",
+              "then": "Household courtyards (Thakur Dalan) and private family residences.",
+              "later": "Community spaces, parks and residential neighbourhoods.",
+              "today": "Streets, public squares, avenues and temporary architectural installations across the whole city."
+            },
+            {
+              "number": "03",
+              "question": "Who participated?",
+              "then": "Primarily family members, invited guests and associated dependants.",
+              "later": "Neighbourhood residents and local communities.",
+              "today": "A massive, diverse public audience spanning residents, national visitors and international travellers."
+            },
+            {
+              "number": "04",
+              "question": "What did the structure mean?",
+              "then": "A sacred place for religious worship.",
+              "later": "A decorated community venue for collective gathering.",
+              "today": "An immersive architectural and artistic statement as well as an active ritual space."
+            },
+            {
+              "number": "05",
+              "question": "What does Puja represent?",
+              "then": "Family tradition, aristocratic patronage and religious observance.",
+              "later": "Community identity, local solidarity and participation.",
+              "today": "Religion + culture + public art + neighbourhood pride + collective celebration."
+            }
+          ]
+        },
+        {
+          "chapter": "16",
+          "title": "2021 — UNESCO Recognition",
+          "subtitle": "A Living Tradition on the world stage",
+          "year": "2021",
+          "body": [
+            "In 2021, Durga Puja in Kolkata was inscribed on UNESCO's Representative List of the Intangible Cultural Heritage of Humanity.",
+            "Importantly, UNESCO did not simply recognise the physical pandals. The recognition encompasses the broader cultural ecosystem: rituals, artistic practices, idol-making, temporary architecture, music, community participation, craftsmanship and generational knowledge transmission.",
+            "UNESCO describes the festival as an important public expression of religion and art involving families, Puja committees, priests, drummers, artists, craftspersons and designers. That makes the history of Puja especially relevant to the idea of living heritage."
+          ]
+        },
+        {
+          "chapter": "17",
+          "title": "Why the Evolution Matters",
+          "subtitle": "It changed the relationship between the festival and the city",
+          "body": [
+            "The most important change was not simply that Puja became bigger. It became more deeply embedded in the social fabric of Kolkata.",
+            "And yet the older layers have not disappeared: the Bonedi Bari still performs inherited rituals, Kumartuli artisans continue working with clay, neighbourhood committees still organise annual celebrations, Dhakis still perform, and priests still conduct rituals.",
+            "At the same time, contemporary artists create experimental pandals and new generations reinterpret the festival. That coexistence of continuity and change is the central story of Kolkata's Puja."
+          ],
+          "journey": [
+            "HOUSEHOLD",
+            "FAMILY TRADITION",
+            "COMMUNITY",
+            "NEIGHBOURHOOD",
+            "PUBLIC SPACE",
+            "ARTISTIC EXPRESSION",
+            "CITY-WIDE CULTURAL EVENT",
+            "LIVING HERITAGE"
+          ]
+        },
+        {
+          "chapter": "18",
+          "title": "Closing — The City Remembers",
+          "subtitle": "From a household tradition to a city's identity",
+          "body": [
+            "Kolkata's Durga Puja was not transformed overnight. It evolved through generations of families, communities, artisans, organisers and artists.",
+            "The festival moved from private courtyards into public spaces, from family patronage toward community organisation, and from traditional structures toward increasingly ambitious forms of temporary art and architecture.",
+            "Yet its older foundations remain visible. That is why the history of Kolkata's Puja is not simply a story about the past. It is a story that continues to be written every autumn."
+          ]
+        }
+      ],
+
+      "timeline": [
+        {
+          "period": "Medieval Bengal",
+          "title": "Early Roots",
+          "description": "Durga worship in Bengal has deep historical roots, although the exact beginnings of the autumnal form of the festival are difficult to establish with certainty. Government tourism material places the broader tradition in Bengal at least as far back as the medieval period.",
+          "importance": "The religious tradition that later became Kolkata's Durga Puja existed before Kolkata itself emerged as a major colonial city."
+        },
+        {
+          "period": "16th Century",
+          "title": "The Rise of Aristocratic Puja",
+          "description": "Durga Puja became increasingly associated with wealthy landed families and zamindars who organised elaborate household celebrations.",
+          "notable_story": "Raja Kangsanarayan of Taherpur is frequently associated with an elaborate Durga Puja in the late 16th century.",
+          "importance": "The aristocratic model established many rituals, architectural arrangements and social customs that later household pujas retained."
+        },
+        {
+          "period": "1610",
+          "title": "The Sabarna Tradition",
+          "description": "The Sabarna Roy Choudhury family tradition is associated with a Durga Puja begun in 1610 by Lakshmikanta Majumdar.",
+          "location": "Barisha, South Kolkata",
+          "importance": "The tradition is frequently cited among the oldest continuously maintained Durga Puja traditions connected with present-day Kolkata.",
+          "heritage_connection": "The Sabarna family is also closely connected with the early history of the three villages—Sutanuti, Gobindapur and Kalikata—that formed the foundation of colonial Calcutta."
+        },
+        {
+          "period": "1757",
+          "title": "Shobhabazar Rajbari",
+          "description": "Raja Nabakrishna Deb's Durga Puja at Shobhabazar became one of the most famous aristocratic pujas in Kolkata. The celebration is traditionally associated with 1757, immediately following the Battle of Plassey.",
+          "location": "Shobhabazar, North Kolkata",
+          "importance": "The Puja became an important intersection of religion, aristocratic culture, colonial politics, music, theatre and social life.",
+          "heritage_features": [
+            "Nat Mandap",
+            "large courtyard",
+            "traditional household rituals",
+            "aristocratic patronage",
+            "historic cultural gatherings"
+          ]
+        },
+        {
+          "period": "1759",
+          "title": "The Barowari Idea",
+          "description": "The community form of Durga Puja is commonly traced to a Barowari Puja at Guptipara in Hooghly. The name is associated with 'baro' and 'yari'—twelve friends.",
+          "location": "Guptipara, Hooghly",
+          "importance": "This model represented a major conceptual shift from a restricted household celebration toward collective participation.",
+          "historical_note": "The precise details of the origin story vary between historical accounts, so this should be presented as a traditional historical account rather than an uncontested single-origin fact."
+        },
+        {
+          "period": "19th Century",
+          "title": "Community Puja Expands",
+          "description": "Public and subscription-based celebrations gradually became increasingly important in urban Bengal.",
+          "importance": "The festival began moving beyond elite household courtyards into community spaces, creating the foundation for the modern Sarbojanin tradition."
+        },
+        {
+          "period": "1910",
+          "title": "Sarbojanin Puja",
+          "description": "The word 'Sarbojanin'—meaning for everyone—became associated with the public community-puja tradition in Kolkata during the early twentieth century near Balaram Bose Ghat.",
+          "importance": "This period marked the growing importance of public participation and community organisation.",
+          "cultural_context": "Durga Puja increasingly became a space for social organisation, public gathering and cultural expression."
+        },
+        {
+          "period": "1920s",
+          "title": "Puja and Nationalism",
+          "description": "Community pujas became important social spaces during the period of India's nationalist movement.",
+          "importance": "Public festivals provided opportunities for community organisation, cultural solidarity and expressions of collective identity.",
+          "example": "Simla Byayam Samiti's Puja, established in 1926, is associated with this wider nationalist-era history."
+        },
+        {
+          "period": "Mid-20th Century",
+          "title": "The Para Becomes the Centre",
+          "description": "Neighbourhood clubs, local committees and community organisations increasingly became the principal organisers of public Puja.",
+          "importance": "The festival became deeply embedded in Kolkata's para culture.",
+          "characteristics": [
+            "subscription-based organisation",
+            "community volunteering",
+            "local cultural programmes",
+            "shared meals",
+            "neighbourhood competitions",
+            "public entertainment"
+          ]
+        },
+        {
+          "period": "Late 20th Century",
+          "title": "The Rise of Theme Puja",
+          "description": "Puja committees increasingly began experimenting with temporary architecture, unusual materials, artistic themes and contemporary social narratives.",
+          "importance": "The pandal evolved from a functional temporary shelter into an independent artistic installation."
+        },
+        {
+          "period": "21st Century",
+          "title": "Art, Design and Global Attention",
+          "description": "Contemporary Kolkata Puja combines traditional rituals with architecture, installation art, sculpture, lighting design, sound, storytelling and social commentary.",
+          "importance": "The festival has become one of the city's most significant public cultural events and a major platform for collaborative artistic production."
+        },
+        {
+          "period": "2021",
+          "title": "UNESCO Recognition",
+          "description": "Durga Puja in Kolkata was inscribed on UNESCO's Representative List of the Intangible Cultural Heritage of Humanity.",
+          "importance": "The recognition formally highlighted the festival's artistic, social, cultural and community significance.",
+          "source": "UNESCO"
+        }
+      ]
+    },
+
+    {
+      "id": "traditional_pujas",
+      "number": "02",
+      "title": "The Bonedi Bari Tradition",
+      "subtitle": "Where Puja became part of the architecture of the household",
+      "description": "Kolkata's old aristocratic households preserve a distinctive form of Durga Puja in which ritual, family history, architecture, music and inherited customs remain closely connected.",
+      
+      "features": [
+        {
+          "title": "The Thakur Dalan",
+          "description": "The courtyard or ceremonial space of the ancestral house forms the architectural heart of many traditional household pujas."
+        },
+        {
+          "title": "Family Rituals",
+          "description": "Ritual practices are transmitted through generations and may differ considerably from one family to another."
+        },
+        {
+          "title": "Traditional Idol Forms",
+          "description": "Many Bonedi Bari pujas retain distinctive idol arrangements, decoration styles and ritual conventions."
+        },
+        {
+          "title": "Family History",
+          "description": "The Puja often acts as a living archive of family identity, migration, patronage and social history."
+        },
+        {
+          "title": "Public Access",
+          "description": "Although rooted in household traditions, many historic pujas are now visited by the wider public."
+        }
+      ],
+
+      "featured_houses": [
+        {
+          "name": "Shobhabazar Rajbari",
+          "area": "Shobhabazar",
+          "zone": "North Kolkata",
+          "heritage_note": "One of Kolkata's best-known aristocratic Puja traditions, associated with Raja Nabakrishna Deb.",
+          "architectural_features": [
+            "Nat Mandap",
+            "central courtyard",
+            "arched colonial-era architectural elements",
+            "traditional household Puja arrangement"
+          ]
+        },
+        {
+          "name": "Sabarna Roy Choudhury Bari",
+          "area": "Barisha",
+          "zone": "South Kolkata",
+          "heritage_note": "A major historic family tradition associated with the early history of Kolkata."
+        }
+      ]
+    },
+
+    {
+      "id": "community_puja",
+      "number": "03",
+      "title": "From Barowari to Sarbojanin",
+      "subtitle": "When Puja became everyone's festival",
+      "description": "The transformation from household Puja to community Puja changed the social geography of the festival. Instead of being centred exclusively within aristocratic homes, Puja increasingly occupied streets, neighbourhoods, clubs and public spaces.",
+      
+      "concepts": [
+        {
+          "term": "Barowari",
+          "meaning": "Traditionally associated with a collective Puja organised by a group of friends or community members.",
+          "significance": "An important step toward public participation."
+        },
+        {
+          "term": "Sarbojanin",
+          "meaning": "For everyone or belonging to everyone.",
+          "significance": "The term became closely associated with public community Puja."
+        },
+        {
+          "term": "Para Puja",
+          "meaning": "Neighbourhood Puja.",
+          "significance": "Represents the deeply local nature of Kolkata's community celebrations."
+        }
+      ],
+
+      "social_transformation": [
+        "The festival moved into public neighbourhood spaces.",
+        "Community fundraising became important.",
+        "Local clubs and committees became cultural institutions.",
+        "Young volunteers became central to organisation.",
+        "Cultural programmes expanded beyond ritual worship.",
+        "The Puja became a shared annual meeting point for residents."
+      ]
+    },
+
+    {
+      "id": "ritual_and_culture",
+      "number": "04",
+      "title": "The Ritual Calendar",
+      "subtitle": "Ten days of worship, art and collective memory",
+      
+      "days": [
+        {
+          "name": "Mahalaya",
+          "significance": "Traditionally marks the beginning of the Devi Paksha and is strongly associated with the invocation of Goddess Durga.",
+          "cultural_symbol": "Mahishasura Mardini broadcast and devotional music have become an important part of Kolkata's seasonal memory."
+        },
+        {
+          "name": "Shashthi",
+          "significance": "Associated with the ceremonial arrival and establishment of the goddess.",
+          "experience": "Many pandals formally open around this period."
+        },
+        {
+          "name": "Saptami",
+          "significance": "Major day of worship and ritual observance.",
+          "tradition": "Nabapatrika ritual forms an important part of Bengali Puja practice."
+        },
+        {
+          "name": "Ashtami",
+          "significance": "One of the most important worship days.",
+          "traditions": [
+            "Pushpanjali",
+            "Kumari Puja in some traditions",
+            "Sandhi Puja"
+          ]
+        },
+        {
+          "name": "Navami",
+          "significance": "Continued worship and cultural celebration."
+        },
+        {
+          "name": "Dashami",
+          "significance": "The concluding day of the main worship period.",
+          "traditions": [
+            "Sindoor Khela in many Bengali communities",
+            "Bisarjan procession",
+            "Immersion of the idol"
+          ]
+        }
+      ],
+
+      "cultural_note": "Ritual practices vary between household, community and regional traditions. Shiuli should avoid presenting one ritual sequence as universally identical."
+    },
+
+    {
+      "id": "art_and_craft",
+      "number": "05",
+      "title": "The Art Behind Puja",
+      "subtitle": "Thousands of hands create a festival that lasts only a few days",
+      
+      "crafts": [
+        {
+          "title": "Kumartuli",
+          "description": "Kolkata's historic idol-making district is one of the most important centres of clay sculpture associated with the city's Puja tradition.",
+          "craft_process": [
+            "bamboo framework",
+            "straw structure",
+            "layers of clay",
+            "surface finishing",
+            "painting",
+            "ornamentation",
+            "final detailing"
+          ]
+        },
+        {
+          "title": "Pandal Architecture",
+          "description": "Temporary structures can range from interpretations of traditional Bengali architecture to contemporary installations and elaborate themed environments."
+        },
+        {
+          "title": "Lighting",
+          "description": "Lighting has become an important part of the visual language of modern Puja, ranging from traditional decorative illumination to programmed artistic installations."
+        },
+        {
+          "title": "Dhak",
+          "description": "The sound of the dhak is one of the defining auditory signatures of Bengali Puja."
+        },
+        {
+          "title": "Alpana",
+          "description": "Decorative floor and surface patterns contribute to the visual language of Bengali ritual spaces."
+        },
+        {
+          "title": "Traditional Materials",
+          "description": "Artists and artisans use clay, bamboo, straw, cloth, wood, paper, metal, paint and many other materials depending on the design."
+        }
+      ]
+    },
+
+    {
+      "id": "theme_puja",
+      "number": "06",
+      "title": "The Age of Theme Puja",
+      "subtitle": "When the pandal became an artwork",
+      
+      "description": "Modern Kolkata witnessed the growing prominence of theme-based Puja, in which the pandal, idol, lighting, sound and visitor movement are designed around a central artistic or conceptual idea.",
+      
+      "theme_categories": [
+        {
+          "category": "Heritage Reconstruction",
+          "description": "Reinterpretations of historic buildings, monuments and traditional architecture."
+        },
+        {
+          "category": "Folk Art",
+          "description": "Themes drawing from regional crafts, painting traditions, textiles and indigenous artistic practices."
+        },
+        {
+          "category": "Social Commentary",
+          "description": "Pujas addressing social inequalities, migration, education, gender, poverty or other contemporary issues."
+        },
+        {
+          "category": "Environmental Themes",
+          "description": "Themes focusing on climate, water conservation, pollution, biodiversity and sustainable living."
+        },
+        {
+          "category": "Literature",
+          "description": "Installations inspired by Bengali and international literature, writers and fictional worlds."
+        },
+        {
+          "category": "Global Art",
+          "description": "Themes incorporating artistic traditions and architectural references from around the world."
+        }
+      ],
+
+      "design_elements": [
+        "Pandal architecture",
+        "Idol design",
+        "Lighting",
+        "Soundscape",
+        "Material selection",
+        "Visitor movement",
+        "Graphic design",
+        "Storytelling",
+        "Interactive installation"
+      ]
+    },
+
+    {
+      "id": "awards",
+      "number": "07",
+      "title": "Famous Puja Awards & Honors",
+      "subtitle": "How excellence became part of the Puja culture",
+      "description": "Kolkata's Puja awards have become an important part of the modern festival ecosystem. Different awards recognise artistic excellence, theme interpretation, idol-making, community spirit, environmental responsibility and overall presentation.",
+      
+      "major_awards": [
+        {
+          "name": "Asian Paints Sharad Shamman",
+          "type": "Puja recognition",
+          "history": "The award programme was instituted in 1985 and has grown into one of the best-known Puja award platforms.",
+          "categories": [
+            "Best Puja / Shreshtho Pujo",
+            "Discovery",
+            "Artisan / Idol Artist",
+            "Innovative Excellence",
+            "Special recognition categories"
+          ],
+          "importance": "It helped formalise public recognition of artistic and organisational excellence in community Puja.",
+          "official_source": "Asian Paints Sharad Shamman"
+        },
+        {
+          "name": "Biswa Bangla Sharad Samman",
+          "type": "Government-linked recognition",
+          "description": "A state-associated recognition ecosystem that highlights excellence across different aspects of Durga Puja.",
+          "note": "Award categories and annual winners should be stored separately by year."
+        },
+        {
+          "name": "Kolkata Shree",
+          "type": "Municipal recognition",
+          "description": "A Kolkata-focused recognition programme with categories covering artistic excellence, lighting, environmental responsibility and other dimensions.",
+          "note": "Annual categories and winners should be stored as year-specific records."
+        },
+        {
+          "name": "CESC The Telegraph True Spirit Puja",
+          "type": "Community and responsible celebration recognition",
+          "description": "A recognition programme associated with responsible and community-oriented Puja practices.",
+          "note": "Use year-specific award data rather than hard-coding winners."
+        }
+      ],
+
+      "award_philosophy": [
+        "Artistic excellence",
+        "Theme interpretation",
+        "Idol craftsmanship",
+        "Pandal design",
+        "Lighting",
+        "Innovation",
+        "Community participation",
+        "Environmental responsibility",
+        "Accessibility",
+        "Responsible celebration"
+      ],
+
+      "ui_recommendation": "Display awards as an expandable archive by year rather than a static list."
+    },
+
+    {
+      "id": "heritage_walks",
+      "number": "08",
+      "title": "Historic Heritage Walks",
+      "subtitle": "Walk through the streets where Kolkata's Puja history lives",
+      "description": "Kolkata's heritage is best experienced on foot. Historic neighbourhoods connect old houses, temples, courtyards, idol-making districts, ghats and Puja traditions.",
+      
+      "walks": [
+        {
+          "id": "north_kolkata_puja_walk",
+          "title": "The Old North Kolkata Puja Trail",
+          "estimated_distance": "3–5 km",
+          "estimated_duration": "2–3 hours",
+          "areas": [
+            "Shobhabazar",
+            "Ahiritola",
+            "Bagbazar",
+            "Kumartuli",
+            "Chitpur"
+          ],
+          "highlights": [
+            "Shobhabazar Rajbari",
+            "historic Bonedi Bari traditions",
+            "Kumartuli artisan district",
+            "Ahiritola neighbourhood",
+            "Bagbazar cultural history",
+            "Hooghly riverfront connections"
+          ],
+          "story": "A journey through aristocratic houses, artisan communities and neighbourhood Puja traditions."
+        },
+        {
+          "id": "barisha_heritage_walk",
+          "title": "The Sabarna Heritage Trail",
+          "estimated_distance": "2–4 km",
+          "estimated_duration": "2 hours",
+          "areas": [
+            "Barisha",
+            "Behala"
+          ],
+          "highlights": [
+            "Sabarna Roy Choudhury heritage",
+            "historic family Puja traditions",
+            "old residential architecture",
+            "local temples and cultural sites"
+          ]
+        },
+        {
+          "id": "kumartuli_artisan_walk",
+          "title": "Inside Kumartuli",
+          "estimated_distance": "1–2 km",
+          "estimated_duration": "1–2 hours",
+          "areas": [
+            "Kumartuli"
+          ],
+          "highlights": [
+            "idol-making workshops",
+            "clay preparation",
+            "bamboo structures",
+            "unfinished idols",
+            "artisan lanes"
+          ],
+          "best_time": "Before the main Puja days when workshops are actively preparing idols."
+        }
+      ],
+
+      "walk_ui": {
+        "map": true,
+        "route_line": true,
+        "distance": true,
+        "estimated_time": true,
+        "heritage_points": true,
+        "pandal_points": true,
+        "nearest_metro": true,
+        "start_navigation": true
+      }
+    },
+
+    {
+      "id": "neighbourhood_culture",
+      "number": "09",
+      "title": "The Para Culture",
+      "subtitle": "Why neighbourhoods are the heart of Kolkata Puja",
+      
+      "description": "Kolkata's Puja cannot be understood only through famous pandals. Much of its cultural strength comes from neighbourhood participation—the para, where residents organise, volunteer, decorate, perform and celebrate together.",
+      
+      "elements": [
+        {
+          "title": "Club Culture",
+          "description": "Local clubs and associations often function as year-round social and cultural institutions."
+        },
+        {
+          "title": "Chanda",
+          "description": "Community fundraising has historically helped finance neighbourhood celebrations."
+        },
+        {
+          "title": "Volunteers",
+          "description": "Residents contribute to crowd management, decoration, cultural programmes, logistics and community service."
+        },
+        {
+          "title": "Cultural Programmes",
+          "description": "Music, theatre, dance, recitation and community events form an important part of the festival."
+        },
+        {
+          "title": "Food",
+          "description": "Community meals, bhog, street food and family cooking make food an important part of the Puja experience."
+        }
+      ]
+    },
+
+    {
+      "id": "women_and_participation",
+      "number": "10",
+      "title": "People Behind the Puja",
+      "subtitle": "A festival built by communities",
+      
+      "participants": [
+        {
+          "group": "Puja Committees",
+          "role": "Organisation, fundraising, permissions, logistics and programming."
+        },
+        {
+          "group": "Sculptors",
+          "role": "Creation of the Durga image and associated figures."
+        },
+        {
+          "group": "Pandal Artists",
+          "role": "Conceptualising and constructing temporary architecture."
+        },
+        {
+          "group": "Lighting Artists",
+          "role": "Creating the visual illumination and atmosphere."
+        },
+        {
+          "group": "Dhakis",
+          "role": "Providing traditional percussion and ritual sound."
+        },
+        {
+          "group": "Priests",
+          "role": "Conducting ritual worship."
+        },
+        {
+          "group": "Decorators",
+          "role": "Creating visual installations and finishing details."
+        },
+        {
+          "group": "Volunteers",
+          "role": "Managing crowds, events and community services."
+        },
+        {
+          "group": "Women and Community Groups",
+          "role": "Participation in ritual, organisation, cultural activities and safeguarding traditions."
+        }
+      ]
+    },
+
+    {
+      "id": "food_and_festival",
+      "number": "11",
+      "title": "Food, Music & Social Life",
+      "subtitle": "The festival beyond the pandal",
+      
+      "food": [
+        "Bhog",
+        "Khichuri",
+        "Labra",
+        "Payesh",
+        "Luchi",
+        "Alur Dom",
+        "Bengali sweets",
+        "Street food"
+      ],
+      
+      "music": [
+        "Dhak",
+        "Dhunuchi dance rhythms",
+        "Devotional songs",
+        "Traditional Bengali music",
+        "Contemporary cultural performances"
+      ],
+      
+      "social_experience": [
+        "Family gatherings",
+        "Neighbourhood adda",
+        "Pandal hopping",
+        "Cultural programmes",
+        "Community meals",
+        "Night-time city walks"
+      ]
+    },
+
+    {
+      "id": "immersion",
+      "number": "12",
+      "title": "Bisarjan",
+      "subtitle": "The journey home",
+      
+      "description": "The conclusion of Durga Puja is marked by the farewell procession and immersion of the idol. The immersion symbolises the return of the goddess after her temporary stay among her devotees.",
+      
+      "elements": [
+        {
+          "title": "Sindoor Khela",
+          "description": "A farewell custom observed in many Bengali communities, particularly among married women."
+        },
+        {
+          "title": "Procession",
+          "description": "Puja committees and devotees accompany the idol toward the immersion site."
+        },
+        {
+          "title": "Dhak",
+          "description": "Traditional drumming accompanies the farewell."
+        },
+        {
+          "title": "Immersion",
+          "description": "The clay image is immersed in water, completing the ritual cycle."
+        },
+        {
+          "title": "Bijoya",
+          "description": "After the immersion, people exchange greetings and visit relatives and friends as part of Bijoya Dashami."
+        }
+      ]
+    },
+
+    {
+      "id": "unesco",
+      "number": "13",
+      "title": "UNESCO & Global Heritage",
+      "subtitle": "Kolkata's Puja enters the global heritage conversation",
+      
+      "recognition": {
+        "organisation": "UNESCO",
+        "list": "Representative List of the Intangible Cultural Heritage of Humanity",
+        "year": 2021,
+        "inscription": "16.COM 8.b.15"
+      },
+      
+      "unesco_highlights": [
+        "Durga Puja in Kolkata was inscribed in 2021.",
+        "The festival was recognised as an important expression of religion and art.",
+        "The heritage involves families, Puja committees, priests, drummers, artists and craftspersons.",
+        "The festival supports collaborative artistic production.",
+        "Large temporary installations and pandals are central to the contemporary expression.",
+        "The festival brings together diverse communities in public cultural spaces."
+      ],
+      
+      "heritage_principle": "The significance of the heritage lies not only in the visible festival but also in the knowledge, skills, practices and community relationships transmitted across generations."
+    },
+
+    {
+      "id": "modern_kolkata",
+      "number": "14",
+      "title": "Puja in Contemporary Kolkata",
+      "subtitle": "Tradition meets experimentation",
+      
+      "modern_characteristics": [
+        "Large-scale theme installations",
+        "Professional design teams",
+        "Contemporary sculpture",
+        "Digital lighting",
+        "Interactive installations",
+        "Environmental themes",
+        "Social commentary",
+        "Heritage reconstruction",
+        "International artistic influences",
+        "Mass tourism"
+      ],
+      
+      "tension": {
+        "tradition": "Maintaining inherited rituals, family customs and community identity.",
+        "innovation": "Experimenting with architecture, materials, technology and contemporary storytelling."
+      },
+      
+      "conclusion": "The strength of Kolkata Puja lies in its ability to change without completely abandoning its cultural foundations."
+    }
+  ],
+
+  "featured_heritage_places": [
+    {
+      "name": "Shobhabazar Rajbari",
+      "area": "Shobhabazar",
+      "type": "Bonedi Bari",
+      "importance": "One of Kolkata's best-known aristocratic Puja traditions.",
+      "heritage_elements": [
+        "Nat Mandap",
+        "courtyard",
+        "family Puja",
+        "historic architecture"
+      ]
+    },
+    {
+      "name": "Kumartuli",
+      "area": "North Kolkata",
+      "type": "Artisan District",
+      "importance": "Historic centre of idol-making and clay sculpture.",
+      "heritage_elements": [
+        "sculptor workshops",
+        "clay modelling",
+        "traditional craft",
+        "seasonal production"
+      ]
+    },
+    {
+      "name": "Barisha",
+      "area": "South Kolkata",
+      "type": "Historic Family Heritage",
+      "importance": "Associated with the Sabarna Roy Choudhury family and historic Puja traditions."
+    },
+    {
+      "name": "Ahiritola",
+      "area": "North Kolkata",
+      "type": "Historic Neighbourhood",
+      "importance": "Important part of the old North Kolkata cultural landscape."
+    },
+    {
+      "name": "Bagbazar",
+      "area": "North Kolkata",
+      "type": "Neighbourhood Heritage",
+      "importance": "Long associated with community Puja, cultural activity and the historic northern city."
+    }
+  ],
+
+  "story_cards": [
+    {
+      "title": "Why does Kolkata call Puja a homecoming?",
+      "category": "Ritual",
+      "summary": "Durga's annual visit is understood as a return to her maternal home, making the festival emotionally connected with ideas of family, reunion and return."
+    },
+    {
+      "title": "How did Puja leave the mansion?",
+      "category": "History",
+      "summary": "The gradual growth of collective and community-based celebrations moved Puja from elite household courtyards into neighbourhood public spaces."
+    },
+    {
+      "title": "Why is Kumartuli important?",
+      "category": "Craft",
+      "summary": "Kumartuli became closely associated with the city's idol-making tradition and remains one of the most recognisable craft districts connected with Durga Puja."
+    },
+    {
+      "title": "When did the pandal become an artwork?",
+      "category": "Art",
+      "summary": "Modern theme-based Puja transformed temporary structures into large-scale installations where architecture, sculpture, lighting and storytelling work together."
+    },
+    {
+      "title": "What did UNESCO recognise?",
+      "category": "Heritage",
+      "summary": "UNESCO recognised not merely the physical pandals but the broader living ecosystem of rituals, artistic practices, craftsmanship, community participation and cultural transmission."
+    }
+  ],
+
+  "page_footer": {
+    "title": "The city remembers through celebration",
+    "description": "Every Puja season adds another chapter to Kolkata's living cultural archive.",
+    "cta": "Explore Kolkata's Heritage Pujas",
+    "secondary_cta": "Start a Heritage Walk"
+  },
+
+  "content_guidelines": {
+    "historical_accuracy": [
+      "Clearly distinguish documented history from traditional stories and oral accounts.",
+      "Do not present disputed origin stories as absolute facts.",
+      "Keep dates associated with specific families or institutions clearly attributed.",
+      "Store annual award winners separately from permanent historical content.",
+      "Update current award information annually."
+    ],
+    "tone": "Editorial, archival, respectful, informative and evocative.",
+    "avoid": [
+      "Overly religious preaching",
+      "Unverified historical claims",
+      "Invented dates",
+      "Invented award winners",
+      "Treating every Puja tradition as identical"
+    ]
+  }
+}

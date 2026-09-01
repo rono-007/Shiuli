@@ -6,7 +6,8 @@ import {
   HardDrive, Users, TrendingUp, Search, X, Eye, ChevronDown,
   ChevronUp, BarChart3, Wifi, WifiOff, Smartphone, Monitor,
   Tablet, Bot, MapPin, ArrowUpRight, Filter, AlertOctagon,
-  Gauge, ArrowRight, MessageSquare, Star, Mail, Send, CheckCircle2, XCircle, Loader2
+  Gauge, ArrowRight, MessageSquare, Star, Mail, Send, CheckCircle2, XCircle, Loader2,
+  UserPlus, Key, Copy, Check, Sparkles, Dices
 } from 'lucide-react';
 
 interface ErrorBoundaryProps {
@@ -187,6 +188,7 @@ interface BetaUser {
   name: string;
   email: string;
   email_status: string;
+  pin?: string;
   last_sent: string | null;
   attempt_count: number;
 }
@@ -580,6 +582,15 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
   const [sendingMail, setSendingMail] = useState(false);
   const [mailMessage, setMailMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Direct Beta User Registration & Invite state
+  const [directEmail, setDirectEmail] = useState('');
+  const [directName, setDirectName] = useState('');
+  const [directPin, setDirectPin] = useState(() => Math.floor(10000 + Math.random() * 90000).toString());
+  const [directSendEmail, setDirectSendEmail] = useState(true);
+  const [directInviting, setDirectInviting] = useState(false);
+  const [copiedPin, setCopiedPin] = useState(false);
+  const [directSuccessUser, setDirectSuccessUser] = useState<{ email: string; pin: string; email_sent: boolean } | null>(null);
+
   // Logs tab state
   const [logSearch, setLogSearch] = useState('');
   const [logStatusFilter, setLogStatusFilter] = useState<string>('all');
@@ -755,6 +766,102 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
     } finally {
       setSendingMail(false);
       setTimeout(() => setMailMessage(null), 5000);
+    }
+  };
+
+  const generateRandomPin = useCallback(() => {
+    // Exclude all currently loaded user PINs & master codes
+    const usedPins = new Set(betaUsers.map(u => u.pin).filter(Boolean));
+    usedPins.add('83914');
+    usedPins.add('49207');
+    usedPins.add('61835');
+    usedPins.add('70001');
+
+    let code = '';
+    for (let i = 0; i < 10000; i++) {
+      const candidate = Math.floor(10000 + Math.random() * 90000).toString();
+      if (!usedPins.has(candidate)) {
+        code = candidate;
+        break;
+      }
+    }
+    if (!code) code = Math.floor(10000 + Math.random() * 90000).toString();
+    setDirectPin(code);
+
+    if (token) {
+      adminFetch<{ code: string }>('/api/mailservice/generate-code', token)
+        .then(res => {
+          if (res?.code) setDirectPin(res.code);
+        })
+        .catch(() => {});
+    }
+
+    return code;
+  }, [betaUsers, token]);
+
+  const handleCopyPin = (code: string) => {
+    navigator.clipboard.writeText(code);
+    setCopiedPin(true);
+    setTimeout(() => setCopiedPin(false), 2000);
+  };
+
+  const handleDirectInvite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanEmail = directEmail.trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes('@')) {
+      setMailMessage({ type: 'error', text: 'Please enter a valid email address.' });
+      return;
+    }
+
+    setDirectInviting(true);
+    setMailMessage(null);
+    try {
+      const payload = {
+        email: cleanEmail,
+        name: directName.trim() || undefined,
+        pin: directPin.trim() || undefined,
+        send_email: directSendEmail
+      };
+
+      const res = await adminFetch<{
+        success: boolean;
+        user: { name: string; email: string; pin: string };
+        email_sent: boolean;
+        message: string;
+        delivery_error?: string;
+      }>('/api/mailservice/direct-invite', token, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (res.success) {
+        setDirectSuccessUser({
+          email: res.user.email,
+          pin: res.user.pin,
+          email_sent: res.email_sent
+        });
+        setMailMessage({
+          type: 'success',
+          text: res.message || `User ${res.user.email} registered with PIN ${res.user.pin}!`
+        });
+
+        // Reset inputs and generate a fresh random PIN
+        setDirectEmail('');
+        setDirectName('');
+        generateRandomPin();
+
+        // Refresh users & select this user for immediate preview
+        await fetchAll();
+        setSelectedBetaEmail(res.user.email);
+      } else {
+        setMailMessage({ type: 'error', text: res.message || 'Failed to register user.' });
+      }
+    } catch (err: any) {
+      setMailMessage({ type: 'error', text: err.message || 'Network error occurred while registering user.' });
+    } finally {
+      setDirectInviting(false);
+      setTimeout(() => setMailMessage(null), 8000);
     }
   };
 
@@ -1715,6 +1822,141 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
               </div>
             )}
 
+            {/* Direct Beta User Registration & Instant Invite Card */}
+            <div className="bg-[#111827] border border-amber-500/30 rounded-xl p-5 shadow-xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/5 rounded-full blur-2xl pointer-events-none" />
+              
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-4 border-b border-slate-700/40">
+                <div>
+                  <h3 className="text-sm font-bold text-amber-400 flex items-center gap-2">
+                    <UserPlus className="w-4 h-4 text-amber-400" /> Direct Beta User Registration & Instant Invite
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    Enter an email address to generate a 5-digit PIN, save to backend for beta verification, and dispatch their invite email.
+                  </p>
+                </div>
+
+                {directSuccessUser && (
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-xs text-emerald-300 animate-in fade-in">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                    <span className="font-medium">
+                      Registered: <strong className="font-mono text-white">{directSuccessUser.email}</strong> (PIN: <strong className="font-mono text-amber-300">{directSuccessUser.pin}</strong>)
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <form onSubmit={handleDirectInvite} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-3 items-end">
+                  
+                  {/* Email Input */}
+                  <div className="lg:col-span-4 space-y-1.5">
+                    <label className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
+                      <Mail className="w-3.5 h-3.5 text-amber-400" /> Recipient Email Address <span className="text-amber-400">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={directEmail}
+                      onChange={e => {
+                        setDirectEmail(e.target.value);
+                        if (!directName && e.target.value.includes('@')) {
+                          const guessedName = e.target.value.split('@')[0].replace(/[._-]/g, ' ');
+                          setDirectName(guessedName.charAt(0).toUpperCase() + guessedName.slice(1));
+                        }
+                      }}
+                      placeholder="user@example.com"
+                      className="w-full px-3 py-2 bg-[#0a0e17] border border-slate-700/60 rounded-lg text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 font-mono"
+                    />
+                  </div>
+
+                  {/* Name Input */}
+                  <div className="lg:col-span-3 space-y-1.5">
+                    <label className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
+                      <Users className="w-3.5 h-3.5 text-slate-400" /> User Name (Optional)
+                    </label>
+                    <input
+                      type="text"
+                      value={directName}
+                      onChange={e => setDirectName(e.target.value)}
+                      placeholder="e.g. Sourav Mukherjee"
+                      className="w-full px-3 py-2 bg-[#0a0e17] border border-slate-700/60 rounded-lg text-xs text-white placeholder:text-slate-600 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                    />
+                  </div>
+
+                  {/* Auto-Generated 5-Digit PIN Box */}
+                  <div className="lg:col-span-3 space-y-1.5">
+                    <div className="flex items-center justify-between">
+                      <label className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
+                        <Key className="w-3.5 h-3.5 text-amber-400" /> 5-Digit Access Code
+                      </label>
+                      <button
+                        type="button"
+                        onClick={generateRandomPin}
+                        className="text-[10px] text-amber-400 hover:text-amber-300 flex items-center gap-1 cursor-pointer font-sans"
+                        title="Generate a new random 5-digit PIN"
+                      >
+                        <Dices className="w-3 h-3" /> Re-roll
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <div className="flex-1 px-3 py-2 bg-[#0a0e17] border border-amber-500/40 rounded-lg flex items-center justify-between">
+                        <span className="font-mono text-xs font-bold tracking-widest text-amber-300 select-all">
+                          {directPin}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => handleCopyPin(directPin)}
+                          className="text-slate-400 hover:text-white transition-colors cursor-pointer p-0.5"
+                          title="Copy PIN"
+                        >
+                          {copiedPin ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="lg:col-span-2">
+                    <button
+                      type="submit"
+                      disabled={directInviting || !directEmail.trim()}
+                      className="w-full py-2 px-3.5 bg-amber-500 hover:bg-amber-400 active:scale-[0.98] text-slate-950 font-bold rounded-lg text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-amber-500/10 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                    >
+                      {directInviting ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>Saving...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Save & Invite</span>
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                </div>
+
+                {/* Additional Options */}
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                  <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-300">
+                    <input
+                      type="checkbox"
+                      checked={directSendEmail}
+                      onChange={e => setDirectSendEmail(e.target.checked)}
+                      className="rounded border-slate-700 text-amber-500 focus:ring-amber-500 bg-[#0a0e17]"
+                    />
+                    <span>Automatically dispatch the customized Beta Access Email via SMTP</span>
+                  </label>
+                  <span className="text-[11px] text-slate-500 font-mono">
+                    Backend verification sync: <span className="text-emerald-400 font-bold">Active</span>
+                  </span>
+                </div>
+              </form>
+            </div>
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
               {/* Left Column: Users List */}
@@ -1767,7 +2009,14 @@ function AdminDashboard({ token, onLogout }: { token: string; onLogout: () => vo
                             {u.email_status}
                           </span>
                         </div>
-                        <div className="text-[11px] text-slate-400 truncate font-mono">{u.email}</div>
+                        <div className="flex items-center justify-between text-[11px] text-slate-400 font-mono">
+                          <span className="truncate">{u.email}</span>
+                          {u.pin && (
+                            <span className="text-[10px] text-amber-400 font-bold bg-amber-500/10 border border-amber-500/20 px-1.5 py-0.5 rounded ml-1 flex-shrink-0">
+                              PIN: {u.pin}
+                            </span>
+                          )}
+                        </div>
                         {u.last_sent && (
                           <div className="text-[10px] text-slate-500 mt-1 flex items-center gap-1">
                             <Clock className="w-3 h-3" /> {new Date(u.last_sent).toLocaleString()}

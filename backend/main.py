@@ -482,9 +482,9 @@ def verify_beta_access(request: Request, data: dict):
             users = json.load(f)
 
         for user in users:
-            u_email = user.get("email", "").strip().lower()
-            u_pin = user.get("pin", "").strip().lower()
-            u_code = user.get("access_code", "").strip().lower()
+            u_email = str(user.get("email", "")).strip().lower()
+            u_pin = str(user.get("pin", "")).strip().lower()
+            u_code = str(user.get("access_code", "")).strip().lower()
 
             if u_email == email and (access_code == u_code or access_code == u_pin or access_code == f"{u_email}-{u_pin}"):
                 return {"valid": True, "message": "Access Granted", "user": user}

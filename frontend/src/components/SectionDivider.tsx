@@ -41,7 +41,7 @@ const SectionDivider: React.FC = () => {
       </svg>
 
       <img
-        src="/divider-cropped.png"
+        src="/divider-cropped.webp"
         alt=""
         style={{
           display: 'block',

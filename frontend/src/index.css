@@ -165,6 +165,55 @@
   .maplibregl-popup-close-button:hover {
     background-color: rgba(139, 30, 45, 0.1) !important;
   }
+
+  /* Route Planner Premium Stop Popup Card */
+  .maplibregl-popup.route-planner-popup {
+    max-width: 320px !important;
+    z-index: 40 !important;
+  }
+
+  .maplibregl-popup.route-planner-popup .maplibregl-popup-content {
+    background: #FFFFFF !important;
+    border: 1.5px solid rgba(229, 176, 92, 0.5) !important;
+    border-radius: 18px !important;
+    box-shadow: 0 16px 36px -4px rgba(45, 11, 16, 0.22), 0 4px 14px rgba(139, 30, 45, 0.08) !important;
+    padding: 15px 14px 13px 14px !important;
+    overflow: hidden !important;
+  }
+
+  .maplibregl-popup.route-planner-popup .maplibregl-popup-tip {
+    border-top-color: #FFFFFF !important;
+    border-bottom-color: #FFFFFF !important;
+  }
+
+  .maplibregl-popup.route-planner-popup .maplibregl-popup-close-button {
+    top: 8px !important;
+    right: 8px !important;
+    width: 24px !important;
+    height: 24px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 50% !important;
+    background: #FAF6ED !important;
+    color: #8B1E2D !important;
+    font-size: 15px !important;
+    font-weight: 700 !important;
+    border: 1px solid rgba(139, 30, 45, 0.15) !important;
+    transition: all 0.2s ease !important;
+    padding: 0 !important;
+    line-height: 1 !important;
+  }
+
+  .maplibregl-popup.route-planner-popup .maplibregl-popup-close-button:hover {
+    background: #8B1E2D !important;
+    color: #FFFFFF !important;
+    transform: rotate(90deg) scale(1.05) !important;
+  }
+
+  .maplibregl-popup.route-planner-popup h4 {
+    color: #2D0B10 !important;
+  }
 }
 
 /* ═══════════════════════════════════════════════════════

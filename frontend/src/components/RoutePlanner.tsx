@@ -4,42 +4,8 @@ import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useLanguage } from '../context/LanguageContext';
 
-interface MetroStation {
-  name: string;
-  api_name?: string;
-  line?: string;
-  address: string;
-  lat: number;
-  lon: number;
-}
-
-interface RouteStop {
-  name: string;
-  address: string;
-  lat: number;
-  lon: number;
-  estimated_travel_min: number;
-  cumulative_time_min: number;
-  is_food_break?: boolean;
-  is_metro?: boolean;
-}
-
-interface RoutePlanResponse {
-  start_metro: string;
-  total_budget_min: number;
-  usable_time_min: number;
-  total_pandals: number;
-  restaurant_break_included: boolean;
-  end_preference: string;
-  stops: RouteStop[];
-}
-
-interface PandalItem {
-  name: string;
-  address?: string;
-  lat: number;
-  lon: number;
-}
+import { routeEngine } from '../routeEngine/engine';
+import type { RoutePlanResponse, MetroStation, PandalItem } from '../routeEngine/types';
 
 const MAP_STYLE: maplibregl.StyleSpecification = {
   version: 8,
@@ -66,188 +32,27 @@ const MAP_STYLE: maplibregl.StyleSpecification = {
   ],
 };
 
-// Distance calculation using Haversine Formula (in km)
-function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * (Math.PI / 180);
-  const dLon = (lon2 - lon1) * (Math.PI / 180);
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos(lat1 * (Math.PI / 180)) * Math.cos(lat2 * (Math.PI / 180)) *
-    Math.sin(dLon / 2) * Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}
-
 // In-memory module caches to avoid repeated network transfer on re-generation
 const regionPandalsCache: Record<string, PandalItem[]> = {};
 let metroStationsCache: MetroStation[] | null = null;
 
-// Client-side intelligent route generator guarantees 100% offline & fast performance with Kolkata neighborhood logic
-async function generateLocalRoute(
-  selectedRegion: string,
-  startMetroName: string,
-  startLat: number,
-  startLon: number,
-  totalBudgetMin: number,
-  viewingPaceMin: number,
-  restaurantBreakMin: number,
-  endPref: string,
-  allMetros: MetroStation[]
-): Promise<RoutePlanResponse> {
-  
-  // Fetch required region data on demand
-  const regionsToLoad = selectedRegion === 'all' 
-    ? ['north', 'south', 'central', 'bonedi'] 
-    : [selectedRegion];
-    
-  let pool: PandalItem[] = [];
-  
-  for (const region of regionsToLoad) {
-    if (regionPandalsCache[region]) {
-      pool = [...pool, ...regionPandalsCache[region]];
-      continue;
-    }
-    try {
-      const res = await fetch(`/data/${region}_pandals.json`);
-      if (res.ok) {
-        const data = await res.json();
-        regionPandalsCache[region] = data;
-        pool = [...pool, ...data];
-      }
-    } catch (e) {
-      console.warn(`Failed to load ${region} pandals for routing`, e);
-    }
+// Helper to clean up long/redundant geocoded address strings for clean card presentation
+function formatDisplayAddress(addr?: string): string {
+  if (!addr) return 'কলকাতা';
+  let cleaned = addr
+    .replace(/,\s*India$/i, '')
+    .replace(/,\s*West Bengal\s*\d*$/i, '')
+    .replace(/,\s*Kolkata\s*\d*$/i, '')
+    .replace(/,\s*Ward Number\s*\d+/gi, '')
+    .replace(/,\s*Ward\s*\d+/gi, '')
+    .trim();
+  const parts = cleaned.split(',').map(s => s.trim()).filter(Boolean);
+  if (parts.length > 3) {
+    return parts.slice(0, 3).join(', ');
   }
-
-  pool = pool.filter(p => p.lat && p.lon);
-
-  // Famous Kolkata Pujas get high priority for accurate itineraries
-  const famousKeywords = ["bagbazar", "ekdalia", "chetla", "suruchi", "college square", "mohammad ali", "santosh mitra", "ahiritola", "kumartuli", "shovabazar", "sovabazar", "singhi park", "mudiali", "ballygunge", "sreebhumi", "tridhara", "deshapriya", "babu bagan", "jodhpur park", "66 pally"];
-
-  let currentLat = startLat || 22.5726;
-  let currentLon = startLon || 88.3639;
-
-  // Buffer time reserved for end transit / buffer
-  const safetyBuffer = totalBudgetMin <= 120 ? 15 : totalBudgetMin <= 240 ? 25 : 40;
-  const usableTime = Math.max(30, totalBudgetMin - restaurantBreakMin - safetyBuffer);
-  
-  const stops: RouteStop[] = [];
-  let cumulativeMin = 0;
-  const visited = new Set<string>();
-
-  // Add initial start metro point
-  let lastLat = currentLat;
-  let lastLon = currentLon;
-
-  while (cumulativeMin < usableTime && visited.size < pool.length) {
-    let bestPandal: PandalItem | null = null;
-    let bestScore = Infinity;
-
-    for (const p of pool) {
-      if (visited.has(p.name)) continue;
-      
-      const realDistKm = getDistanceKm(currentLat, currentLon, p.lat, p.lon) * 1.35; // Kolkata pedestrian detour factor
-      const isFamous = famousKeywords.some(k => p.name.toLowerCase().includes(k));
-      
-      // For subsequent stops, strictly penalize large jumps
-      let score = realDistKm;
-      if (stops.length > 0 && realDistKm > 2.2) {
-        score += 8.0; // Penalty for jumps across distant neighborhoods
-      }
-      if (isFamous && realDistKm <= 2.5) {
-        score -= 0.6; // Priority bonus for famous landmark pandals in same cluster
-      }
-
-      if (score < bestScore) {
-        bestScore = score;
-        bestPandal = p;
-      }
-    }
-
-    if (!bestPandal) break;
-
-    const realDistKm = getDistanceKm(currentLat, currentLon, bestPandal.lat, bestPandal.lon) * 1.35;
-    if (stops.length > 0 && realDistKm > 3.8) break; // Break if next pandal is too isolated
-
-    // Walking speed in dense Puja crowds: ~3.2 km/h (18.75 min/km) + 3 min queue & entrance buffer
-    const travelMin = Math.max(3, Math.round(realDistKm * 18.75 + 3));
-    const nextCumulative = cumulativeMin + travelMin + viewingPaceMin;
-
-    if (nextCumulative > usableTime && stops.length > 0) {
-      break;
-    }
-
-    visited.add(bestPandal.name);
-    cumulativeMin = nextCumulative;
-    currentLat = bestPandal.lat;
-    currentLon = bestPandal.lon;
-    lastLat = currentLat;
-    lastLon = currentLon;
-
-    stops.push({
-      name: bestPandal.name,
-      address: bestPandal.address || `${bestPandal.name}, Kolkata`,
-      lat: bestPandal.lat,
-      lon: bestPandal.lon,
-      estimated_travel_min: travelMin,
-      cumulative_time_min: cumulativeMin
-    });
-
-    // Insert food break in the middle
-    if (restaurantBreakMin > 0 && stops.length === Math.ceil(usableTime / (travelMin + viewingPaceMin) / 2)) {
-      cumulativeMin += restaurantBreakMin;
-    }
-  }
-
-  // Handle End Preferences (return to metro or nearest metro)
-  if (endPref === 'start_metro' && stops.length > 0 && startLat && startLon) {
-    const returnDist = getDistanceKm(lastLat, lastLon, startLat, startLon) * 1.35;
-    const returnTime = Math.max(5, Math.round(returnDist * 18.75 + 5));
-    cumulativeMin += returnTime;
-    stops.push({
-      name: `${startMetroName} (প্রস্থান / Exit)`,
-      address: `প্রারম্ভিক মেট্রো স্টেশনে প্রত্যাবর্তন`,
-      lat: startLat,
-      lon: startLon,
-      estimated_travel_min: returnTime,
-      cumulative_time_min: cumulativeMin,
-      is_metro: true
-    });
-  } else if (endPref === 'nearest_metro' && stops.length > 0 && allMetros.length > 0) {
-    let nearestMetro = allMetros[0];
-    let minDist = Infinity;
-    for (const m of allMetros) {
-      if (!m.lat || !m.lon) continue;
-      const d = getDistanceKm(lastLat, lastLon, m.lat, m.lon);
-      if (d < minDist) {
-        minDist = d;
-        nearestMetro = m;
-      }
-    }
-    const metroTravelMin = Math.max(4, Math.round(minDist * 1.35 * 18.75 + 3));
-    cumulativeMin += metroTravelMin;
-    stops.push({
-      name: `${nearestMetro.name} Metro Station (সমাপ্তি / End)`,
-      address: nearestMetro.address || `নিকটবর্তী মেট্রো স্টেশন`,
-      lat: nearestMetro.lat,
-      lon: nearestMetro.lon,
-      estimated_travel_min: metroTravelMin,
-      cumulative_time_min: cumulativeMin,
-      is_metro: true
-    });
-  }
-
-  return {
-    start_metro: startMetroName || 'কলকাতা মেট্রো',
-    total_budget_min: totalBudgetMin,
-    usable_time_min: cumulativeMin,
-    total_pandals: stops.filter(s => !s.is_metro).length,
-    restaurant_break_included: restaurantBreakMin > 0,
-    end_preference: endPref,
-    stops: stops
-  };
+  return cleaned || addr;
 }
+
 
 export default function RoutePlanner({ onBack }: { onBack: () => void }) {
   const { t } = useLanguage();
@@ -328,10 +133,35 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
     const metroName = selectedMetro || (metros.length > 0 ? metros[0].name : 'Shyambazar');
     
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3500); // 3.5s timeout for fast response
+      // 1. Fetch required region data locally on demand
+      const regionsToLoad = selectedRegion === 'all' 
+        ? ['north', 'south', 'central', 'bonedi'] 
+        : [selectedRegion];
+        
+      let pool: PandalItem[] = [];
+      
+      for (const region of regionsToLoad) {
+        if (regionPandalsCache[region]) {
+          pool = [...pool, ...regionPandalsCache[region]];
+          continue;
+        }
+        try {
+          const res = await fetch(`/data/${region}_pandals.json`);
+          if (res.ok) {
+            const data = await res.json();
+            regionPandalsCache[region] = data;
+            pool = [...pool, ...data];
+          }
+        } catch (e) {
+          console.warn(`Failed to load ${region} pandals for routing`, e);
+        }
+      }
 
-      const payload = {
+      // 2. Initialize Route Engine (happens instantly locally)
+      routeEngine.initialize(pool, metros);
+
+      // 3. Generate Route
+      const result = routeEngine.generateRoute({
         region: selectedRegion || 'all',
         metro_station_name: metroName,
         start_lat: startLat,
@@ -340,108 +170,18 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
         viewing_pace_minutes: Number(viewingPace) || 7,
         restaurant_break_minutes: Number(restaurantBreak) || 0,
         end_preference: endPreference || 'anywhere'
-      };
-
-      const response = await fetch(`${import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL || 'https://shiuli-backend.onrender.com'}/api/plan-route`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: controller.signal
       });
 
-      clearTimeout(timeoutId);
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data && data.stops && data.stops.length > 0) {
-          let updatedStops = [...data.stops];
-          
-          // Check if ending metro is needed but missing from backend response
-          const hasEndingMetro = updatedStops.some((s, idx) => idx === updatedStops.length - 1 && (s.name.includes('Metro') || s.name.includes('মেট্রো') || s.name.includes('সমাপ্তি') || s.name.includes('প্রত্যাবর্তন')));
-
-          if (!hasEndingMetro && endPreference === 'start_metro' && startLat && startLon) {
-            const lastStop = updatedStops[updatedStops.length - 1];
-            const returnDist = getDistanceKm(lastStop.lat, lastStop.lon, startLat, startLon) * 1.35;
-            const returnTime = Math.max(4, Math.round(returnDist * 18.75 + 4));
-            updatedStops.push({
-              name: `${metroName} (প্রারম্ভিক মেট্রো প্রত্যাবর্তন)`,
-              address: `প্রারম্ভিক মেট্রো স্টেশনে প্রত্যাবর্তন ও সমাপ্তি`,
-              lat: startLat,
-              lon: startLon,
-              estimated_travel_min: returnTime,
-              cumulative_time_min: lastStop.cumulative_time_min + returnTime,
-              is_metro: true
-            });
-          } else if (!hasEndingMetro && endPreference === 'nearest_metro' && metros.length > 0) {
-            const lastStop = updatedStops[updatedStops.length - 1];
-            let nearestMetro = metros[0];
-            let minDist = Infinity;
-            for (const m of metros) {
-              if (!m.lat || !m.lon) continue;
-              const d = getDistanceKm(lastStop.lat, lastStop.lon, m.lat, m.lon);
-              if (d < minDist) {
-                minDist = d;
-                nearestMetro = m;
-              }
-            }
-            const metroTravelMin = Math.max(4, Math.round(minDist * 1.35 * 18.75 + 3));
-            updatedStops.push({
-              name: `${nearestMetro.name} Metro Station (সমাপ্তি / End)`,
-              address: nearestMetro.address || `নিকটবর্তী মেট্রো স্টেশন (${nearestMetro.line || ''})`,
-              lat: nearestMetro.lat,
-              lon: nearestMetro.lon,
-              estimated_travel_min: metroTravelMin,
-              cumulative_time_min: lastStop.cumulative_time_min + metroTravelMin,
-              is_metro: true
-            });
-          }
-
-          const processedStops = updatedStops.map((s, idx) => {
-            const isLast = idx === updatedStops.length - 1;
-            const isMetroStop = s.name.includes('Metro') || s.name.includes('মেট্রো') || s.name.includes('সমাপ্তি') || s.name.includes('প্রত্যাবর্তন') || (isLast && endPreference !== 'anywhere');
-            return {
-              ...s,
-              is_metro: isMetroStop
-            };
-          });
-
-          setRouteResult({
-            ...data,
-            usable_time_min: processedStops[processedStops.length - 1]?.cumulative_time_min || data.usable_time_min,
-            total_pandals: processedStops.filter(s => !s.is_metro).length,
-            stops: processedStops
-          });
-          return;
-        }
+      if (result) {
+        setRouteResult(result);
+      } else {
+        console.warn("Failed to generate a valid route.");
+        setRouteResult(null);
       }
-      
-      // Fallback to client-side high accuracy route generator
-      const fallbackResult = await generateLocalRoute(
-        selectedRegion,
-        metroName,
-        startLat,
-        startLon,
-        finalBudget || 240,
-        viewingPace || 7,
-        restaurantBreak || 0,
-        endPreference,
-        metros
-      );
-      setRouteResult(fallbackResult);
+
     } catch (err) {
-      console.warn("Backend routing offline/slow, generating local optimized route", err);
-      const fallbackResult = await generateLocalRoute(
-        selectedRegion,
-        metroName,
-        startLat,
-        startLon,
-        finalBudget || 240,
-        viewingPace || 7,
-        restaurantBreak || 0,
-        endPreference,
-        metros
-      );
-      setRouteResult(fallbackResult);
+      console.error("Error during route generation", err);
+      setRouteResult(null);
     } finally {
       setLoadingRoute(false);
     }
@@ -482,9 +222,88 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
       const startEl = document.createElement('div');
       startEl.className = 'w-9 h-9 rounded-full bg-[#1E3A8A] text-white border-2 border-white shadow-xl flex items-center justify-center font-bold text-sm cursor-pointer transform hover:scale-110 transition-transform';
       startEl.innerHTML = '🚇';
+      
+      const cleanStartAddr = formatDisplayAddress(startMetro?.address);
+      const startGmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${startLat},${startLon}`;
+
       new maplibregl.Marker({ element: startEl })
         .setLngLat([startLon, startLat])
-        .setPopup(new maplibregl.Popup({ offset: 12 }).setHTML(`<div class="p-2 font-serif text-[#3D0D11]"><strong>🚇 শুরু: ${selectedMetro || 'মেট্রো স্টেশন'}</strong><br/><span class="text-xs text-gray-600">${startMetro?.address || 'প্রারম্ভিক বিন্দু'}</span></div>`))
+        .setPopup(
+          new maplibregl.Popup({ offset: 14, className: 'route-planner-popup', maxWidth: '320px' }).setHTML(`
+            <div class="route-card-popup" style="font-family: 'Noto Sans Bengali', sans-serif; color: #2D0B10; padding: 2px; width: 260px;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding-right: 22px;">
+                <span style="
+                  display: inline-flex;
+                  align-items: center;
+                  gap: 4px;
+                  font-size: 11px;
+                  font-weight: 800;
+                  color: #FFFFFF;
+                  background: linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%);
+                  padding: 3.5px 10px;
+                  border-radius: 9999px;
+                  border: 1px solid rgba(255, 255, 255, 0.4);
+                  box-shadow: 0 2px 6px rgba(30, 58, 138, 0.25);
+                ">
+                  🚇 ${t.rpStartPoint || 'প্রারম্ভিক স্টেশন'}
+                </span>
+              </div>
+
+              <h4 style="
+                margin: 0 0 5px 0;
+                font-family: 'Noto Serif Bengali', 'Tiro Bangla', Georgia, serif;
+                color: #1E3A8A !important;
+                font-size: 15px;
+                font-weight: 800;
+                line-height: 1.35;
+              ">
+                ${selectedMetro || 'মেট্রো স্টেশন'}
+              </h4>
+
+              <div style="
+                display: flex;
+                align-items: flex-start;
+                gap: 5px;
+                margin-bottom: 12px;
+                font-size: 11px;
+                line-height: 1.45;
+                color: #635754;
+              ">
+                <span style="color: #1E3A8A; font-size: 12px; line-height: 1; margin-top: 1.5px; flex-shrink: 0;">📍</span>
+                <span>${cleanStartAddr || 'রুট শুরুর প্রারম্ভিক বিন্দু'}</span>
+              </div>
+
+              <a 
+                href="${startGmapsUrl}" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                style="
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  gap: 6px;
+                  width: 100%;
+                  background: linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%);
+                  color: #FFFFFF;
+                  font-size: 11.5px;
+                  font-weight: 700;
+                  padding: 8.5px 12px;
+                  border-radius: 12px;
+                  text-decoration: none;
+                  box-shadow: 0 3px 10px rgba(30, 58, 138, 0.25);
+                  border: 1px solid rgba(255, 255, 255, 0.3);
+                  transition: all 0.2s ease;
+                  box-sizing: border-box;
+                "
+                onmouseover="this.style.background='linear-gradient(135deg, #2563EB 0%, #1E3A8A 100%)'; this.style.transform='translateY(-1px)';"
+                onmouseout="this.style.background='linear-gradient(135deg, #1E3A8A 0%, #1D4ED8 100%)'; this.style.transform='translateY(0)';"
+              >
+                <span>মেট্রো স্টেশনে পথনির্দেশ</span>
+                <span style="font-size: 12px;">↗</span>
+              </a>
+            </div>
+          `)
+        )
         .addTo(map);
 
       // Add each stop coordinate and custom numbered marker
@@ -493,23 +312,162 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
 
         const markerEl = document.createElement('div');
         markerEl.className = stop.is_metro 
-          ? 'w-9 h-9 rounded-full bg-[#1E3A8A] text-white border-2 border-white shadow-xl flex items-center justify-center font-bold text-sm cursor-pointer'
+          ? 'w-9 h-9 rounded-full bg-[#1E3A8A] text-white border-2 border-white shadow-xl flex items-center justify-center font-bold text-sm cursor-pointer transform hover:scale-110 transition-transform'
           : 'w-8 h-8 rounded-full bg-[#8B1E2D] text-white border-2 border-[#E5B05C] shadow-lg flex items-center justify-center font-bold text-xs cursor-pointer transform hover:scale-125 transition-transform';
         
         markerEl.innerHTML = stop.is_metro ? '🚇' : `${index + 1}`;
 
+        const cleanAddr = formatDisplayAddress(stop.address);
+        const hours = Math.floor(stop.cumulative_time_min / 60);
+        const mins = stop.cumulative_time_min % 60;
+        const totalTimeStr = hours > 0 
+          ? `${hours}${t.rpHours || 'ঘ'} ${mins}${t.rpMinShort || 'মি'}` 
+          : `${mins} ${t.rpMinutes || 'মিনিট'}`;
+        const gmapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${stop.lat},${stop.lon}`;
+
         new maplibregl.Marker({ element: markerEl })
           .setLngLat([stop.lon, stop.lat])
           .setPopup(
-            new maplibregl.Popup({ offset: 12 }).setHTML(`
-              <div class="p-2.5 font-serif text-[#3D0D11] max-w-[220px]">
-                <span class="text-[10px] font-bold uppercase tracking-wider text-[#8B1E2D] bg-[#8B1E2D]/10 px-2 py-0.5 rounded-full mb-1 inline-block">ধাপ ${index + 1}</span>
-                <h4 class="font-bold text-sm mb-1">${stop.name}</h4>
-                <p class="text-[11px] text-gray-600 mb-2">${stop.address}</p>
-                <div class="text-[10px] text-[#C86040] font-bold">
-                  🚶 হাঁটার সময়: ~${stop.estimated_travel_min} মিনিট<br/>
-                  ⏱️ মোট সময়: ${Math.floor(stop.cumulative_time_min / 60)}ঘ ${stop.cumulative_time_min % 60}মি
+            new maplibregl.Popup({ offset: 14, className: 'route-planner-popup', maxWidth: '320px' }).setHTML(`
+              <div class="route-card-popup" style="
+                font-family: 'Noto Sans Bengali', sans-serif;
+                color: #2D0B10;
+                padding: 2px;
+                width: 270px;
+              ">
+                <!-- Top Badge Row -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; padding-right: 22px;">
+                  <div style="display: flex; align-items: center; gap: 6px;">
+                    <span style="
+                      display: inline-flex;
+                      align-items: center;
+                      gap: 4px;
+                      font-size: 11px;
+                      font-weight: 800;
+                      color: #FFFFFF;
+                      background: ${stop.is_metro ? 'linear-gradient(135deg, #1E3A8A 0%, #2563EB 100%)' : 'linear-gradient(135deg, #8B1E2D 0%, #B91C1C 100%)'};
+                      padding: 3.5px 10px;
+                      border-radius: 9999px;
+                      border: 1px solid ${stop.is_metro ? 'rgba(255, 255, 255, 0.4)' : 'rgba(229, 176, 92, 0.6)'};
+                      box-shadow: 0 2px 6px ${stop.is_metro ? 'rgba(30, 58, 138, 0.25)' : 'rgba(139, 30, 45, 0.25)'};
+                    ">
+                      ${stop.is_metro ? '🚇 সমাপ্তি মেট্রো' : `🪔 ${t.rpStepPrefix || 'ধাপ'} ${index + 1}`}
+                    </span>
+                    ${!stop.is_metro ? `
+                      <span style="
+                        font-size: 10px;
+                        font-weight: 700;
+                        color: #8B1E2D;
+                        background: rgba(139, 30, 45, 0.08);
+                        border: 1px solid rgba(139, 30, 45, 0.15);
+                        padding: 3px 8px;
+                        border-radius: 9999px;
+                      ">পুজো মণ্ডপ</span>
+                    ` : ''}
+                  </div>
                 </div>
+
+                <!-- Pandal Name -->
+                <h4 style="
+                  margin: 0 0 6px 0;
+                  font-family: 'Noto Serif Bengali', 'Tiro Bangla', Georgia, serif;
+                  color: #2D0B10 !important;
+                  font-size: 15px;
+                  font-weight: 800;
+                  line-height: 1.35;
+                  letter-spacing: -0.01em;
+                ">
+                  ${stop.name}
+                </h4>
+
+                <!-- Address -->
+                <div style="
+                  display: flex;
+                  align-items: flex-start;
+                  gap: 5px;
+                  margin-bottom: 12px;
+                  font-size: 11px;
+                  line-height: 1.45;
+                  color: #635754;
+                ">
+                  <span style="color: #8B1E2D; font-size: 12px; line-height: 1; margin-top: 1.5px; flex-shrink: 0;">📍</span>
+                  <span style="
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                  ">${cleanAddr}</span>
+                </div>
+
+                <!-- Metric Statistics 2-column Grid -->
+                <div style="
+                  display: grid;
+                  grid-template-columns: 1fr 1fr;
+                  gap: 6px;
+                  margin-bottom: 12px;
+                ">
+                  <div style="
+                    background: #FAF6ED;
+                    border: 1px solid rgba(229, 176, 92, 0.4);
+                    border-radius: 12px;
+                    padding: 7px 9px;
+                    display: flex;
+                    flex-direction: column;
+                  ">
+                    <span style="font-size: 9.5px; color: #8C7A75; font-weight: 700; display: flex; align-items: center; gap: 3px;">
+                      <span>🚶</span> হাঁটার সময়
+                    </span>
+                    <span style="font-size: 12px; font-weight: 800; color: #8B1E2D; margin-top: 2px;">
+                      ~${stop.estimated_travel_min} ${t.rpMinutes || 'মিনিট'}
+                    </span>
+                  </div>
+
+                  <div style="
+                    background: #FAF6ED;
+                    border: 1px solid rgba(229, 176, 92, 0.4);
+                    border-radius: 12px;
+                    padding: 7px 9px;
+                    display: flex;
+                    flex-direction: column;
+                  ">
+                    <span style="font-size: 9.5px; color: #8C7A75; font-weight: 700; display: flex; align-items: center; gap: 3px;">
+                      <span>⏱️</span> মোট সময়
+                    </span>
+                    <span style="font-size: 12px; font-weight: 800; color: #C86040; margin-top: 2px;">
+                      ${totalTimeStr}
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Google Maps CTA Button -->
+                <a 
+                  href="${gmapsUrl}" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  style="
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 6px;
+                    width: 100%;
+                    background: linear-gradient(135deg, #8B1E2D 0%, #68141F 100%);
+                    color: #FAF6ED;
+                    font-size: 11.5px;
+                    font-weight: 700;
+                    padding: 8.5px 12px;
+                    border-radius: 12px;
+                    text-decoration: none;
+                    box-shadow: 0 3px 10px rgba(139, 30, 45, 0.28);
+                    border: 1px solid rgba(229, 176, 92, 0.45);
+                    transition: all 0.2s ease;
+                    box-sizing: border-box;
+                  "
+                  onmouseover="this.style.background='linear-gradient(135deg, #A32435 0%, #8B1E2D 100%)'; this.style.transform='translateY(-1px)';"
+                  onmouseout="this.style.background='linear-gradient(135deg, #8B1E2D 0%, #68141F 100%)'; this.style.transform='translateY(0)';"
+                >
+                  <span>গুগল ম্যাপসে পথ দেখুন</span>
+                  <span style="font-size: 12px;">↗</span>
+                </a>
               </div>
             `)
           )
@@ -1089,7 +1047,10 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
                                   <span>{t.viewOnMap}</span>
                                 </a>
                               </div>
-                              <p className="text-xs text-[#3D0D11]/60 mb-3 font-sans">{stop.address}</p>
+                              <p className="text-xs text-[#3D0D11]/70 mb-3 font-sans flex items-center gap-1.5">
+                                <span className="text-[#8B1E2D] text-xs">📍</span>
+                                <span>{formatDisplayAddress(stop.address)}</span>
+                              </p>
                               
                               <div className="flex flex-wrap gap-2 text-[11px] font-bold text-[#8B1E2D] font-sans">
                                 <span className="flex items-center gap-1 bg-[#FAF6ED] px-2.5 py-1 rounded-lg border border-[#E5B05C]/30">

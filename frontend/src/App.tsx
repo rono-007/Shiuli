@@ -240,7 +240,7 @@ function FooterFeedbackCard() {
   return (
     <div className="my-8 max-w-xl mx-auto text-center bg-[#2A090C]/95 border border-[#E5B05C]/35 rounded-3xl shadow-2xl backdrop-blur-md overflow-hidden transition-all duration-300">
       {/* Header / Toggle Button */}
-      <button 
+      <button
         onClick={() => setIsExpanded(!isExpanded)}
         className="w-full flex flex-col items-center justify-center p-6 sm:p-7 hover:bg-[#3D0D11]/50 transition-colors cursor-pointer"
       >

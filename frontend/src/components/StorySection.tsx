@@ -22,7 +22,7 @@ const storiesData: Story[] = [
     titleEn: 'Barowari Public Pujas',
     descBn: 'কীভাবে শুরু হল কলকাতার বারোয়ারি পুজোর ইতিহাস? জানুন সেই গল্প...',
     descEn: 'How community Pujas originated in historic Kolkata...',
-    image: '/bagbazar-vintage.png',
+    image: '/bagbazar-vintage.webp',
   },
   {
     id: 's2',
@@ -32,7 +32,7 @@ const storiesData: Story[] = [
     titleEn: 'Evolution of Pandal Design',
     descBn: 'সময়ের সাথে সাথে বদলে যাওয়া প্যান্ডেল তৈরির এক পর্যালোচনা।',
     descEn: 'A retrospective on how pandal artistry transformed over decades.',
-    image: '/maddox-square-adda.png',
+    image: '/maddox-square-adda.webp',
   },
   {
     id: 's3',
@@ -42,7 +42,7 @@ const storiesData: Story[] = [
     titleEn: 'Arrival of the Goddess',
     descBn: 'দেবীর বোধন থেকে বিসর্জন, আবেগ ভেজা কিছু মুহূর্ত।',
     descEn: 'Emotional glimpses from Bodhon to Dashami immersion.',
-    image: '/kolkata-puja-night.png',
+    image: '/kolkata-puja-night.webp',
   },
   {
     id: 's4',
@@ -52,7 +52,7 @@ const storiesData: Story[] = [
     titleEn: 'Artisans of Kumartuli',
     descBn: 'মাটির তাল থেকে অপরূপ প্রতিমা হয়ে ওঠার নেপথ্যের রূপকারদের কথা।',
     descEn: 'Stories of master sculptors shaping clay into divine idols.',
-    image: '/bg_autumn.png',
+    image: '/bg_autumn.webp',
   },
   {
     id: 's5',
@@ -62,7 +62,7 @@ const storiesData: Story[] = [
     titleEn: 'Nostalgia of Bijoya',
     descBn: 'পুজো শেষের মন খারাপ আর আগামী বছরের অপেক্ষায় থাকার গল্প।',
     descEn: 'Farewell feelings and waiting eagerly for next year.',
-    image: '/kolkata-twilight.png',
+    image: '/kolkata-twilight.webp',
   }
 ];
 
@@ -98,7 +98,7 @@ const StorySection: React.FC = () => {
 
       {/* Background Image - 70% Opacity with Untouched Top Fade & Increased Bottom Fade */}
       <div
-        className="absolute inset-0 bg-[url('/kolkatastory.png')] bg-no-repeat bg-[length:100%_100%] pointer-events-none z-0 opacity-70"
+        className="absolute inset-0 bg-[url('/kolkatastory.webp')] bg-no-repeat bg-[length:100%_100%] pointer-events-none z-0 opacity-70"
         style={{
           WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 35%, transparent 85%)',
           maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 35%, transparent 85%)',

@@ -114,7 +114,7 @@ export const EssentialInfoModal: React.FC<EssentialInfoModalProps> = ({ isOpen, 
       {/* Modal Dialog Card */}
       <div 
         className="bg-[#FCFBF8] bg-cover bg-center bg-no-repeat rounded-none sm:rounded-[1.5rem] shadow-2xl w-full max-w-[1000px] h-full sm:h-[85vh] flex flex-col overflow-hidden animate-in fade-in zoom-in-95 duration-200 relative z-[100]"
-        style={{ backgroundImage: "url('/essential-card.png')" }}
+        style={{ backgroundImage: "url('/essential-card.webp')" }}
       >
         
         {/* 1. PREMIUM HEADER */}

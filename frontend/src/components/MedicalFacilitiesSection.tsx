@@ -223,7 +223,7 @@ const MedicalFacilitiesSection: React.FC<MedicalFacilitiesSectionProps> = ({ onB
   });
 
   return (
-    <section className="min-h-screen bg-cover bg-center bg-fixed bg-no-repeat text-[#2C1810] pt-24 sm:pt-28 pb-20 px-4 sm:px-8 lg:px-12 relative font-serif" style={{ backgroundImage: "url('/medical_page.png')" }}>
+    <section className="min-h-screen bg-cover bg-center bg-fixed bg-no-repeat text-[#2C1810] pt-24 sm:pt-28 pb-20 px-4 sm:px-8 lg:px-12 relative font-serif" style={{ backgroundImage: "url('/medical_page.webp')" }}>
       
       {/* Dark & Vintage Vignette Overlay to ensure text readability */}
       <div className="pointer-events-none fixed inset-0 z-0 bg-black/40 backdrop-blur-[2px]"></div>

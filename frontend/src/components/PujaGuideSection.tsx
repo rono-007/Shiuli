@@ -143,7 +143,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       btnBg: 'bg-[#F7E4E7] hover:bg-[#F0CFD5] text-[#A83A4E]',
       watermark: <Megaphone className="w-24 h-24 text-[#B84358]/5 absolute -bottom-3 -right-3 pointer-events-none transition-transform group-hover:scale-110 duration-500" />,
       accentColor: '#B84358',
-      bgImage: '/essential-card.png'
+      bgImage: '/essential-card.webp'
     }
   ];
 
@@ -152,7 +152,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
       
       {/* Background Image with Ultra-Smooth Alpha Gradient Mask Fading */}
       <div 
-        className="absolute inset-0 bg-[url('/guidline.png')] bg-[length:100%_auto] md:bg-cover bg-top pointer-events-none z-0"
+        className="absolute inset-0 bg-[url('/guidline.webp')] bg-[length:100%_auto] md:bg-cover bg-top pointer-events-none z-0"
         style={{
           WebkitMaskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
           maskImage: 'linear-gradient(to bottom, transparent 0%, black 10%, black 90%, transparent 100%)',
@@ -203,7 +203,7 @@ export const PujaGuideSection: React.FC<PujaGuideSectionProps> = ({ onSelectRout
             <div 
               key={card.id} 
               className="rounded-3xl border border-[#EADECF] shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 px-5 pt-20 pb-6 flex flex-col items-center relative overflow-hidden group min-h-[380px] bg-cover bg-center"
-              style={{ backgroundImage: "url('/essential-card.png')" }}
+              style={{ backgroundImage: "url('/essential-card.webp')" }}
             >
               {/* Under Development Top Badge */}
               {card.isUnderDev && (

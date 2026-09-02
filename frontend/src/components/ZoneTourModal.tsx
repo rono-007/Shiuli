@@ -25,7 +25,7 @@ export const ZoneTourModal: React.FC<ZoneTourModalProps> = ({
       subtitle: t.zoneNorthSubtitle, 
       desc: t.zoneNorthDesc, 
       active: true, 
-      bgImage: '/tour_card_north.png' 
+      bgImage: '/tour_card_north.webp' 
     },
     { 
       id: 'central', 
@@ -34,7 +34,7 @@ export const ZoneTourModal: React.FC<ZoneTourModalProps> = ({
       subtitle: t.zoneCentralSubtitle, 
       desc: t.zoneCentralDesc, 
       active: true, 
-      bgImage: '/tour_card_central.png' 
+      bgImage: '/tour_card_central.webp' 
     },
     { 
       id: 'south', 
@@ -43,7 +43,7 @@ export const ZoneTourModal: React.FC<ZoneTourModalProps> = ({
       subtitle: t.zoneSouthSubtitle, 
       desc: t.zoneSouthDesc, 
       active: true, 
-      bgImage: '/tour_card_south.png' 
+      bgImage: '/tour_card_south.webp' 
     },
     { 
       id: 'bonedi', 
@@ -52,7 +52,7 @@ export const ZoneTourModal: React.FC<ZoneTourModalProps> = ({
       subtitle: t.zoneBonediSubtitle, 
       desc: t.zoneBonediDesc, 
       active: true, 
-      bgImage: '/tour_card_bonedi.png' 
+      bgImage: '/tour_card_bonedi.webp' 
     }
   ];
 

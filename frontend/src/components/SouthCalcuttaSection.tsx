@@ -577,7 +577,7 @@ const SouthCalcuttaSection: React.FC<SouthCalcuttaSectionProps> = ({ onBack }) =
                     <div
                       onClick={() => setExpandedPandalIdx(isExpanded ? null : idx)}
                       style={{ 
-                        backgroundImage: "url('/pandal-card.png')",
+                        backgroundImage: "url('/pandal-card.webp')",
                         backgroundSize: '100% 100%',
                         backgroundPosition: 'center',
                         backgroundRepeat: 'no-repeat'

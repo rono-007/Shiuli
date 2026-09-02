@@ -131,7 +131,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
   return (
     <div 
       className="w-full bg-[#FAF6ED] bg-cover bg-center bg-fixed bg-no-repeat min-h-screen pt-24 pb-32 relative text-ink"
-      style={{ backgroundImage: "url('/food.png')" }}
+      style={{ backgroundImage: "url('/food.webp')" }}
     >
       
       {/* Soft overlay for contrast & readability */}
@@ -210,7 +210,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
         {/* SEARCH & FILTERS CONTAINER */}
         <div 
           className="bg-[length:106%_106%] bg-center bg-no-repeat bg-[#FAF6ED] rounded-2xl p-6 md:p-8 mb-12 shadow-sm space-y-5 relative overflow-hidden border border-ink/10"
-          style={{ backgroundImage: "url('/food-banner.png')" }}
+          style={{ backgroundImage: "url('/food-banner.webp')" }}
         >
           
           {/* Search Bar */}

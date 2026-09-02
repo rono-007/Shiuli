@@ -265,7 +265,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
                   <div 
                     className="p-3 border-[3px] border-dotted border-[#D4A24C]/40 h-full aspect-square flex flex-col justify-between relative overflow-hidden bg-cover bg-center bg-no-repeat rounded-lg"
                     style={{ 
-                      backgroundImage: "url('/pandal-card.png')",
+                      backgroundImage: "url('/pandal-card.webp')",
                       backgroundSize: '100% 100%'
                     }}
                   >

@@ -526,7 +526,7 @@ function AppContent() {
               className="pointer-events-auto cursor-pointer group flex items-center gap-2"
             >
               <img
-                src="/logo-shiuli.png"
+                src="/logo-shiuli.webp"
                 alt="Shiuli Logo"
                 className="h-12 sm:h-16 md:h-20 w-auto object-contain transition-transform group-hover:scale-105 drop-shadow-md"
               />
@@ -650,7 +650,7 @@ function AppContent() {
 
             {/* Footer Design - Mobile & Desktop Responsive Backgrounds */}
             <footer
-              className="bg-[#3D0D11] text-[#F7F2E7] -mt-12 sm:-mt-16 md:-mt-20 pt-36 sm:pt-44 md:pt-48 lg:pt-56 pb-6 sm:pb-8 relative z-20 font-serif bg-top bg-no-repeat bg-[url('/footer-mobile.png')] md:bg-[url('/footer.png')]"
+              className="bg-[#3D0D11] text-[#F7F2E7] -mt-12 sm:-mt-16 md:-mt-20 pt-36 sm:pt-44 md:pt-48 lg:pt-56 pb-6 sm:pb-8 relative z-20 font-serif bg-top bg-no-repeat bg-[url('/footer-mobile.webp')] md:bg-[url('/footer.webp')]"
               style={{
                 backgroundColor: '#3D0D11',
                 backgroundSize: '100% auto',
@@ -671,7 +671,7 @@ function AppContent() {
                       className="flex items-center gap-3 cursor-pointer group"
                     >
                       <img
-                        src="/logo-shiuli.png"
+                        src="/logo-shiuli.webp"
                         alt="Shiuli - Kolkata Durga Puja Digital Companion Logo"
                         className="h-12 sm:h-16 w-auto object-contain transition-transform group-hover:scale-105"
                       />

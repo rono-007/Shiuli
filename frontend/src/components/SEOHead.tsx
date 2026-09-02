@@ -65,7 +65,7 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
             'name': 'Shiuli',
             'logo': {
               '@type': 'ImageObject',
-              'url': `${BASE_URL}/logo-shiuli.png`
+              'url': `${BASE_URL}/og-logo-shiuli.png`
             }
           },
           'mainEntityOfPage': {
@@ -86,14 +86,14 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
           : 'Complete guide to North Kolkata Durga Puja pandals — Bagbazar, Sovabazar, Kumartuli, Ahiritola, walking routes, metro connectivity, and authentic food nearby.',
         canonicalPath: '/north',
         ogType: 'website',
-        ogImage: `${BASE_URL}/tour_card_north.png`,
+        ogImage: `${BASE_URL}/og-tour-north.jpg`,
         robots: 'index, follow',
         schema: {
           '@context': 'https://schema.org',
           '@type': 'TouristAttraction',
           'name': isBn ? 'উত্তর কলকাতা দুর্গাপুজো পরিক্রমা' : 'North Kolkata Durga Puja Tour',
           'description': 'Historic and community Durga Puja pandals of North Kolkata with GPS locations and metro station guides.',
-          'image': `${BASE_URL}/tour_card_north.png`,
+          'image': `${BASE_URL}/og-tour-north.jpg`,
           'touristType': 'Cultural Tourism',
           'url': `${BASE_URL}/north`
         }
@@ -109,14 +109,14 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
           : 'Explore South Kolkata Durga Puja pandals — Ekdalia Evergreen, Suruchi Sangha, Singhi Park, Maddox Square, Mudiali, transport guide and food joints.',
         canonicalPath: '/south',
         ogType: 'website',
-        ogImage: `${BASE_URL}/tour_card_south.png`,
+        ogImage: `${BASE_URL}/og-tour-south.jpg`,
         robots: 'index, follow',
         schema: {
           '@context': 'https://schema.org',
           '@type': 'TouristAttraction',
           'name': isBn ? 'দক্ষিণ কলকাতা দুর্গাপুজো পরিক্রমা' : 'South Kolkata Durga Puja Tour',
           'description': 'Celebrated theme pandals and historic Pujas of South Kolkata.',
-          'image': `${BASE_URL}/tour_card_south.png`,
+          'image': `${BASE_URL}/og-tour-south.jpg`,
           'touristType': 'Cultural Tourism',
           'url': `${BASE_URL}/south`
         }
@@ -132,14 +132,14 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
           : 'Guide to Central Kolkata Durga Puja pandals — College Square, Mohammad Ali Park, Santosh Mitra Square, walking routes and nearest metro stations.',
         canonicalPath: '/central',
         ogType: 'website',
-        ogImage: `${BASE_URL}/tour_card_central.png`,
+        ogImage: `${BASE_URL}/og-tour-central.jpg`,
         robots: 'index, follow',
         schema: {
           '@context': 'https://schema.org',
           '@type': 'TouristAttraction',
           'name': isBn ? 'মধ্য কলকাতা দুর্গাপুজো পরিক্রমা' : 'Central Kolkata Durga Puja Tour',
           'description': 'Iconic Central Kolkata Durga Puja pandals and illuminations.',
-          'image': `${BASE_URL}/tour_card_central.png`,
+          'image': `${BASE_URL}/og-tour-central.jpg`,
           'touristType': 'Cultural Tourism',
           'url': `${BASE_URL}/central`
         }
@@ -155,14 +155,14 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
           : 'Discover historic Bonedi Bari Durga Pujas in Kolkata — Shobhabazar Rajbari, Chhatubabu Laha Bari, Sovabazar, century-old rituals, timings, and traditions.',
         canonicalPath: '/bonedi',
         ogType: 'article',
-        ogImage: `${BASE_URL}/tour_card_bonedi.png`,
+        ogImage: `${BASE_URL}/og-tour-bonedi.jpg`,
         robots: 'index, follow',
         schema: {
           '@context': 'https://schema.org',
           '@type': 'TouristAttraction',
           'name': isBn ? 'কলকাতার ঐতিহ্যবাহী বনেদি বাড়ির পুজো' : 'Traditional Bonedi Bari Pujas of Kolkata',
           'description': 'Historic aristocratic family Durga Pujas of Kolkata celebrated in heritage Thakur Dalans.',
-          'image': `${BASE_URL}/tour_card_bonedi.png`,
+          'image': `${BASE_URL}/og-tour-bonedi.jpg`,
           'touristType': 'Heritage Tourism',
           'url': `${BASE_URL}/bonedi`
         }
@@ -178,7 +178,7 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
           : 'Discover top restaurants, iconic Bengali eateries, street food spots, restrooms, ATMs, and petrol pumps near Kolkata Durga Puja pandals.',
         canonicalPath: '/facilities',
         ogType: 'website',
-        ogImage: `${BASE_URL}/food.png`,
+        ogImage: `${BASE_URL}/og-food.jpg`,
         robots: 'index, follow',
         schema: {
           '@context': 'https://schema.org',
@@ -199,7 +199,7 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
           : 'Plan your Durga Puja pandal hopping in Kolkata with custom walking routes, nearest metro stations, estimated walk times, and crowd navigation.',
         canonicalPath: '/route-planner',
         ogType: 'website',
-        ogImage: `${BASE_URL}/her-banner.png`,
+        ogImage: `${BASE_URL}/og-her-banner.jpg`,
         robots: 'index, follow',
         schema: {
           '@context': 'https://schema.org',
@@ -222,7 +222,7 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
           : 'Emergency medical directory for Kolkata Durga Puja — 24/7 hospitals, nursing homes, blood banks, pharmacies, and emergency ambulance contacts.',
         canonicalPath: '/medical',
         ogType: 'website',
-        ogImage: `${BASE_URL}/medical_page.png`,
+        ogImage: `${BASE_URL}/og-medical.jpg`,
         robots: 'index, follow',
         schema: {
           '@context': 'https://schema.org',
@@ -239,7 +239,7 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
         description: 'Shiuli administrative portal.',
         canonicalPath: '/admin',
         ogType: 'website',
-        ogImage: `${BASE_URL}/logo-shiuli.png`,
+        ogImage: `${BASE_URL}/og-logo-shiuli.png`,
         robots: 'noindex, nofollow',
         schema: {}
       };
@@ -252,7 +252,7 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
           : 'The requested page could not be found. Explore Kolkata Durga Puja pandals, food, heritage, and routes on Shiuli.',
         canonicalPath: '/',
         ogType: 'website',
-        ogImage: `${BASE_URL}/logo-shiuli.png`,
+        ogImage: `${BASE_URL}/og-logo-shiuli.png`,
         robots: 'noindex, nofollow',
         schema: {}
       };
@@ -268,7 +268,7 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
           : 'Explore Kolkata Durga Puja with Shiuli — discover pandals, food, heritage, history, neighbourhoods, transport and everything you need for Puja season.',
         canonicalPath: '/',
         ogType: 'website',
-        ogImage: `${BASE_URL}/her-banner.png`,
+        ogImage: `${BASE_URL}/og-her-banner.jpg`,
         robots: 'index, follow',
         schema: {
           '@context': 'https://schema.org',
@@ -291,7 +291,7 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
               'url': BASE_URL,
               'logo': {
                 '@type': 'ImageObject',
-                'url': `${BASE_URL}/logo-shiuli.png`,
+                'url': `${BASE_URL}/og-logo-shiuli.png`,
                 'width': 512,
                 'height': 512
               },
@@ -318,7 +318,7 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
                   'addressCountry': 'IN'
                 }
               },
-              'image': `${BASE_URL}/her-banner.png`,
+              'image': `${BASE_URL}/og-her-banner.jpg`,
               'organizer': {
                 '@type': 'Organization',
                 'name': 'Shiuli',

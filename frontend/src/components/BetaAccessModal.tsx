@@ -100,7 +100,7 @@ export const BetaAccessModal: React.FC<BetaAccessModalProps> = ({ onVerified }) 
             <div className="absolute -inset-2 bg-gradient-to-r from-[#D4A24C]/30 via-[#941F28]/20 to-[#D4A24C]/30 rounded-full blur-md opacity-80 group-hover:opacity-100 transition-opacity" />
             <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-gradient-to-b from-[#FAF6ED] to-[#F1E4D0] border-2 border-[#D4A24C] shadow-lg flex items-center justify-center p-3">
               <img
-                src="/shiuli2.png"
+                src="/shiuli2.webp"
                 alt="Shiuli Emblem"
                 className="w-full h-full object-contain filter drop-shadow-md transition-transform duration-500 hover:rotate-45"
               />

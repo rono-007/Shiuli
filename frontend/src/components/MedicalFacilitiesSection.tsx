@@ -158,7 +158,6 @@ const MedicalFacilitiesSection: React.FC<MedicalFacilitiesSectionProps> = ({ onB
         if (Array.isArray(cached.data[zone]) && cached.data[zone].length > 0) {
           setData(prev => ({ ...prev, [zone]: cached.data[zone] }));
           setLoading(false);
-          fetchFromApiOrFallback(zone, true);
           return;
         }
       }

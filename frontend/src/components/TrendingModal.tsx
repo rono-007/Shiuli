@@ -26,6 +26,8 @@ interface TrendingData {
   pandals?: PandalTrending[];
 }
 
+let trendingCache: TrendingData | null = null;
+
 const TrendingModal: React.FC<TrendingModalProps> = ({ isOpen, onClose, onSelectZone }) => {
   const { t, language } = useLanguage();
   const isBn = language === 'bn';
@@ -34,15 +36,20 @@ const TrendingModal: React.FC<TrendingModalProps> = ({ isOpen, onClose, onSelect
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedZone, setSelectedZone] = useState<string>('all');
 
-  const [data, setData] = useState<TrendingData | null>(null);
+  const [data, setData] = useState<TrendingData | null>(trendingCache);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (isOpen && !data && !loading) {
+    if (isOpen && !data) {
+      if (trendingCache) {
+        setData(trendingCache);
+        return;
+      }
       setLoading(true);
       fetch('/data/trending.json')
         .then(res => res.json())
         .then(resData => {
+          trendingCache = resData;
           setData(resData);
           setLoading(false);
         })
@@ -51,7 +58,7 @@ const TrendingModal: React.FC<TrendingModalProps> = ({ isOpen, onClose, onSelect
           setLoading(false);
         });
     }
-  }, [isOpen, data, loading]);
+  }, [isOpen, data]);
 
   const pandals: PandalTrending[] = data?.pandals || [];
 

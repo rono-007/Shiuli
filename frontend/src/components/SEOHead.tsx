@@ -47,14 +47,14 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
           : 'Discover the 300-year history and cultural evolution of Durga Puja in Kolkata — from historic Bonedi Bari courtyards to community Barowari celebrations and UNESCO heritage.',
         canonicalPath: '/history',
         ogType: 'article',
-        ogImage: `${BASE_URL}/images/history/vintage_thakur_dalan.jpg`,
+        ogImage: `${BASE_URL}/og-vintage-thakur-dalan.jpg`,
         robots: 'index, follow',
         schema: {
           '@context': 'https://schema.org',
           '@type': 'Article',
           'headline': isBn ? 'কলকাতার দুর্গাপূজার ইতিহাস ও সাংস্কৃতিক ঐতিহ্য' : 'History & Heritage of Durga Puja in Kolkata',
           'description': 'A curated digital archive exploring the history of Kolkata Durga Puja from 18th-century Bonedi Bari courtyards to UNESCO Intangible Cultural Heritage.',
-          'image': `${BASE_URL}/images/history/vintage_thakur_dalan.jpg`,
+          'image': `${BASE_URL}/og-vintage-thakur-dalan.jpg`,
           'author': {
             '@type': 'Organization',
             'name': 'Shiuli',

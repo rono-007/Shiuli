@@ -28,7 +28,7 @@ function SectionLoader() {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center p-8 text-center bg-[#FAF6ED] font-serif">
       <img
-        src="/shiuli2.png"
+        src="/shiuli2.webp"
         alt="Shiuli loading animation"
         className="h-16 w-16 object-contain mb-4"
         style={{

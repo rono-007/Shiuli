@@ -196,7 +196,7 @@ export default function HistoryHeritageSection({ onBack }: { onBack: () => void 
           <div className="w-[90%] md:w-full h-full relative border border-[#C9A45C]/40 p-2">
             <div className="w-full h-full relative overflow-hidden bg-[#2A0C12]">
               <ArchiveImageWithFallback 
-                src="/images/history/vintage_thakur_dalan.jpg" 
+                src="/images/history/vintage_thakur_dalan.webp" 
                 alt="Vintage Thakur Dalan archival photograph depicting 18th century Durga Puja courtyard in Kolkata" 
                 className="w-full h-full object-cover grayscale-[30%] sepia-[50%] opacity-80 mix-blend-luminosity scale-105"
                 loading="eager"
@@ -257,7 +257,7 @@ export default function HistoryHeritageSection({ onBack }: { onBack: () => void 
               <div className="border border-[#C9A45C]/30 p-2 bg-[#F4EBDD] rotate-1 group-hover:rotate-0 transition-transform duration-500">
                 <div className="aspect-[4/3] bg-[#2A0C12] overflow-hidden">
                    <ArchiveImageWithFallback 
-                     src="/images/history/vintage_thakur_dalan.jpg" 
+                     src="/images/history/vintage_thakur_dalan.webp" 
                      alt="Historic Shobhabazar Rajbari Durga Puja courtyard, celebrated since 1757" 
                      className="w-full h-full object-cover grayscale-[60%] sepia-[20%] opacity-90 scale-105" 
                      loading="lazy"
@@ -316,7 +316,7 @@ export default function HistoryHeritageSection({ onBack }: { onBack: () => void 
               <div className="border border-[#C9A45C]/30 p-2 bg-[#F4EBDD] rotate-2 group-hover:rotate-0 transition-transform duration-500">
                 <div className="aspect-square bg-[#2A0C12] overflow-hidden">
                   <ArchiveImageWithFallback 
-                    src="/images/history/para_puja_1950s.jpg" 
+                    src="/images/history/para_puja_1950s.webp" 
                     alt="Historical 1950s community para Durga Puja celebration in Bagbazar Kolkata" 
                     className="w-full h-full object-cover grayscale-[100%] contrast-125" 
                     loading="lazy"
@@ -333,7 +333,7 @@ export default function HistoryHeritageSection({ onBack }: { onBack: () => void 
           4. THE HOUSEHOLD ERA (Bonedi Bari immersive)
       ================================================== */}
       <section className="mt-24 w-full bg-[#2A0C12] text-[#F4EBDD] py-24 md:py-32 relative border-y border-[#C9A45C]/20">
-        <div className="absolute inset-0 bg-[url('/images/history/vintage_thakur_dalan.jpg')] bg-cover bg-center opacity-10 mix-blend-luminosity grayscale pointer-events-none" />
+        <div className="absolute inset-0 bg-[url('/images/history/vintage_thakur_dalan.webp')] bg-cover bg-center opacity-10 mix-blend-luminosity grayscale pointer-events-none" />
         
         <div className="relative z-10 max-w-7xl mx-auto px-6 text-center">
           <Reveal>
@@ -443,7 +443,7 @@ export default function HistoryHeritageSection({ onBack }: { onBack: () => void 
       <section className="relative w-full min-h-[90svh] bg-[#1a0507] text-[#E9D8BC] flex flex-col justify-center px-6 md:px-12 py-24 overflow-hidden">
         <div className="absolute inset-0">
           <ArchiveImageWithFallback 
-            src="/images/history/modern_theme_puja.jpg" 
+            src="/images/history/modern_theme_puja.webp" 
             alt="Contemporary artistic theme pandal installation at Kolkata Durga Puja" 
             className="w-full h-full object-cover opacity-30 mix-blend-luminosity scale-[1.02] transform transition-transform duration-[20s] hover:scale-110" 
             loading="lazy"

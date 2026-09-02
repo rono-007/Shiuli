@@ -111,7 +111,7 @@ const StorySection: React.FC = () => {
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 h-[1px] bg-gradient-to-r from-[#D4A24C]/10 via-[#D4A24C]/60 to-[#D4A24C]/10 w-full sm:hidden" />
 
         <img
-          src="/section-divider.png"
+          src="/section-divider.webp"
           alt="Section Divider"
           className="w-full max-w-none sm:max-w-5xl md:max-w-6xl lg:max-w-7xl xl:max-w-[90rem] h-auto object-contain drop-shadow-md opacity-100 scale-105 sm:scale-100 relative z-10"
         />

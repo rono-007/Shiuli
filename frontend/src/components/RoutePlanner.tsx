@@ -79,6 +79,10 @@ function getDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): 
   return R * c;
 }
 
+// In-memory module caches to avoid repeated network transfer on re-generation
+const regionPandalsCache: Record<string, PandalItem[]> = {};
+let metroStationsCache: MetroStation[] | null = null;
+
 // Client-side intelligent route generator guarantees 100% offline & fast performance with Kolkata neighborhood logic
 async function generateLocalRoute(
   selectedRegion: string,
@@ -100,10 +104,15 @@ async function generateLocalRoute(
   let pool: PandalItem[] = [];
   
   for (const region of regionsToLoad) {
+    if (regionPandalsCache[region]) {
+      pool = [...pool, ...regionPandalsCache[region]];
+      continue;
+    }
     try {
       const res = await fetch(`/data/${region}_pandals.json`);
       if (res.ok) {
         const data = await res.json();
+        regionPandalsCache[region] = data;
         pool = [...pool, ...data];
       }
     } catch (e) {
@@ -266,13 +275,19 @@ export default function RoutePlanner({ onBack }: { onBack: () => void }) {
   const mapInstanceRef = useRef<maplibregl.Map | null>(null);
 
   useEffect(() => {
-    // Load clean metro stations list
+    // Reuse cached metro stations list if available
+    if (metroStationsCache) {
+      setMetros(metroStationsCache);
+      setLoadingMetros(false);
+      return;
+    }
     const loadMetros = async () => {
       try {
         const res = await fetch('/data/metro_stations.json');
         if (res.ok) {
           const data = await res.json();
-          setMetros(data as MetroStation[]);
+          metroStationsCache = data as MetroStation[];
+          setMetros(metroStationsCache);
         }
       } catch (err) {
         console.error("Failed to load metro stations", err);

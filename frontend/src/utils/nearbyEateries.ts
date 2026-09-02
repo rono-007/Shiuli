@@ -1,27 +1,7 @@
-let eateriesCache: any[] | null = null;
-let eateriesPromise: Promise<any[]> | null = null;
+import { getOrFetchEateries, getLoadedFoodData } from './foodCache';
 
 export async function getEateriesData(): Promise<any[]> {
-  if (eateriesCache) return eateriesCache;
-  if (!eateriesPromise) {
-    eateriesPromise = (async () => {
-      try {
-        const res = await fetch(`/data/eateries_light.json`);
-        if (res.ok) {
-          const data = await res.json();
-          if (Array.isArray(data)) {
-            return data;
-          }
-        }
-        throw new Error('Static JSON response invalid or not found');
-      } catch (err) {
-        console.warn('Failed to fetch eateries_light.json:', err);
-        return [];
-      }
-    })();
-  }
-  eateriesCache = await eateriesPromise;
-  return eateriesCache || [];
+  return getOrFetchEateries();
 }
 
 interface NearbyEatery {
@@ -73,7 +53,7 @@ function isProperRestaurantOrCafe(item: any): boolean {
 }
 
 export function getNearestEateriesWithFallback(lat: number, lon: number, limit = 5): EateryResult {
-  const dataset = (eateriesCache || []) as any[];
+  const dataset = (getLoadedFoodData() || []) as any[];
   if (dataset.length === 0) {
     getEateriesData(); // Trigger load if not ready
   }

@@ -59,6 +59,10 @@ export function isFoodCacheReady(): boolean {
   return foodCache !== null && foodCache.length > 0;
 }
 
+export function getLoadedFoodData(): Eatery[] | null {
+  return foodCache;
+}
+
 export function getFoodCategories(zone: string): string[] {
   if (!foodCache) return ['All'];
   
@@ -94,6 +98,39 @@ export function getFoodCategories(zone: string): string[] {
   return ['All', ...sorted];
 }
 
+const fetchTask = async (): Promise<Eatery[]> => {
+  try {
+    const res = await fetch(`/data/eateries_light.json`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const json = await res.json();
+    if (Array.isArray(json)) {
+      foodCache = json;
+      try {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify(foodCache));
+      } catch (e) {
+        // Exceeds quota or storage disabled, keep in memory only
+      }
+      return foodCache!;
+    }
+    throw new Error("Invalid response format");
+  } catch (err) {
+    console.warn("Food data fetch error:", err);
+    preloadPromise = null;
+    return [];
+  }
+};
+
+export function getOrFetchEateries(): Promise<Eatery[]> {
+  if (isFoodCacheReady()) {
+    return Promise.resolve(foodCache!);
+  }
+  if (preloadPromise) {
+    return preloadPromise;
+  }
+  preloadPromise = fetchTask();
+  return preloadPromise;
+}
+
 export function startBackgroundPreload(): Promise<Eatery[]> {
   if (isFoodCacheReady()) {
     return Promise.resolve(foodCache!);
@@ -102,28 +139,6 @@ export function startBackgroundPreload(): Promise<Eatery[]> {
   if (preloadPromise) {
     return preloadPromise;
   }
-
-  const fetchTask = async (): Promise<Eatery[]> => {
-    try {
-      const res = await fetch(`/data/eateries_light.json`);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = await res.json();
-      if (Array.isArray(json)) {
-        foodCache = json;
-        try {
-          sessionStorage.setItem(STORAGE_KEY, JSON.stringify(foodCache));
-        } catch (e) {
-          // Exceeds quota or storage disabled, keep in memory only
-        }
-        return foodCache!;
-      }
-      throw new Error("Invalid response format");
-    } catch (err) {
-      console.warn("Background food preload deferred:", err);
-      preloadPromise = null;
-      return [];
-    }
-  };
 
   // Schedule low-priority execution
   preloadPromise = new Promise((resolve) => {

@@ -42,6 +42,16 @@ export async function verifyBetaAccessAsync(email: string, code: string): Promis
       } else {
         return { success: false, message: data.message || 'ভুল ইমেল বা বিটা কোড। (Invalid email or 5-digit access code)' };
       }
+    } else if (response.status === 401 || response.status === 400) {
+      try {
+        const errorData = await response.json();
+        return { 
+          success: false, 
+          message: errorData.message ? `ভুল ইমেল বা বিটা কোড (${errorData.message})` : 'ভুল ইমেল বা বিটা কোড। (Invalid email or 5-digit access code)' 
+        };
+      } catch {
+        return { success: false, message: 'ভুল ইমেল বা বিটা কোড। (Invalid email or 5-digit access code)' };
+      }
     } else {
       return { success: false, message: 'সার্ভার সমস্যা, পরে আবার চেষ্টা করুন। (Server error, please try again)' };
     }

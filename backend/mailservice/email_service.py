@@ -38,7 +38,13 @@ def render_email_template(name: str, pin: str, email: str = "") -> str:
         else:
             html_content = html_content.replace(f"{{{{pin_{i+1}}}}}", "0")
             
-    html_content = html_content.replace("{{beta_url}}", config["beta_url"])
+    base_target = config["beta_url"].rstrip('/')
+    if email and pin_str:
+        auto_verify_url = f"{base_target}/?code={pin_str}&email={email}"
+    else:
+        auto_verify_url = f"{base_target}/"
+        
+    html_content = html_content.replace("{{beta_url}}", auto_verify_url)
     return html_content
 
 def send_beta_email(to_email: str, name: str, pin: str) -> bool:

@@ -274,12 +274,13 @@ def verify_admin(request: Request):
     if token != ADMIN_TOKEN and token != "PujoAdmin2026":
         raise HTTPException(status_code=401, detail="Unauthorized")
 
-# ─── CORS Middleware (F5: explicit origin allowlist, no wildcard) ──────────
+# ─── CORS Middleware (F5: explicit origin allowlist + workers.dev support) ──
 ALLOWED_ORIGINS = [
     "https://shiuli.online",
     "https://www.shiuli.online",
     "https://beta.shiuli.online",
     "https://shiuli.vercel.app",
+    "https://shiuli.officialronojoy03.workers.dev",
     "http://localhost:5173",   # Local dev only
     "http://localhost:4173",   # Vite preview
 ]
@@ -287,9 +288,10 @@ ALLOWED_ORIGINS = [
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
+    allow_origin_regex=r"https://.*\.officialronojoy03\.workers\.dev",
     allow_credentials=False,   # No cookies/sessions used — credentials=True + wildcard is dangerous
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "x-admin-token"],
+    allow_methods=["GET", "POST", "OPTIONS", "PUT", "DELETE", "PATCH"],
+    allow_headers=["*"],
 )
 
 # ─── Rate Limiter (F6) ────────────────────────────────────────────────────

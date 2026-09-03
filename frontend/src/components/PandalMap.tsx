@@ -2,8 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import * as maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { useNearbyEateries } from '../hooks/useNearbyEateries';
-import { getNearestFacilities } from '../utils/nearbyFacilities';
-import { MapPin, Navigation, Utensils, Star, AlertCircle, Fuel, CreditCard, Hospital, Bath, X, Layers, Pill, Train } from 'lucide-react';
+import { validateCoordinates } from '../utils/nearbyFacilities';
+import { NearbyFacilitiesGrid } from './NearbyFacilitiesGrid';
+import { MapPin, Navigation, Utensils, Star, AlertCircle, X } from 'lucide-react';
 
 interface Pandal {
   name: string;
@@ -494,6 +495,9 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
   ) => {
     if (!item || !map.current) return;
 
+    const validTarget = validateCoordinates(item.lat, item.lng);
+    if (!validTarget.valid) return;
+
     setSelectedFacilityTitle(item.title);
 
     // Remove existing facility markers & route layers
@@ -506,20 +510,21 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     fEl.style.display = 'flex';
     fEl.style.alignItems = 'center';
     fEl.style.justifyContent = 'center';
-    fEl.style.width = '36px';
-    fEl.style.height = '36px';
+    fEl.style.width = '38px';
+    fEl.style.height = '38px';
     fEl.style.background = '#FAF6ED';
     fEl.style.border = `3px solid ${color}`;
     fEl.style.borderRadius = '50%';
     fEl.style.boxShadow = `0 0 0 6px ${color}25, 0 6px 16px rgba(16, 24, 39, 0.4)`;
     fEl.style.cursor = 'pointer';
-    fEl.style.fontSize = '16px';
+    fEl.style.fontSize = '18px';
     fEl.style.lineHeight = '1';
     fEl.style.transition = 'transform 0.2s ease, box-shadow 0.2s ease';
+    fEl.style.zIndex = '35';
 
     fEl.innerHTML = `<span>${icon}</span>`;
 
-    const mapUrl = item.url || `https://www.google.com/maps/search/?api=1&query=${item.lat},${item.lng}`;
+    const mapUrl = item.url || `https://www.google.com/maps/search/?api=1&query=${validTarget.lat},${validTarget.lng}`;
 
     let distLabel = item.distanceText || (item.distanceMeters ? (item.distanceMeters < 1000 ? `${item.distanceMeters}m` : `${(item.distanceMeters / 1000).toFixed(1)} km`) : '');
 
@@ -536,20 +541,20 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     `);
 
     const fMarker = new maplibregl.Marker({ element: fEl, anchor: 'center' })
-      .setLngLat([item.lng, item.lat])
+      .setLngLat([validTarget.lng, validTarget.lat])
       .setPopup(fPopup)
       .addTo(map.current!);
 
     facilityMarkersRef.current.push(fMarker);
 
     // Fetch and Draw REAL Walking Route via Roads
-    let routeCoords: [number, number][] = [[item.lng, item.lat]];
+    let routeCoords: [number, number][] = [[validTarget.lng, validTarget.lat]];
     if (activePandal) {
       const roadRoute = await fetchRoadWalkingRoute(
         activePandal.pandal.lon,
         activePandal.pandal.lat,
-        item.lng,
-        item.lat
+        validTarget.lng,
+        validTarget.lat
       );
 
       routeCoords = roadRoute.coordinates;
@@ -582,7 +587,7 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
             data: lineGeoJSON
           });
 
-          // 1. Casing Layer (Solid white/cream underlayer for contrast against streets)
+          // 1. Casing Layer
           map.current.addLayer({
             id: 'facility-connector-casing',
             type: 'line',
@@ -643,22 +648,32 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
     const isMobile = window.innerWidth < 640;
     if (activePandal && map.current && routeCoords.length > 0) {
       const bounds = new maplibregl.LngLatBounds();
-      routeCoords.forEach(([lng, lat]) => bounds.extend([lng, lat]));
-      map.current.fitBounds(bounds, {
-        padding: {
-          top: 70,
-          bottom: 70,
-          left: 50,
-          right: isMobile ? 50 : 420
-        },
-        maxZoom: 17,
-        duration: 1000
+      routeCoords.forEach(([lng, lat]) => {
+        const v = validateCoordinates(lat, lng);
+        if (v.valid) bounds.extend([v.lng, v.lat]);
       });
+      if (!bounds.isEmpty()) {
+        map.current.fitBounds(bounds, {
+          padding: isMobile ? {
+            top: 35,
+            bottom: 35,
+            left: 25,
+            right: 25
+          } : {
+            top: 60,
+            bottom: 60,
+            left: 40,
+            right: 390
+          },
+          maxZoom: 16.5,
+          duration: 900
+        });
+      }
     } else if (map.current) {
       map.current.flyTo({
-        center: [item.lng, item.lat],
-        zoom: 16.5,
-        duration: 1000,
+        center: [validTarget.lng, validTarget.lat],
+        zoom: 16,
+        duration: 900,
         padding: {
           right: isMobile ? 20 : 380,
           top: 20,
@@ -674,10 +689,6 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
       mapContainer.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   };
-
-  const activeFacilities = activePandal
-    ? getNearestFacilities(activePandal.pandal.lat, activePandal.pandal.lon)
-    : null;
 
   const within1km = eateryData?.within1km || [];
   const relativelyFar = eateryData?.relativelyFar || [];
@@ -802,147 +813,13 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
             </div>
 
             {/* Facility Cards */}
-            <div className="space-y-2">
-              <h4 className="text-[10px] font-serif font-bold text-ink/50 uppercase tracking-wider flex items-center gap-1">
-                <Layers className="w-3 h-3" />
-                জরুরি সুবিধাসমূহ (ক্লিক করে মানচিত্রে দেখুন)
-              </h4>
-              <div className="grid grid-cols-2 gap-2 text-[10px]">
-
-                {/* Metro Station */}
-                <button
-                  type="button"
-                  onClick={() => highlightSingleItemOnMap(activeFacilities?.metro, '🚇', '#8B1E2D')}
-                  className={`flex items-center gap-2.5 bg-paper p-2.5 rounded-xl border text-left transition-all group col-span-2 shadow-xs ${selectedFacilityTitle === activeFacilities?.metro?.title
-                      ? 'border-bengali-red ring-2 ring-bengali-red/30 bg-bengali-red/10 shadow-sm'
-                      : 'border-ink/10 hover:border-bengali-red/40 text-ink/80'
-                    }`}
-                >
-                  <div className="w-7 h-7 rounded-lg bg-bengali-red/10 text-bengali-red flex items-center justify-center flex-shrink-0">
-                    <Train className="w-4 h-4 text-bengali-red" />
-                  </div>
-                  <div className="truncate flex-1">
-                    <div className="font-serif font-bold text-bengali-red group-hover:underline truncate flex items-center justify-between">
-                      <span className="truncate">🚇 {activeFacilities?.metro?.title || 'নিকটবর্তী মেট্রো স্টেশন'}</span>
-                      <span className="text-[9px] font-mono font-bold bg-bengali-red text-white px-2 py-0.5 rounded-full ml-1 shrink-0">
-                        {activeFacilities?.metro?.distanceText || 'কাছে'}
-                      </span>
-                    </div>
-                    <div className="text-[9px] font-mono text-ink/60 flex items-center justify-between mt-0.5">
-                      <span className="truncate">
-                        {activeFacilities?.metro?.subTitle ? `${activeFacilities.metro.subTitle} • ` : ''}~{activeFacilities?.metro?.estimatedWalkMinutes || 5} min হাঁটা
-                      </span>
-                      <span className="text-bengali-red font-bold flex-shrink-0 ml-1">📍 মানচিত্রে রুট</span>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Petrol Pump */}
-                <button
-                  type="button"
-                  onClick={() => highlightSingleItemOnMap(activeFacilities?.petrolPump, '⛽', '#D97706')}
-                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${selectedFacilityTitle === activeFacilities?.petrolPump?.title
-                      ? 'border-amber-600 ring-2 ring-amber-500/30 bg-amber-500/10 shadow-sm'
-                      : 'border-ink/5 hover:border-amber-600/30 text-ink/70'
-                    }`}
-                >
-                  <Fuel className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" />
-                  <div className="truncate">
-                    <div className="font-serif font-bold text-ink group-hover:text-amber-700 truncate">
-                      {activeFacilities?.petrolPump?.title || 'পেট্রোল পাম্প'}
-                    </div>
-                    <div className="text-[9px] font-mono text-ink/50 flex items-center gap-1">
-                      <span>{activeFacilities?.petrolPump ? `${activeFacilities.petrolPump.distanceMeters}m` : '~৪৫০m'}</span>
-                      <span className="text-amber-700 font-bold">📍 মানচিত্রে</span>
-                    </div>
-                  </div>
-                </button>
-
-                {/* ATM */}
-                <button
-                  type="button"
-                  onClick={() => highlightSingleItemOnMap(activeFacilities?.atm, '💳', '#059669')}
-                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${selectedFacilityTitle === activeFacilities?.atm?.title
-                      ? 'border-emerald-600 ring-2 ring-emerald-500/30 bg-emerald-500/10 shadow-sm'
-                      : 'border-ink/5 hover:border-emerald-600/30 text-ink/70'
-                    }`}
-                >
-                  <CreditCard className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
-                  <div className="truncate">
-                    <div className="font-serif font-bold text-ink group-hover:text-emerald-700 truncate">
-                      {activeFacilities?.atm?.title || 'এটিএম বুথ'}
-                    </div>
-                    <div className="text-[9px] font-mono text-ink/50 flex items-center gap-1">
-                      <span>{activeFacilities?.atm ? `${activeFacilities.atm.distanceMeters}m` : '~২০০m'}</span>
-                      <span className="text-emerald-700 font-bold">📍 মানচিত্রে</span>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Hospital */}
-                <button
-                  type="button"
-                  onClick={() => highlightSingleItemOnMap(activeFacilities?.hospital, '🏥', '#8B1E2D')}
-                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${selectedFacilityTitle === activeFacilities?.hospital?.title
-                      ? 'border-bengali-red ring-2 ring-bengali-red/30 bg-bengali-red/10 shadow-sm'
-                      : 'border-ink/5 hover:border-bengali-red/30 text-ink/70'
-                    }`}
-                >
-                  <Hospital className="w-3.5 h-3.5 text-bengali-red flex-shrink-0" />
-                  <div className="truncate">
-                    <div className="font-serif font-bold text-ink group-hover:text-bengali-red truncate">
-                      {activeFacilities?.hospital?.title || 'হাসপাতাল / নার্সিং হোম'}
-                    </div>
-                    <div className="text-[9px] font-mono text-ink/50 flex items-center gap-1">
-                      <span>{activeFacilities?.hospital ? `${activeFacilities.hospital.distanceMeters}m` : '~৩০০m'}</span>
-                      <span className="text-bengali-red font-bold">📍 মানচিত্রে</span>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Pharmacy */}
-                <button
-                  type="button"
-                  onClick={() => highlightSingleItemOnMap(activeFacilities?.pharmacy, '💊', '#7C3AED')}
-                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group ${selectedFacilityTitle === activeFacilities?.pharmacy?.title
-                      ? 'border-purple-600 ring-2 ring-purple-500/30 bg-purple-500/10 shadow-sm'
-                      : 'border-ink/5 hover:border-purple-600/30 text-ink/70'
-                    }`}
-                >
-                  <Pill className="w-3.5 h-3.5 text-purple-600 flex-shrink-0" />
-                  <div className="truncate">
-                    <div className="font-serif font-bold text-ink group-hover:text-purple-700 truncate">
-                      {activeFacilities?.pharmacy?.title || 'ফার্মেসি / ওষুধের দোকান'}
-                    </div>
-                    <div className="text-[9px] font-mono text-ink/50 flex items-center gap-1">
-                      <span>{activeFacilities?.pharmacy ? `${activeFacilities.pharmacy.distanceMeters}m` : '~২৫০m'}</span>
-                      <span className="text-purple-700 font-bold">📍 মানচিত্রে</span>
-                    </div>
-                  </div>
-                </button>
-
-                {/* Public Toilet */}
-                <button
-                  type="button"
-                  onClick={() => highlightSingleItemOnMap(activeFacilities?.toilet, '🚻', '#0284C7')}
-                  className={`flex items-center gap-2 bg-paper p-2 rounded-xl border text-left transition-all group col-span-2 ${selectedFacilityTitle === activeFacilities?.toilet?.title
-                      ? 'border-sky-600 ring-2 ring-sky-500/30 bg-sky-500/10 shadow-sm'
-                      : 'border-ink/5 hover:border-sky-600/30 text-ink/70'
-                    }`}
-                >
-                  <Bath className="w-3.5 h-3.5 text-sky-600 flex-shrink-0" />
-                  <div className="truncate">
-                    <div className="font-serif font-bold text-ink group-hover:text-sky-700 truncate">
-                      {activeFacilities?.toilet?.title || 'পাবলিক শৌচালয়'}
-                    </div>
-                    <div className="text-[9px] font-mono text-ink/50 flex items-center gap-1">
-                      <span>{activeFacilities?.toilet ? `${activeFacilities.toilet.distanceMeters}m` : '~১৫০m'}</span>
-                      <span className="text-sky-700 font-bold">📍 মানচিত্রে</span>
-                    </div>
-                  </div>
-                </button>
-              </div>
-            </div>
+            <NearbyFacilitiesGrid
+              pandalLat={activePandal.pandal.lat}
+              pandalLon={activePandal.pandal.lon}
+              selectedFacilityTitle={selectedFacilityTitle}
+              onFacilityClick={highlightSingleItemOnMap}
+              isMapMode={true}
+            />
 
             {/* Nearby Eateries & Cafes */}
             <div className="space-y-3 pt-1 border-t border-ink/10">

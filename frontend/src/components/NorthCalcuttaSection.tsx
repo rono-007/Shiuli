@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef, Suspense } from 'react';
-import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, Utensils, Fuel, CreditCard, Hospital, Bath, Star, AlertCircle, X, Navigation, Pill, Train } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, Utensils, Star, AlertCircle, X, Navigation } from 'lucide-react';
 const PandalMap = React.lazy(() => import('./PandalMap'));
 import { useNearbyEateries } from '../hooks/useNearbyEateries';
-import { getNearestFacilities, getNearestMetro } from '../utils/nearbyFacilities';
+import { getNearestMetro } from '../utils/nearbyFacilities';
+import { NearbyFacilitiesGrid } from './NearbyFacilitiesGrid';
 import { secureGetItem, secureSetItem } from '../utils/storage';
 
 
@@ -121,7 +122,6 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
 
   // Detail panel for a specific pandal
   const renderDetailPanel = (pandal: Pandal, idx: number) => {
-    const facilities = getNearestFacilities(pandal.lat, pandal.lon);
     const within1km = eateriesData?.within1km || [];
     const relativelyFar = eateriesData?.relativelyFar || [];
     const hasEateries = within1km.length > 0;
@@ -205,128 +205,11 @@ const NorthCalcuttaSection: React.FC<NorthCalcuttaSectionProps> = ({ onBack }) =
             </div>
 
             {/* Facility Cards */}
-            <div className="space-y-2 mt-2">
-              <h4 className="text-[11px] font-serif font-bold text-ink/50 uppercase tracking-wider flex items-center gap-1.5">
-                <Layers className="w-3.5 h-3.5" />
-                জরুরি সুবিধাসমূহ (Real Nearby Facilities)
-              </h4>
-              <div className="grid grid-cols-2 gap-2">
-                {/* Metro Station */}
-                <a
-                  href={facilities.metro?.url || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2.5 bg-bengali-red/5 p-3 rounded-2xl border border-bengali-red/25 hover:border-bengali-red/60 text-xs text-ink/80 transition-all group col-span-2 shadow-xs"
-                >
-                  <div className="w-8 h-8 rounded-xl bg-bengali-red text-white flex items-center justify-center flex-shrink-0 shadow-xs">
-                    <Train className="w-4 h-4" />
-                  </div>
-                  <div className="truncate flex-1">
-                    <div className="font-serif font-bold text-bengali-red group-hover:underline truncate flex items-center justify-between">
-                      <span className="truncate">🚇 {facilities.metro?.title || 'নিকটবর্তী মেট্রো স্টেশন'}</span>
-                      <span className="text-[10px] font-mono bg-bengali-red/15 text-bengali-red px-2 py-0.5 rounded-full font-bold ml-2 shrink-0">
-                        {facilities.metro ? `${facilities.metro.distanceText} • ~${facilities.metro.estimatedWalkMinutes}m হাঁটা` : 'মেট্রো নেটওয়ার্ক'}
-                      </span>
-                    </div>
-                    <div className="text-[10px] font-sans text-ink/60 mt-0.5 truncate flex items-center gap-1.5">
-                      {facilities.metro?.subTitle && <span className="font-semibold text-bengali-red/80">{facilities.metro.subTitle}</span>}
-                      {facilities.metro?.subTitle && <span>•</span>}
-                      <span className="truncate">{facilities.metro?.address || 'Kolkata Metro'}</span>
-                    </div>
-                  </div>
-                </a>
-
-                {/* Petrol Pump */}
-                <a
-                  href={facilities.petrolPump?.url || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-paper p-2.5 rounded-xl border border-ink/5 hover:border-amber-600/30 text-[11px] text-ink/70 transition-all group"
-                >
-                  <Fuel className="w-4 h-4 text-amber-600 flex-shrink-0" />
-                  <div className="truncate">
-                    <div className="font-serif font-bold group-hover:text-amber-700 truncate">
-                      {facilities.petrolPump?.title || 'পেট্রোল পাম্প'}
-                    </div>
-                    <div className="text-[9px] font-mono text-ink/50">
-                      {facilities.petrolPump ? `${facilities.petrolPump.distanceMeters}m` : '~৪৫০m'}
-                    </div>
-                  </div>
-                </a>
-
-                {/* ATM */}
-                <a
-                  href={facilities.atm?.url || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-paper p-2.5 rounded-xl border border-ink/5 hover:border-emerald-600/30 text-[11px] text-ink/70 transition-all group"
-                >
-                  <CreditCard className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-                  <div className="truncate">
-                    <div className="font-serif font-bold group-hover:text-emerald-700 truncate">
-                      {facilities.atm?.title || 'এটিএম বুথ'}
-                    </div>
-                    <div className="text-[9px] font-mono text-ink/50">
-                      {facilities.atm ? `${facilities.atm.distanceMeters}m` : '~২০০m'}
-                    </div>
-                  </div>
-                </a>
-
-                {/* Hospital */}
-                <a
-                  href={facilities.hospital?.url || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-paper p-2.5 rounded-xl border border-ink/5 hover:border-bengali-red/30 text-[11px] text-ink/70 transition-all group"
-                >
-                  <Hospital className="w-4 h-4 text-bengali-red flex-shrink-0" />
-                  <div className="truncate">
-                    <div className="font-serif font-bold group-hover:text-bengali-red truncate">
-                      {facilities.hospital?.title || 'হাসপাতাল / নার্সিং হোম'}
-                    </div>
-                    <div className="text-[9px] font-mono text-ink/50">
-                      {facilities.hospital ? `${facilities.hospital.distanceMeters}m` : '~৩০০m'}
-                    </div>
-                  </div>
-                </a>
-
-                {/* Pharmacy */}
-                <a
-                  href={facilities.pharmacy?.url || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-paper p-2.5 rounded-xl border border-ink/5 hover:border-purple-600/30 text-[11px] text-ink/70 transition-all group"
-                >
-                  <Pill className="w-4 h-4 text-purple-600 flex-shrink-0" />
-                  <div className="truncate">
-                    <div className="font-serif font-bold group-hover:text-purple-700 truncate">
-                      {facilities.pharmacy?.title || 'ফার্মেসি / ওষুধের দোকান'}
-                    </div>
-                    <div className="text-[9px] font-mono text-ink/50">
-                      {facilities.pharmacy ? `${facilities.pharmacy.distanceMeters}m` : '~২৫০m'}
-                    </div>
-                  </div>
-                </a>
-
-                {/* Public Toilet */}
-                <a
-                  href={facilities.toilet?.url || '#'}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 bg-paper p-2.5 rounded-xl border border-ink/5 hover:border-sky-600/30 text-[11px] text-ink/70 transition-all group col-span-2"
-                >
-                  <Bath className="w-4 h-4 text-sky-600 flex-shrink-0" />
-                  <div className="truncate">
-                    <div className="font-serif font-bold group-hover:text-sky-700 truncate">
-                      {facilities.toilet?.title || 'পাবলিক শৌচালয়'}
-                    </div>
-                    <div className="text-[9px] font-mono text-ink/50">
-                      {facilities.toilet ? `${facilities.toilet.distanceMeters}m` : '~১৫০m'}
-                    </div>
-                  </div>
-                </a>
-              </div>
-            </div>
+            <NearbyFacilitiesGrid
+              pandalLat={pandal.lat}
+              pandalLon={pandal.lon}
+              isMapMode={false}
+            />
           </div>
 
           {/* RIGHT: Nearby Eateries */}

@@ -18,7 +18,7 @@ export interface Eatery {
   imageUrl?: string | null;
   url?: string | null;
   permanentlyClosed?: boolean;
-  zone?: 'north' | 'south';
+  zone?: 'north' | 'south' | 'central';
 }
 
 interface QueryParams {
@@ -43,20 +43,24 @@ interface QueryResult {
 let foodCache: Eatery[] | null = null;
 let preloadPromise: Promise<Eatery[]> | null = null;
 
-const STORAGE_KEY = 'pujopoth_food_cache_v2';
+const STORAGE_KEY = 'pujopoth_food_cache_v4';
 
 // Initialize cache from sessionStorage if available
 try {
   const cachedStr = sessionStorage.getItem(STORAGE_KEY);
   if (cachedStr) {
-    foodCache = JSON.parse(cachedStr);
+    const parsed = JSON.parse(cachedStr);
+    // Ensure cache contains central zone data
+    if (Array.isArray(parsed) && parsed.some(x => x.zone === 'central')) {
+      foodCache = parsed;
+    }
   }
 } catch (e) {
   // Ignore sessionStorage errors
 }
 
 export function isFoodCacheReady(): boolean {
-  return foodCache !== null && foodCache.length > 0;
+  return foodCache !== null && foodCache.length > 0 && foodCache.some(x => x.zone === 'central');
 }
 
 export function getLoadedFoodData(): Eatery[] | null {
@@ -83,7 +87,12 @@ export function getFoodCategories(zone: string): string[] {
     'Bakery',
     'Indian restaurant',
     'Continental restaurant',
-    'Pizza restaurant'
+    'Pizza restaurant',
+    'Asian restaurant',
+    'Italian restaurant',
+    'Bistro',
+    'Pub',
+    'Bar & grill'
   ]);
 
   const categories = new Set<string>();
@@ -124,10 +133,9 @@ export function getOrFetchEateries(): Promise<Eatery[]> {
   if (isFoodCacheReady()) {
     return Promise.resolve(foodCache!);
   }
-  if (preloadPromise) {
-    return preloadPromise;
+  if (!preloadPromise) {
+    preloadPromise = fetchTask();
   }
-  preloadPromise = fetchTask();
   return preloadPromise;
 }
 
@@ -135,24 +143,9 @@ export function startBackgroundPreload(): Promise<Eatery[]> {
   if (isFoodCacheReady()) {
     return Promise.resolve(foodCache!);
   }
-
-  if (preloadPromise) {
-    return preloadPromise;
+  if (!preloadPromise) {
+    preloadPromise = fetchTask();
   }
-
-  // Schedule low-priority execution
-  preloadPromise = new Promise((resolve) => {
-    if ('requestIdleCallback' in window) {
-      (window as any).requestIdleCallback(() => {
-        fetchTask().then(resolve);
-      });
-    } else {
-      setTimeout(() => {
-        fetchTask().then(resolve);
-      }, 300);
-    }
-  });
-
   return preloadPromise;
 }
 

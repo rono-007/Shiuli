@@ -39,7 +39,7 @@ interface Eatery {
   url?: string | null;
   openingHours?: OpeningHour[] | null;
   permanentlyClosed?: boolean;
-  zone?: 'north' | 'south';
+  zone?: 'north' | 'central' | 'south';
 }
 
 interface FacilitiesSectionProps {
@@ -58,7 +58,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [minRating, setMinRating] = useState<number>(0);
-  const [selectedZone, setSelectedZone] = useState<'all' | 'north' | 'south'>('all');
+  const [selectedZone, setSelectedZone] = useState<'all' | 'north' | 'central' | 'south'>('all');
   
   const [page, setPage] = useState<number>(1);
   const [hasMore, setHasMore] = useState<boolean>(false);
@@ -120,7 +120,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
     setPage(1);
   }, [searchQuery, selectedCategory, minRating, selectedZone]);
 
-  const handleZoneChange = (zone: 'all' | 'north' | 'south') => {
+  const handleZoneChange = (zone: 'all' | 'north' | 'central' | 'south') => {
     setSelectedZone(zone);
     setSelectedCategory('All');
   };
@@ -194,6 +194,17 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
               <span className="text-[10px] font-mono opacity-80 px-1.5 py-0.5 rounded-md bg-black/10">North</span>
             </button>
             <button
+              onClick={() => handleZoneChange('central')}
+              className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all flex items-center gap-2 cursor-pointer ${
+                selectedZone === 'central'
+                  ? 'bg-bengali-red text-white shadow-lg scale-[1.02] border border-[#DFB86C]/40'
+                  : 'text-ink/70 hover:text-ink hover:bg-ink/5'
+              }`}
+            >
+              <span>🚋 {t.centralKolkataTab}</span>
+              <span className="text-[10px] font-mono opacity-80 px-1.5 py-0.5 rounded-md bg-black/10">Central</span>
+            </button>
+            <button
               onClick={() => handleZoneChange('south')}
               className={`px-4 sm:px-6 py-2.5 rounded-xl text-xs sm:text-sm font-serif font-bold transition-all flex items-center gap-2 cursor-pointer ${
                 selectedZone === 'south'
@@ -223,6 +234,8 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
               placeholder={
                 selectedZone === 'north'
                   ? t.searchPlaceholderNorth
+                  : selectedZone === 'central'
+                  ? t.searchPlaceholderCentral
                   : selectedZone === 'south'
                   ? t.searchPlaceholderSouth
                   : t.searchPlaceholderAll

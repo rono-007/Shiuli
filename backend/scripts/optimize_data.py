@@ -21,15 +21,34 @@ def save_json(data, filepath):
         json.dump(data, f, ensure_ascii=False, separators=(',', ':'))
     print(f"Saved {filepath} ({os.path.getsize(filepath) / 1024:.1f} KB)")
 
-def optimize_eateries(north_path, south_path, out_path):
+def optimize_eateries(north_path, south_path, central_path, out_path):
     print(f"Optimizing Eateries...")
     north_data = load_json(north_path) or []
     south_data = load_json(south_path) or []
+    central_data = load_json(central_path) or []
     
     optimized = []
+    seen_place_ids = set()
+    seen_geo_keys = set()
     
     def process_item(item, zone):
         if not item or not item.get('location'): return None
+        lat = item.get("location", {}).get("lat", 0.0)
+        lng = item.get("location", {}).get("lng", 0.0)
+        if not lat or not lng: return None
+        
+        pid = item.get('placeId')
+        title = (item.get('title') or '').strip().lower()
+        geo_key = (title, round(lat, 3), round(lng, 3))
+        
+        if pid and pid in seen_place_ids:
+            return None
+        if geo_key in seen_geo_keys:
+            return None
+            
+        if pid: seen_place_ids.add(pid)
+        seen_geo_keys.add(geo_key)
+        
         return {
             "title": item.get("title", ""),
             "subTitle": item.get("subTitle", ""),
@@ -40,13 +59,17 @@ def optimize_eateries(north_path, south_path, out_path):
             "address": item.get("address", ""),
             "imageUrl": item.get("imageUrl", ""),
             "location": {
-                "lat": item.get("location", {}).get("lat", 0.0),
-                "lng": item.get("location", {}).get("lng", 0.0)
+                "lat": lat,
+                "lng": lng
             },
             "permanentlyClosed": item.get("permanentlyClosed", False),
             "url": item.get("url", ""),
             "zone": zone
         }
+
+    for item in central_data:
+        opt = process_item(item, 'central')
+        if opt: optimized.append(opt)
 
     for item in north_data:
         opt = process_item(item, 'north')
@@ -57,6 +80,7 @@ def optimize_eateries(north_path, south_path, out_path):
         if opt: optimized.append(opt)
         
     save_json(optimized, out_path)
+
 
 def optimize_facilities(path, out_path):
     print(f"Optimizing Facilities ({os.path.basename(path)})...")
@@ -149,10 +173,11 @@ def main():
     # Exclude sensitive data explicitly
     sensitive_files = ['beta_users.json', 'feedback_messages.json']
     
-    # 1. Eateries (combine north and south into one lightweight file)
+    # 1. Eateries (combine north, south, and central into one lightweight file)
     optimize_eateries(
         os.path.join(data_in, 'north_eateries.json'),
         os.path.join(data_in, 'south_eateries.json'),
+        os.path.join(data_in, 'central_eateries.json'),
         os.path.join(data_out, 'eateries_light.json')
     )
     

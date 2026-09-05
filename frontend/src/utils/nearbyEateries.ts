@@ -89,8 +89,25 @@ export function getNearestEateriesWithFallback(lat: number, lon: number, limit =
 
   mapped.sort((a, b) => a.distanceMeters - b.distanceMeters);
 
-  const within1km = mapped.filter(item => item.distanceMeters <= 1000).slice(0, limit);
-  const relativelyFar = within1km.length === 0 ? mapped.slice(0, 3) : [];
+  // Strict deduplication by normalized title and coordinates
+  const seenTitles = new Set<string>();
+  const uniqueMapped: NearbyEatery[] = [];
+
+  for (const item of mapped) {
+    const normTitle = (item.title || '')
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '');
+    
+    if (!normTitle) continue;
+    if (seenTitles.has(normTitle)) continue;
+
+    seenTitles.add(normTitle);
+    uniqueMapped.push(item);
+  }
+
+  const within1km = uniqueMapped.filter(item => item.distanceMeters <= 1000).slice(0, limit);
+  const relativelyFar = within1km.length === 0 ? uniqueMapped.slice(0, 3) : [];
 
   return {
     within1km,

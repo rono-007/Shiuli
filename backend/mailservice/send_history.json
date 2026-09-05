@@ -1,6 +1,141 @@
 {
   "history": [
     {
+      "id": "9823e40f-315a-4b9d-ae31-e8f0a95f269c",
+      "name": "Deb",
+      "email": "debdeepkaran11@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:28:53.825161+00:00",
+      "error": null
+    },
+    {
+      "id": "5c640723-94fd-4d64-b3ea-4a3075803c6f",
+      "name": "Snigdha Das",
+      "email": "rai491459@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:28:45.871268+00:00",
+      "error": null
+    },
+    {
+      "id": "7c27b10d-aa1a-4903-a080-d375c49e8330",
+      "name": "Ayanabha trivedi",
+      "email": "ayanabhatrivedi@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:28:41.366496+00:00",
+      "error": null
+    },
+    {
+      "id": "f6d81a2e-1739-43bd-a490-8ad56bcbe606",
+      "name": "Slyfoxxyy",
+      "email": "slyfoxxyy@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:28:35.804127+00:00",
+      "error": null
+    },
+    {
+      "id": "d81fc73d-2477-4d09-ba84-3bb959d89b16",
+      "name": "Ishan Sarkar",
+      "email": "ishansarkar391@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:28:29.817986+00:00",
+      "error": null
+    },
+    {
+      "id": "b514d7c4-3f36-480f-a24f-f40df2e205ad",
+      "name": "Annesha Nandi",
+      "email": "nandiannesha2002@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:28:24.028076+00:00",
+      "error": null
+    },
+    {
+      "id": "850e35fe-61d5-48b9-ad6e-742e5665abc6",
+      "name": "Ishan",
+      "email": "chaitalydhar5@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:28:15.897635+00:00",
+      "error": null
+    },
+    {
+      "id": "051aa83a-0597-43b3-8bce-85643110412e",
+      "name": "Ishan",
+      "email": "vuluvulu123456@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:28:10.957923+00:00",
+      "error": null
+    },
+    {
+      "id": "30b9d0c5-135f-4fb8-929e-ec9182fe8291",
+      "name": "Abu Hamza Middya",
+      "email": "abuhamzamiddya@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:28:05.322534+00:00",
+      "error": null
+    },
+    {
+      "id": "56b581b4-2dfe-4b34-830e-6583708341d9",
+      "name": "Sayan",
+      "email": "thisisreman@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:28:00.067078+00:00",
+      "error": null
+    },
+    {
+      "id": "5e6d9ef5-bf44-4ded-b758-4ec35eaf6397",
+      "name": "Spandan Mondal",
+      "email": "mondal.spandan050@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:27:53.883401+00:00",
+      "error": null
+    },
+    {
+      "id": "8d1381aa-c823-4e8c-bcf9-6eeee12024eb",
+      "name": "Ayan Jana",
+      "email": "2002ayanjana@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:27:48.343834+00:00",
+      "error": null
+    },
+    {
+      "id": "34b8e685-12b7-4ed0-843d-9bd72338131a",
+      "name": "Rohan Manna",
+      "email": "rohanmanna28@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:27:42.349809+00:00",
+      "error": null
+    },
+    {
+      "id": "4410141e-6880-4fcf-9be9-aeffe7cfc89e",
+      "name": "Subrata Mukherjee",
+      "email": "citysubrata1643@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:27:35.749357+00:00",
+      "error": null
+    },
+    {
+      "id": "737a4245-60c2-4b86-a0bf-51f6177df36f",
+      "name": "Ipsit Roy",
+      "email": "ipsit.creative@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:27:29.140222+00:00",
+      "error": null
+    },
+    {
       "id": "8c6cbc62-f50a-43a2-93b9-6f1a197b7c0c",
       "name": "Rupali Maity",
       "email": "mistumaity2004@gmail.com",

@@ -1,7 +1,24 @@
-import React, { useState, useEffect, Suspense } from 'react';
-import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid, Map, ArrowUp } from 'lucide-react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { 
+  ArrowLeft, 
+  Search, 
+  MapPin, 
+  ExternalLink, 
+  RefreshCw, 
+  Layers, 
+  LayoutGrid, 
+  Map, 
+  Utensils, 
+  Star, 
+  AlertCircle, 
+  X, 
+  Navigation, 
+  ArrowUp 
+} from 'lucide-react';
 const PandalMap = React.lazy(() => import('./PandalMap'));
+import { useNearbyEateries } from '../hooks/useNearbyEateries';
 import { getNearestMetro } from '../utils/nearbyFacilities';
+import { NearbyFacilitiesGrid } from './NearbyFacilitiesGrid';
 import { secureGetItem, secureSetItem } from '../utils/storage';
 
 
@@ -35,7 +52,9 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
   const [viewMode, setViewMode] = useState<'cards' | 'map'>('cards');
   const [selectedPandalName, setSelectedPandalName] = useState<string | null>(null);
   const [debouncedQuery, setDebouncedQuery] = useState<string>('');
+  const [expandedPandalIdx, setExpandedPandalIdx] = useState<number | null>(null);
   const [visibleCount, setVisibleCount] = useState<number>(20);
+  const detailRef = useRef<HTMLDivElement>(null);
 
   // Reset pagination when search query changes
   useEffect(() => {
@@ -93,6 +112,15 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
     fetchData();
   }, []);
 
+  // Auto-scroll to detail panel when expanded
+  useEffect(() => {
+    if (expandedPandalIdx !== null && detailRef.current) {
+      setTimeout(() => {
+        detailRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [expandedPandalIdx]);
+
   const filteredPandals = pandals.filter(pandal => {
     const q = searchQuery.toLowerCase();
     return (
@@ -101,6 +129,201 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
       (pandal.api_name && pandal.api_name.toLowerCase().includes(q))
     );
   });
+
+  const expandedPandal = expandedPandalIdx !== null ? filteredPandals[expandedPandalIdx] : null;
+  const { eateries: eateriesData, loading: eateriesLoading, error: eateriesError } = useNearbyEateries(expandedPandal?.lat, expandedPandal?.lon, 6);
+
+  // Detail panel for a specific pandal
+  const renderDetailPanel = (pandal: Pandal, idx: number) => {
+    const within1km = eateriesData?.within1km || [];
+    const relativelyFar = eateriesData?.relativelyFar || [];
+    const hasEateries = within1km.length > 0;
+    const eateriesToShow = hasEateries ? within1km : relativelyFar;
+
+    return (
+      <div
+        ref={detailRef}
+        className="col-span-full bg-gradient-to-br from-[#FAF6ED] via-paper to-[#F5EFE6] border-2 border-bengali-red/20 rounded-3xl shadow-2xl overflow-hidden animate-fade-in"
+        style={{ animationDuration: '0.3s' }}
+      >
+        {/* Close Bar */}
+        <div className="flex items-center justify-between bg-gradient-to-r from-bengali-red to-[#a02535] px-6 py-3">
+          <div className="flex items-center gap-3">
+            <span className="text-[10px] font-mono font-bold text-white/70 tracking-widest">
+              CC{String(idx + 1).padStart(2, '0')}
+            </span>
+            <span className="w-px h-4 bg-white/30"></span>
+            <span className="text-sm font-serif font-bold text-white truncate max-w-[250px] md:max-w-none">
+              {pandal.name}
+            </span>
+          </div>
+          <button
+            onClick={() => setExpandedPandalIdx(null)}
+            className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-full text-xs font-sans font-bold transition-all cursor-pointer"
+          >
+            <X className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">বন্ধ করুন</span>
+          </button>
+        </div>
+
+        {/* Content: Two Column Layout */}
+        <div className="flex flex-col lg:flex-row">
+          
+          {/* LEFT: Pandal Info + Map Link */}
+          <div className="w-full lg:w-2/5 p-6 lg:p-8 border-r border-ink/10 flex flex-col gap-5">
+
+            {/* Pandal Name */}
+            <div>
+              <h3 className="text-2xl lg:text-3xl font-serif font-bold text-ink leading-tight">
+                {pandal.name}
+              </h3>
+              {pandal.api_name && pandal.api_name !== pandal.name && (
+                <p className="text-sm font-sans text-ink/50 mt-1 italic">{pandal.api_name}</p>
+              )}
+            </div>
+
+            {/* Address Card */}
+            <div className="flex items-start gap-3 bg-bengali-red/5 p-4 rounded-2xl border border-bengali-red/15">
+              <MapPin className="w-5 h-5 text-bengali-red flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-sm font-sans text-ink/80 leading-relaxed">{pandal.address}</p>
+                <p className="text-[10px] font-mono text-ink/40 mt-1">
+                  GPS: {pandal.lat.toFixed(4)}°N, {pandal.lon.toFixed(4)}°E
+                </p>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="grid grid-cols-2 gap-3">
+              <a
+                href={`https://www.google.com/maps/search/?api=1&query=${pandal.lat},${pandal.lon}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 bg-night text-paper py-3 rounded-xl text-xs font-sans font-bold hover:bg-night/90 transition-colors shadow-md"
+              >
+                <Navigation className="w-4 h-4" />
+                <span>Google Maps</span>
+              </a>
+              <button
+                onClick={() => {
+                  setSelectedPandalName(pandal.name);
+                  setViewMode('map');
+                  setExpandedPandalIdx(null);
+                }}
+                className="flex items-center justify-center gap-2 bg-bengali-red text-white py-3 rounded-xl text-xs font-sans font-bold hover:bg-bengali-red/90 transition-colors shadow-md cursor-pointer"
+              >
+                <Map className="w-4 h-4" />
+                <span>মানচিত্রে দেখুন</span>
+              </button>
+            </div>
+
+            {/* Facility Cards */}
+            <NearbyFacilitiesGrid
+              pandalLat={pandal.lat}
+              pandalLon={pandal.lon}
+              isMapMode={false}
+            />
+          </div>
+
+          {/* RIGHT: Nearby Eateries */}
+          <div className="w-full lg:w-3/5 p-6 lg:p-8 bg-gradient-to-b from-[#FAF6ED] to-paper">
+
+            {/* Eateries Header */}
+            <div className="flex items-center justify-between mb-5">
+              <h4 className="text-base font-serif font-bold text-ink flex items-center gap-2">
+                <span className="bg-bengali-red text-white w-7 h-7 rounded-full flex items-center justify-center">
+                  <Utensils className="w-3.5 h-3.5" />
+                </span>
+                কাছাকাছি রেস্তোরাঁ ও ক্যাফে
+              </h4>
+              {!eateriesLoading && !eateriesError && eateriesData && (
+                <span className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold ${hasEateries
+                    ? 'bg-emerald-500/10 text-emerald-800 border border-emerald-500/20'
+                    : 'bg-amber-500/10 text-amber-800 border border-amber-500/20'
+                  }`}>
+                  {hasEateries ? `${within1km.length} টি (≤১ km)` : `দূরবর্তী ${relativelyFar.length} টি`}
+                </span>
+              )}
+            </div>
+
+            {eateriesLoading ? (
+              <div className="flex flex-col items-center justify-center py-20 text-ink/50">
+                <div className="w-8 h-8 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin mb-4"></div>
+                <p className="text-xs font-sans">নিকটবর্তী খাবারের জায়গা খোঁজা হচ্ছে...</p>
+              </div>
+            ) : eateriesError ? (
+              <div className="flex flex-col items-center justify-center py-20 text-bengali-red/70">
+                <AlertCircle className="w-8 h-8 mb-4 opacity-50" />
+                <p className="text-xs font-sans">তথ্য লোড করতে সমস্যা হয়েছে।</p>
+              </div>
+            ) : (
+              <>
+                {/* Warning if no eateries within 1km */}
+                {!hasEateries && eateriesToShow.length > 0 && (
+                  <div className="flex items-start gap-2 p-3 mb-4 bg-red-500/5 border border-red-500/15 rounded-xl text-red-900 text-xs font-serif">
+                    <AlertCircle className="w-4 h-4 text-bengali-red flex-shrink-0 mt-0.5" />
+                    <span>১ কিলোমিটারের মধ্যে কোনো ক্যাফে বা রেস্তোরাঁ পাওয়া যায়নি। কিছুটা দূরের তালিকা দেখানো হচ্ছে।</span>
+                  </div>
+                )}
+
+                {/* Eateries Grid */}
+                {eateriesToShow.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[500px] overflow-y-auto pr-1 custom-scrollbar">
+                    {eateriesToShow.map((eatery, eIdx) => (
+                      <div
+                        key={eIdx}
+                        className="bg-paper p-4 rounded-2xl border border-ink/8 hover:border-bengali-red/30 hover:shadow-md transition-all group flex flex-col justify-between"
+                      >
+                        <div>
+                          <div className="flex items-start justify-between gap-2">
+                            <h5 className="text-sm font-serif font-bold text-ink group-hover:text-bengali-red transition-colors leading-snug">
+                              {eatery.title}
+                            </h5>
+                            <span className={`flex-shrink-0 px-2 py-0.5 rounded-full text-[9px] font-mono font-bold ${hasEateries
+                                ? 'bg-emerald-500/10 text-emerald-800 border border-emerald-500/20'
+                                : 'bg-amber-500/10 text-amber-800 border border-amber-500/20'
+                              }`}>
+                              {hasEateries ? `${eatery.distanceMeters}m` : `${(eatery.distanceMeters / 1000).toFixed(1)}km`}
+                            </span>
+                          </div>
+                          {eatery.subTitle && (
+                            <p className="text-[10px] text-bengali-red font-serif mt-0.5">({eatery.subTitle})</p>
+                          )}
+                          <div className="flex items-center gap-2 mt-2 text-[10px] text-ink/50 font-sans">
+                            <span className="bg-ink/5 px-2 py-0.5 rounded-full">{eatery.categoryName || 'Restaurant'}</span>
+                            {eatery.totalScore && (
+                              <span className="flex items-center gap-0.5 text-amber-700 font-mono font-bold">
+                                <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                                {eatery.totalScore.toFixed(1)}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <a
+                          href={eatery.url || '#'}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-3 flex items-center justify-center gap-1.5 bg-ink/5 hover:bg-bengali-red hover:text-white text-ink/70 py-2 rounded-xl text-[11px] font-sans font-bold transition-all"
+                        >
+                          <ExternalLink className="w-3 h-3" />
+                          Google Maps GPS ({eatery.lat.toFixed(4)}, {eatery.lng.toFixed(4)}) ↗
+                        </a>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-20 text-ink/50">
+                    <Utensils className="w-8 h-8 mb-4 opacity-20" />
+                    <p className="text-xs font-sans">কাছাকাছি কোনো খাবারের জায়গা পাওয়া যায়নি।</p>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <section className="min-h-screen bg-paper text-ink pt-32 pb-24 px-6 md:px-12 relative">
@@ -114,7 +337,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
           <div className="space-y-4">
             <button 
               onClick={onBack}
-              className="flex items-center gap-2 group text-xs font-mono uppercase tracking-widest text-bengali-red hover:text-ink transition-colors focus:outline-none"
+              className="flex items-center gap-2 group text-xs font-mono uppercase tracking-widest text-bengali-red hover:text-ink transition-colors focus:outline-none cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
               <span>ফিরে যান</span>
@@ -136,7 +359,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
             <button 
               onClick={fetchData} 
               disabled={loading}
-              className="flex items-center gap-2 bg-night text-[#FAF6ED] px-4 py-2 hover:bg-night/90 text-xs font-mono uppercase tracking-widest transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 bg-night text-[#FAF6ED] px-4 py-2 hover:bg-night/90 text-xs font-mono uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
               <span>রিফ্রেশ</span>
@@ -159,7 +382,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
           <div className="flex bg-ink/5 p-1 rounded-full border border-ink/10">
             <button
               onClick={() => { setViewMode('cards'); setSelectedPandalName(null); }}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all cursor-pointer ${
                 viewMode === 'cards'
                   ? 'bg-night text-[#FAF6ED] shadow-sm'
                   : 'text-ink/60 hover:text-ink'
@@ -170,7 +393,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
             </button>
             <button
               onClick={() => setViewMode('map')}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all cursor-pointer ${
                 viewMode === 'map'
                   ? 'bg-night text-[#FAF6ED] shadow-sm'
                   : 'text-ink/60 hover:text-ink'
@@ -195,8 +418,8 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
               />
               {searchQuery && (
                 <button 
-                  onClick={() => setSearchQuery('')}
-                  className="text-ink/40 hover:text-bengali-red text-sm font-bold"
+                  onClick={() => setSearchQuery('')} 
+                  className="text-ink/40 hover:text-bengali-red text-sm font-bold cursor-pointer"
                 >
                   &times;
                 </button>
@@ -207,25 +430,23 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
 
         {/* Loading Skeleton / Map View / Pandal Cards Grid */}
         {loading ? (
-          <div className="bg-[#F5EFE6] p-6 md:p-10 rounded-3xl border border-ink/10 shadow-inner">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-              {[...Array(12)].map((_, idx) => (
-                <div key={idx} className="bg-paper p-1.5 shadow-sm animate-pulse">
-                  <div className="p-3 border-[3px] border-dotted border-ink/10 h-full aspect-square flex flex-col justify-between">
-                    <div className="flex justify-between items-start">
-                      <div className="h-3 bg-ink/10 rounded w-8"></div>
-                      <div className="h-3 bg-ink/10 rounded w-4"></div>
-                    </div>
-                    <div className="h-4 bg-ink/20 rounded w-full my-2"></div>
-                    <div className="h-2 bg-ink/5 rounded w-16 mx-auto mt-2"></div>
+          <div className="bg-[#F5EFE6] p-6 md:p-8 rounded-3xl border border-ink/10 shadow-inner">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[...Array(6)].map((_, idx) => (
+                <div key={idx} className="bg-paper border border-ink/10 rounded-2xl p-4 shadow-sm animate-pulse">
+                  <div className="flex justify-between items-center border-b border-ink/10 pb-2 mb-3">
+                    <div className="h-4 bg-bengali-red/20 rounded w-12"></div>
+                    <div className="h-4 bg-ink/10 rounded w-16"></div>
                   </div>
+                  <div className="h-5 bg-ink/10 rounded w-3/4 mb-2"></div>
+                  <div className="h-3 bg-ink/5 rounded w-1/2"></div>
                 </div>
               ))}
             </div>
           </div>
         ) : viewMode === 'map' ? (
           /* Interactive MapLibre GL Map View */
-          <div className="w-full h-[85vh] md:h-[calc(100vh-280px)] min-h-[600px] bg-[#FAF6ED] border border-ink/10 rounded-2xl md:rounded-3xl overflow-hidden shadow-lg relative animate-fade-in-slow">
+          <div className="w-full h-auto sm:h-[80vh] md:h-[calc(100vh-280px)] min-h-[450px] sm:min-h-[550px] md:min-h-[600px] bg-transparent sm:bg-[#FAF6ED] sm:border border-ink/10 rounded-2xl md:rounded-3xl overflow-visible sm:overflow-hidden sm:shadow-lg relative animate-fade-in-slow">
             <Suspense fallback={
               <div className="w-full h-full flex flex-col items-center justify-center min-h-[400px]">
                 <div className="w-8 h-8 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin"></div>
@@ -248,80 +469,101 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
             </button>
           </div>
         ) : filteredPandals.length > 0 ? (
-          /* Postage Stamp Album Layout */
-          <div className="bg-[#F5EFE6] p-6 md:p-10 rounded-3xl border border-ink/10 shadow-inner">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6 pb-20">
-              {filteredPandals.slice(0, visibleCount).map((pandal, idx) => (
-                <div 
-                  key={idx} 
-                  onClick={() => {
-                    setSelectedPandalName(pandal.name);
-                    setViewMode('map');
-                  }}
-                  className="bg-paper p-1.5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
-                  title={`${pandal.name}\n${pandal.address}\n(মানচিত্রে রুট দেখতে ক্লিক করুন)`}
-                >
-                  {/* The Inner Stamp Edge */}
-                  <div 
-                    className="p-3 border-[3px] border-dotted border-[#D4A24C]/40 h-full aspect-square flex flex-col justify-between relative overflow-hidden bg-cover bg-center bg-no-repeat rounded-lg"
-                    style={{ 
-                      backgroundImage: "url('/pandal-card.webp')",
-                      backgroundSize: '100% 100%'
-                    }}
-                  >
-                    
-                    {/* Faded Background Postmark */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 border-2 border-bengali-red/5 rounded-full flex items-center justify-center rotate-12 pointer-events-none">
-                      <div className="w-20 h-20 border border-bengali-red/5 rounded-full flex items-center justify-center">
-                        <span className="text-3xl font-serif text-bengali-red/5">CC</span>
-                      </div>
-                    </div>
+          /* Pandal Cards Grid with Expandable Detail Panel */
+          <div className="bg-[#F5EFE6] p-6 md:p-8 rounded-3xl border border-ink/10 shadow-inner">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 lg:gap-8 pb-20">
+              {filteredPandals.slice(0, visibleCount).map((pandal, idx) => {
+                const isExpanded = expandedPandalIdx === idx;
 
-                    {/* Top Row: Denomination & Icon */}
-                    <div className="flex justify-between items-start relative z-10">
-                      <span className="text-[10px] font-mono font-bold text-ink/60 tracking-wider">
-                        CC{String(idx + 1).padStart(2, '0')}
-                      </span>
-                      <div className="flex items-center gap-1.5">
-                        <a
-                          href={`https://www.google.com/maps/search/?api=1&query=${pandal.lat},${pandal.lon}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="text-ink/20 hover:text-bengali-red p-0.5 transition-colors"
-                          title="Google Maps এ দেখুন"
-                        >
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                        <MapPin className="w-3.5 h-3.5 text-ink/20 group-hover:text-bengali-red transition-colors duration-300" />
+                return (
+                  <React.Fragment key={idx}>
+                    {/* Compact Pandal Card */}
+                    <div 
+                      onClick={() => setExpandedPandalIdx(isExpanded ? null : idx)}
+                      style={{ 
+                        backgroundImage: "url('/pandal-card.webp')",
+                        backgroundSize: '100% 100%',
+                        backgroundPosition: 'center',
+                        backgroundRepeat: 'no-repeat'
+                      }}
+                      className={`border rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-xl hover:-translate-y-0.5 transition-all duration-300 cursor-pointer group relative overflow-hidden ${
+                        isExpanded 
+                          ? 'border-bengali-red/40 ring-2 ring-bengali-red/20 shadow-lg' 
+                          : 'border-[#D4A24C]/40 hover:border-bengali-red/40'
+                      }`}
+                    >
+                      {/* Accent top bar when selected */}
+                      {isExpanded && (
+                        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-bengali-red to-[#E5B05C]"></div>
+                      )}
+
+                      {/* Stamp Top Row */}
+                      <div className="flex justify-between items-center border-b border-ink/10 pb-2 mb-3">
+                        <span className="text-xs font-mono font-bold text-bengali-red tracking-wider">
+                          CC{String(idx + 1).padStart(2, '0')}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={`https://www.google.com/maps/search/?api=1&query=${pandal.lat},${pandal.lon}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-ink/40 hover:text-bengali-red p-1 transition-colors"
+                            title="Google Maps GPS"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <ExternalLink className="w-3.5 h-3.5" />
+                          </a>
+                          {isExpanded ? (
+                            <span className="text-[9px] font-mono text-bengali-red font-bold bg-bengali-red/10 px-2 py-0.5 rounded-full">
+                              বিস্তারিত ↓
+                            </span>
+                          ) : (
+                            <span className="text-[9px] font-mono text-ink/40 group-hover:text-bengali-red transition-colors">
+                              ক্লিক করুন →
+                            </span>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                    
-                    {/* Center: Pandal Name */}
-                    <div className="flex-1 flex items-center justify-center relative z-10 my-2">
-                      <h3 className="text-sm font-serif text-ink text-center leading-snug line-clamp-3 group-hover:text-bengali-red transition-colors">
+
+                      {/* Pandal Title & Address */}
+                      <h3 className={`text-base font-serif font-bold leading-snug transition-colors ${
+                        isExpanded ? 'text-bengali-red' : 'text-ink group-hover:text-bengali-red'
+                      }`}>
                         {pandal.name}
                       </h3>
+                      <p className="text-xs font-sans text-ink/60 mt-1 flex items-start gap-1">
+                        <MapPin className="w-3 h-3 text-bengali-red flex-shrink-0 mt-0.5" />
+                        <span className="line-clamp-2">{pandal.address}</span>
+                      </p>
+
+                      {/* Nearest Metro Pill on Card */}
+                      {(() => {
+                        const nearestMetro = getNearestMetro(pandal.lat, pandal.lon);
+                        if (!nearestMetro) return null;
+                        return (
+                          <div className="mt-3 pt-2.5 border-t border-ink/8 flex items-center justify-between text-[11px]">
+                            <div className="flex items-center gap-1.5 font-serif font-bold text-bengali-red truncate">
+                              <span className="text-xs">🚇</span>
+                              <span className="truncate">{nearestMetro.title}</span>
+                            </div>
+                            <span className="font-mono text-[10px] font-bold bg-bengali-red/10 text-bengali-red px-2 py-0.5 rounded-full shrink-0 ml-2">
+                              {nearestMetro.distanceText}
+                            </span>
+                          </div>
+                        );
+                      })()}
                     </div>
 
-                    {/* Bottom Row: Nearest Metro & Distance */}
-                    {(() => {
-                      const nearestMetro = getNearestMetro(pandal.lat, pandal.lon);
-                      return (
-                        <div className="text-[8px] font-sans text-ink/70 text-center uppercase tracking-tight border-t border-ink/10 pt-1.5 relative z-10 truncate flex items-center justify-center gap-1">
-                          <span className="text-bengali-red font-bold">🚇 {nearestMetro ? nearestMetro.title : 'METRO'}</span>
-                          {nearestMetro && <span className="font-mono text-bengali-red/80 font-bold">• {nearestMetro.distanceText}</span>}
-                        </div>
-                      );
-                    })()}
-                  </div>
-                </div>
-              ))}
+                    {/* Expanded Detail Panel - rendered right after the card */}
+                    {isExpanded && renderDetailPanel(pandal, idx)}
+                  </React.Fragment>
+                );
+              })}
             </div>
 
             {/* Load More Button */}
             {visibleCount < filteredPandals.length && (
-              <div className="flex justify-center -mt-10 mb-6">
+              <div className="flex justify-center mt-6">
                 <button
                   onClick={() => setVisibleCount(prev => prev + 20)}
                   className="bg-[#3D0D11]/5 hover:bg-[#3D0D11]/10 text-[#3D0D11] border border-[#3D0D11]/10 px-6 py-2.5 rounded-full font-serif font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
@@ -343,7 +585,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
             </p>
             <button 
               onClick={() => setSearchQuery('')} 
-              className="mt-4 text-xs font-sans text-bengali-red underline hover:text-ink transition-colors font-semibold"
+              className="mt-4 text-xs font-sans text-bengali-red underline hover:text-ink transition-colors font-semibold cursor-pointer"
             >
               অনুসন্ধান মুছুন
             </button>
@@ -356,3 +598,4 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
 };
 
 export default CentralCalcuttaSection;
+

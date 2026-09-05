@@ -1,6 +1,15 @@
 {
   "history": [
     {
+      "id": "8c6cbc62-f50a-43a2-93b9-6f1a197b7c0c",
+      "name": "Rupali Maity",
+      "email": "mistumaity2004@gmail.com",
+      "status": "sent",
+      "action": "send",
+      "timestamp": "2026-09-05T15:11:53.202658+00:00",
+      "error": null
+    },
+    {
       "id": "f79bce2e-b3f5-402e-bad8-71b358952632",
       "name": "Pritam",
       "email": "pritamdhang0@gmail.com",

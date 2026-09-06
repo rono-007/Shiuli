@@ -1,6 +1,15 @@
 {
   "history": [
     {
+      "id": "6605a31b-887c-4ccf-9004-2ec0f1ef7d12",
+      "name": "Shreya Pramanik",
+      "email": "shreyapramanik89@gmail.com",
+      "status": "sent",
+      "action": "resend",
+      "timestamp": "2026-09-06T14:26:32.186125+00:00",
+      "error": null
+    },
+    {
       "id": "893c8b63-c78e-4b3b-a38e-d9553e94d78e",
       "name": "Rono",
       "email": "cloud.rono1@gmail.com",

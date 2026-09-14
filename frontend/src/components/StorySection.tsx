@@ -1,168 +1,23 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   ChevronLeft, 
   ChevronRight, 
   ArrowRight, 
-  Landmark, 
-  Sparkles, 
-  Flame, 
-  Palette, 
-  Hourglass 
+  X,
+  BookOpen,
+  Clock,
+  Quote,
+  Globe
 } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
-
-interface Story {
-  id: string;
-  num: string;
-  tagBn: string;
-  tagEn: string;
-  titleBn: string;
-  titleEn: string;
-  descBn: string;
-  descEn: string;
-  accent: string;
-  titleColor: string;
-  cardBg: string;
-  cardBorder: string;
-  cardBorderHover: string;
-  innerBorder: string;
-  badgeBg: string;
-  badgeBorder: string;
-  watermarkColor: string;
-  flourishColor: string;
-  btnBg: string;
-  btnHoverBg: string;
-  btnText: string;
-  icon: React.ReactNode;
-}
-
-const storiesData: Story[] = [
-  {
-    id: 's1',
-    num: '01',
-    tagBn: 'ঐতিহ্য',
-    tagEn: 'Heritage',
-    titleBn: 'বারোয়ারি সার্বজনীন',
-    titleEn: 'Barowari Public Pujas',
-    descBn: 'কীভাবে শুরু হল কলকাতার বারোয়ারি পুজোর ইতিহাস? জানুন সেই সমৃদ্ধ রূপান্তরের অধ্যায়।',
-    descEn: 'How community Pujas originated in historic Kolkata and transformed our cultural identity.',
-    accent: '#7A1F26',
-    titleColor: 'text-[#5C1117]',
-    cardBg: 'bg-gradient-to-b from-[#FFF5F6] via-[#FDF0F2] to-[#FAE2E6]',
-    cardBorder: 'border-[#E8B8C0]',
-    cardBorderHover: 'hover:border-[#7A1F26]',
-    innerBorder: 'border-[#7A1F26]/20',
-    badgeBg: 'bg-[#FBE4E8]',
-    badgeBorder: 'border-[#E8AAB4]',
-    watermarkColor: 'text-[#7A1F26]/10',
-    flourishColor: '#7A1F26',
-    btnBg: 'bg-[#7A1F26]',
-    btnHoverBg: 'hover:bg-[#5C1117]',
-    btnText: 'text-white',
-    icon: <Landmark className="w-4 h-4 text-[#7A1F26]" />
-  },
-  {
-    id: 's2',
-    num: '02',
-    tagBn: 'সংস্কৃতি',
-    tagEn: 'Culture',
-    titleBn: 'প্যান্ডেল ডিজাইনের বিবর্তন',
-    titleEn: 'Evolution of Pandal Design',
-    descBn: 'সময়ের সাথে সাথে বদলে যাওয়া থিম পুজো ও শৈল্পিক স্থাপত্য তৈরির এক কালজয়ী পর্যালোচনা।',
-    descEn: 'A retrospective on how pandal artistry and immersive installations evolved over decades.',
-    accent: '#B86B12',
-    titleColor: 'text-[#613603]',
-    cardBg: 'bg-gradient-to-b from-[#FFFDF5] via-[#FFF8E6] to-[#FDF0D2]',
-    cardBorder: 'border-[#EAD096]',
-    cardBorderHover: 'hover:border-[#B86B12]',
-    innerBorder: 'border-[#B86B12]/20',
-    badgeBg: 'bg-[#FDF0D0]',
-    badgeBorder: 'border-[#EAC678]',
-    watermarkColor: 'text-[#B86B12]/10',
-    flourishColor: '#B86B12',
-    btnBg: 'bg-[#B86B12]',
-    btnHoverBg: 'hover:bg-[#945209]',
-    btnText: 'text-white',
-    icon: <Sparkles className="w-4 h-4 text-[#B86B12]" />
-  },
-  {
-    id: 's3',
-    num: '03',
-    tagBn: 'ভক্তি',
-    tagEn: 'Devotion',
-    titleBn: 'মায়ের আগমন ও বোধন',
-    titleEn: 'Arrival of the Goddess',
-    descBn: 'মহালয়ার ভোর থেকে শুরু করে ষষ্ঠীর বোধন — শহরের অলিতে গলিতে আবেগঘন ভক্তির স্মৃতি।',
-    descEn: 'Sacred emotional glimpses from the dawn of Mahalaya to the solemn Bodhon rites.',
-    accent: '#A62838',
-    titleColor: 'text-[#5C0E1A]',
-    cardBg: 'bg-gradient-to-b from-[#FFF6F7] via-[#FDF0F2] to-[#FCE2E5]',
-    cardBorder: 'border-[#EAB8BE]',
-    cardBorderHover: 'hover:border-[#A62838]',
-    innerBorder: 'border-[#A62838]/20',
-    badgeBg: 'bg-[#FDE4E8]',
-    badgeBorder: 'border-[#EBA9B2]',
-    watermarkColor: 'text-[#A62838]/10',
-    flourishColor: '#A62838',
-    btnBg: 'bg-[#A62838]',
-    btnHoverBg: 'hover:bg-[#821826]',
-    btnText: 'text-white',
-    icon: <Flame className="w-4 h-4 text-[#A62838]" />
-  },
-  {
-    id: 's4',
-    num: '04',
-    tagBn: 'শিল্পকলা',
-    tagEn: 'Artistry',
-    titleBn: 'কুমোরটুলির রূপকার',
-    titleEn: 'Artisans of Kumartuli',
-    descBn: 'গঙ্গার পলিমাটি থেকে চিন্ময়ী রূপ ফুটিয়ে তোলার নেপথ্যে নিভৃত শিল্পীদের অনন্য জীবনগাথা।',
-    descEn: 'Stories of master clay sculptors breathing life and divinity into idols along the Hooghly.',
-    accent: '#6E472D',
-    titleColor: 'text-[#422716]',
-    cardBg: 'bg-gradient-to-b from-[#FDF9F5] via-[#F8F1EA] to-[#EFE2D6]',
-    cardBorder: 'border-[#D9C0AD]',
-    cardBorderHover: 'hover:border-[#6E472D]',
-    innerBorder: 'border-[#6E472D]/20',
-    badgeBg: 'bg-[#F4E6DC]',
-    badgeBorder: 'border-[#D1B5A3]',
-    watermarkColor: 'text-[#6E472D]/10',
-    flourishColor: '#6E472D',
-    btnBg: 'bg-[#6E472D]',
-    btnHoverBg: 'hover:bg-[#52321E]',
-    btnText: 'text-white',
-    icon: <Palette className="w-4 h-4 text-[#6E472D]" />
-  },
-  {
-    id: 's5',
-    num: '05',
-    tagBn: 'উৎসব',
-    tagEn: 'Festival',
-    titleBn: 'বিজয়ার বিষাদ ও স্মৃতি',
-    titleEn: 'Nostalgia of Bijoya',
-    descBn: 'পুজো শেষের মিষ্টি বিষাদ, সিঁদুর খেলা আর হৃদয়ের গভীরে আগামী বছরের সুমধুর প্রতীক্ষা।',
-    descEn: 'Poignant farewell sentiments, joyful Sindoor Khela, and eager anticipation for next autumn.',
-    accent: '#8C2344',
-    titleColor: 'text-[#540D23]',
-    cardBg: 'bg-gradient-to-b from-[#FDF5F8] via-[#FBF0F4] to-[#F7DEEB]',
-    cardBorder: 'border-[#E4B8D0]',
-    cardBorderHover: 'hover:border-[#8C2344]',
-    innerBorder: 'border-[#8C2344]/20',
-    badgeBg: 'bg-[#F8DEEC]',
-    badgeBorder: 'border-[#E1A5C4]',
-    watermarkColor: 'text-[#8C2344]/10',
-    flourishColor: '#8C2344',
-    btnBg: 'bg-[#8C2344]',
-    btnHoverBg: 'hover:bg-[#6B1430]',
-    btnText: 'text-white',
-    icon: <Hourglass className="w-4 h-4 text-[#8C2344]" />
-  }
-];
+import { storiesData, type Story } from '../data/storyChronicles';
 
 const StorySection: React.FC = () => {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const [toastMessage, setToastMessage] = React.useState<string | null>(null);
+  const [activeStory, setActiveStory] = React.useState<Story | null>(null);
 
   const isBn = language === 'bn';
 
@@ -172,6 +27,14 @@ const StorySection: React.FC = () => {
       : `"${title}" story is currently Under Development`;
     setToastMessage(msg);
     setTimeout(() => setToastMessage(null), 3000);
+  };
+
+  const handleStoryClick = (story: Story) => {
+    if (story.isReady && (story.contentEn || story.contentBn)) {
+      setActiveStory(story);
+    } else {
+      showDevToast(isBn ? story.titleBn : story.titleEn);
+    }
   };
 
   const scrollLeft = () => {
@@ -185,6 +48,105 @@ const StorySection: React.FC = () => {
       scrollContainerRef.current.scrollBy({ left: 320, behavior: 'smooth' });
     }
   };
+
+  // Lock body scroll and handle Escape key when modal is open
+  useEffect(() => {
+    if (!activeStory) return;
+
+    const originalOverflow = document.body.style.overflow;
+    const originalTouchAction = document.body.style.touchAction;
+    document.body.style.overflow = 'hidden';
+    document.body.style.touchAction = 'none';
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setActiveStory(null);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = originalOverflow;
+      document.body.style.touchAction = originalTouchAction;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [activeStory]);
+
+  const renderParagraphContent = (text: string, pIdx: number) => {
+    // Check if this is a bulleted list
+    if (text.includes('•') || text.startsWith('- ')) {
+      const lines = text.split('\n').filter(line => line.trim().length > 0);
+      return (
+        <div key={pIdx} className="my-4 space-y-2 pl-2 sm:pl-3 border-l-2 border-[#D4A24C]/60">
+          {lines.map((line, lIdx) => {
+            const cleanLine = line.replace(/^[•\-]\s*/, '').trim();
+            return (
+              <div key={lIdx} className="flex items-start gap-2.5 text-sm sm:text-[15.5px] text-[#3D2C22] font-serif leading-relaxed">
+                <span className="text-[#8C242B] font-bold text-xs mt-1.5 select-none">✦</span>
+                <span className="flex-1 font-serif">{cleanLine}</span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    // Check if this is a quote / callout conclusion in English or Bengali
+    const isSpecialCallout = 
+      text.includes('Guptipara was a crucial birthplace') ||
+      text.includes('That makes the history of Barowari Puja more than a story about twelve friends') ||
+      text.includes('It is the story of a festival changing its address') ||
+      text.includes('During Durga Puja, it can be all of them') ||
+      text.includes('They are memories designed in three dimensions') ||
+      text.includes('Our daughter is coming home') ||
+      text.includes('when an old radio voice begins the story again') ||
+      text.includes('Because in Kumartuli, the end of one Goddess is already the beginning of the next') ||
+      text.includes('Aaschhe bochhor abar hobe') ||
+      text.includes('Come home again') ||
+      text.includes('গুপ্তিপাড়া ছিল আঠারো শতকের') ||
+      text.includes('বারোয়ারি পুজোর ইতিহাস কেবল বারোজন বন্ধুর') ||
+      text.includes('ঠিকানা বদলের ঐতিহাসিক মহাকাব্য') ||
+      text.includes('এই সবকটিরই এক অবিশ্বাস্য যুগলবন্দি') ||
+      text.includes('তারা ত্রিমাত্রিক স্মৃতি') ||
+      text.includes('আমাদের মেয়ে ঘরে ফিরছে') ||
+      text.includes('পুরনো রেডিওর কণ্ঠস্বর') ||
+      text.includes('একটি প্রতিমার সমাপ্তি আসলে পরবর্তী প্রতিমার সূচনা') ||
+      text.includes('আসছে বছর আবার হবে') ||
+      text.includes('নিরাপদে যেও, আবার এসো আমাদের ঘরে');
+
+    if (isSpecialCallout) {
+      return (
+        <div 
+          key={pIdx} 
+          className="my-5 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#FFF5F6] via-[#FAF1E4] to-[#FFF8EE] border border-[#E8B8C0]/80 shadow-xs relative overflow-hidden"
+        >
+          <div className="flex items-start gap-3">
+            <Quote className="w-5 h-5 text-[#8C242B]/70 shrink-0 mt-0.5" />
+            <div className="space-y-1">
+              <p className="text-sm sm:text-base font-serif font-medium text-[#5C1117] leading-relaxed italic whitespace-pre-line">
+                {text}
+              </p>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <p 
+        key={pIdx} 
+        className="text-sm sm:text-[15.5px] md:text-base leading-[1.8] text-[#3D2C22]/90 whitespace-pre-line font-serif"
+      >
+        {text}
+      </p>
+    );
+  };
+
+  // Active story content for current language
+  const activeContent = activeStory 
+    ? ((isBn ? activeStory.contentBn : activeStory.contentEn) || activeStory.contentEn)
+    : null;
 
   return (
     <section className="pt-16 md:pt-24 pb-28 md:pb-36 bg-[#F8F1E7] text-[#3D2C22] relative overflow-visible z-10" id="stories">
@@ -238,7 +200,7 @@ const StorySection: React.FC = () => {
             onClick={() => showDevToast(t.storySectionTitle)}
             className="px-4.5 py-2 rounded-full border border-[#A0353A]/40 text-[#7A1F26] font-serif text-xs sm:text-sm hover:bg-[#A0353A]/5 transition-all flex items-center gap-2 group cursor-pointer shadow-2xs"
           >
-            <span>{isBn ? 'উন্নয়নাধীন' : 'Under Development'}</span>
+            <span>{isBn ? 'ঐতিহ্য সংকলন' : 'Puja Heritage Archive'}</span>
             <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
@@ -265,47 +227,68 @@ const StorySection: React.FC = () => {
           <ChevronRight className="w-5 h-5" />
         </button>
 
-        {/* Cards Container: Horizontal Scroll on Mobile/Tablet, Clean 5-Column Grid on Laptop/PC */}
+        {/* Carousel Row: Horizontal scroll on mobile/tablet, Exactly 5 in a row on Desktop */}
         <div
           ref={scrollContainerRef}
-          className="flex lg:grid lg:grid-cols-5 gap-4 sm:gap-4.5 md:gap-5 lg:gap-4 xl:gap-5 overflow-x-auto lg:overflow-visible snap-x snap-mandatory lg:snap-none pb-6 pt-3 hide-scrollbar justify-start lg:justify-center"
+          className="flex lg:grid lg:grid-cols-5 gap-4 md:gap-5 overflow-x-auto lg:overflow-visible pb-4 pt-1 snap-x snap-mandatory scroll-smooth no-scrollbar"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
           {storiesData.map((story) => (
             <div
               key={story.id}
-              onClick={() => showDevToast(isBn ? story.titleBn : story.titleEn)}
-              className={`w-[260px] sm:w-[280px] md:w-[300px] lg:w-full flex-none lg:flex-1 h-[375px] md:h-[395px] lg:h-[405px] relative rounded-2xl overflow-hidden snap-center lg:snap-align-none group cursor-pointer p-1.5 ${story.cardBg} border ${story.cardBorder} ${story.cardBorderHover} shadow-[0_6px_20px_rgba(0,0,0,0.04)] hover:shadow-[0_18px_36px_rgba(0,0,0,0.1)] hover:-translate-y-1.5 transition-all duration-500 flex flex-col`}
+              onClick={() => handleStoryClick(story)}
+              className={`flex-none w-[280px] sm:w-[320px] lg:w-auto snap-center flex flex-col justify-between rounded-2xl md:rounded-3xl p-4 md:p-5 border transition-all duration-500 relative overflow-hidden group shadow-sm hover:shadow-xl hover:-translate-y-1 cursor-pointer ${story.cardBg} ${story.cardBorder} ${story.cardBorderHover}`}
             >
-              {/* Inner Framed Canvas */}
-              <div className={`w-full h-full rounded-xl border ${story.innerBorder} bg-white/60 backdrop-blur-xs p-4 sm:p-4.5 md:p-5 flex flex-col justify-between relative overflow-hidden`}>
+              {/* Inner Inset Hairline Border for Premium Aesthetic */}
+              <div className={`absolute inset-1.5 rounded-[18px] md:rounded-[22px] border ${story.innerBorder} pointer-events-none transition-opacity duration-300 opacity-70 group-hover:opacity-100`} />
 
-                {/* Themed Watermark */}
-                <div className={`absolute -bottom-6 -right-6 ${story.watermarkColor} text-8xl font-serif select-none pointer-events-none group-hover:scale-110 transition-all duration-700`}>
-                  ❂
+              {/* Watermark Heritage Icon in Corner */}
+              <div 
+                className={`absolute -bottom-6 -right-6 w-32 h-32 pointer-events-none transition-transform duration-700 group-hover:scale-110 group-hover:rotate-6 ${story.watermarkColor} opacity-40`}
+              >
+                <div className="w-full h-full flex items-center justify-center scale-[2.2]">
+                  {story.icon}
                 </div>
+              </div>
 
-                {/* Top Section */}
+              {/* Card Main Body */}
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                
                 <div>
-                  {/* Serial & Under Development Chip */}
-                  <div className="flex items-center justify-between mb-3">
+                  {/* Top Bar: Chapter Number & Status */}
+                  <div className="flex items-center justify-between mb-3.5">
                     <span 
-                      className="font-serif text-[11px] font-bold tracking-[0.25em] uppercase"
+                      className="font-serif text-xs md:text-sm font-bold tracking-[0.2em] uppercase"
                       style={{ color: story.accent }}
                     >
                       № {story.num}
                     </span>
-                    <div 
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-serif font-semibold border"
-                      style={{ 
-                        color: story.accent,
-                        backgroundColor: `${story.accent}0D`,
-                        borderColor: `${story.accent}25`
-                      }}
-                    >
-                      <span className="text-[8px]">✦</span>
-                      <span>{isBn ? 'উন্নয়নাধীন' : 'Under Dev'}</span>
-                    </div>
+
+                    {story.isReady ? (
+                      <div 
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-serif font-semibold border"
+                        style={{ 
+                          color: story.accent,
+                          backgroundColor: `${story.accent}12`,
+                          borderColor: `${story.accent}30`
+                        }}
+                      >
+                        <BookOpen className="w-2.5 h-2.5" />
+                        <span>{isBn ? 'উপলব্ধ' : 'Available'}</span>
+                      </div>
+                    ) : (
+                      <div 
+                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-serif font-semibold border"
+                        style={{ 
+                          color: story.accent,
+                          backgroundColor: `${story.accent}0D`,
+                          borderColor: `${story.accent}25`
+                        }}
+                      >
+                        <span className="text-[8px]">✦</span>
+                        <span>{isBn ? 'উন্নয়নাধীন' : 'Under Dev'}</span>
+                      </div>
+                    )}
                   </div>
 
                   {/* Icon Medallion & Category Badge */}
@@ -364,7 +347,7 @@ const StorySection: React.FC = () => {
                   style={{ borderColor: `${story.accent}20` }}
                 >
                   <div className={`w-full py-2 px-3 rounded-lg flex items-center justify-between text-[11.5px] md:text-xs font-serif font-bold ${story.btnText} ${story.btnBg} ${story.btnHoverBg} transition-all duration-300 shadow-2xs cursor-pointer`}>
-                    <span>{isBn ? 'গল্প পড়ুন' : 'Read Story'}</span>
+                    <span>{t.readStory || (isBn ? 'গল্প পড়ুন' : 'Read Story')}</span>
                     <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center transition-transform group-hover:translate-x-1">
                       <ArrowRight className="w-3 h-3 text-white" />
                     </div>
@@ -376,6 +359,147 @@ const StorySection: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Render Story Reading Modal via React Portal directly into document.body to ensure top-level stacking & no scroll-bleed */}
+      {activeStory && typeof document !== 'undefined' && createPortal(
+        <div 
+          className="fixed inset-0 z-[99999] bg-black/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-5 md:p-8 animate-in fade-in duration-250 select-none"
+          onClick={() => setActiveStory(null)}
+        >
+          <div 
+            className="bg-[#FAF5EC] border-2 border-[#DFB86C] w-full max-w-3xl h-[88vh] sm:h-[85vh] rounded-2xl md:rounded-3xl shadow-[0_25px_70px_rgba(0,0,0,0.6)] flex flex-col relative overflow-hidden select-text"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Top Ornamental Sticky Header Bar */}
+            <div 
+              className="px-5 sm:px-7 py-3.5 sm:py-4 border-b flex items-center justify-between relative shadow-xs shrink-0 z-20"
+              style={{ 
+                backgroundColor: `${activeStory.accent}0D`,
+                borderColor: `${activeStory.accent}25` 
+              }}
+            >
+              <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+                <span 
+                  className="font-serif text-xs sm:text-sm font-bold tracking-[0.25em] uppercase"
+                  style={{ color: activeStory.accent }}
+                >
+                  № {activeStory.num}
+                </span>
+                <span className="text-[#8C7A6B] text-xs">•</span>
+                <span 
+                  className="px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-serif font-semibold border shadow-2xs"
+                  style={{ 
+                    color: activeStory.accent,
+                    backgroundColor: `${activeStory.accent}15`,
+                    borderColor: `${activeStory.accent}35`
+                  }}
+                >
+                  {isBn ? activeStory.tagBn : activeStory.tagEn}
+                </span>
+              </div>
+
+              {/* Action Buttons: Language Switcher + Close */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setLanguage(isBn ? 'en' : 'bn')}
+                  className="px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full text-xs font-serif font-bold border transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs hover:scale-105 active:scale-95 bg-white/80"
+                  style={{
+                    color: activeStory.accent,
+                    borderColor: `${activeStory.accent}40`,
+                  }}
+                  title={isBn ? "Switch language to English" : "বাংলায় পড়ুন"}
+                  aria-label="Toggle language"
+                >
+                  <Globe className="w-3 h-3 text-[#D4A24C]" />
+                  <span className="tracking-wide">{isBn ? 'English' : 'বাংলা'}</span>
+                </button>
+
+                <button
+                  onClick={() => setActiveStory(null)}
+                  className="w-8 h-8 sm:w-9 sm:h-9 rounded-full flex items-center justify-center text-[#5C1117] hover:bg-[#7A1F26]/12 active:scale-95 transition-all cursor-pointer border border-[#7A1F26]/20 bg-white/80 shadow-2xs"
+                  aria-label="Close story"
+                >
+                  <X className="w-4 h-4 sm:w-5 sm:h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Scrollable Story Content Container (Isolated Scroll) */}
+            <div 
+              className="flex-1 p-5 sm:p-8 md:p-10 overflow-y-auto space-y-7 font-serif text-[#3D2C22] overscroll-contain"
+              style={{ scrollbarWidth: 'thin', scrollbarColor: `${activeStory.accent}60 #FAF1E4` }}
+            >
+              {/* Header inside modal */}
+              <div className="space-y-3 pb-6 border-b border-[#DFB86C]/40 text-center sm:text-left">
+                <div className="inline-flex items-center gap-2 text-xs text-[#8C7A6B] uppercase tracking-wider font-semibold">
+                  <span className="w-2 h-2 rounded-full" style={{ backgroundColor: activeStory.accent }} />
+                  <span>{t.storyChronicleHeader || (isBn ? 'কলকাতা পুজো ঐতিহ্য ইতিবৃত্ত' : 'Kolkata Puja Heritage Chronicle')}</span>
+                </div>
+                <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold font-serif text-[#7A1F26] leading-tight tracking-tight">
+                  {isBn ? activeStory.titleBn : activeStory.titleEn}
+                </h1>
+                {activeContent?.subtitle && (
+                  <p className="text-sm sm:text-base md:text-lg italic text-[#6E5545] font-serif leading-snug">
+                    {activeContent.subtitle}
+                  </p>
+                )}
+                <div className="flex items-center gap-3 text-xs text-[#8C7A6B] pt-2 justify-center sm:justify-start">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-3.5 h-3.5 text-[#D4A24C]" /> {t.storyReadTime || (isBn ? '৪ মিনিট পাঠ' : '4 min read')}
+                  </span>
+                  <span>•</span>
+                  <span>{t.storyArchivalBadge || (isBn ? 'প্রামাণ্য ঐতিহাসিক মহাফেজখানা' : 'Authentic Archival Records')}</span>
+                </div>
+              </div>
+
+              {/* Story Sections with Custom Formatting */}
+              {activeContent?.sections.map((section, sIdx) => (
+                <div key={sIdx} className="space-y-4 pt-1">
+                  {section.heading && (
+                    <div className="pt-3 pb-1 border-b border-[#DFB86C]/20">
+                      <h2 className="text-lg sm:text-xl font-bold font-serif text-[#8C242B] flex items-center gap-2.5">
+                        <span className="text-sm text-[#D4A24C] select-none">❂</span>
+                        <span>{section.heading}</span>
+                      </h2>
+                    </div>
+                  )}
+                  {section.text.map((paragraph, pIdx) => renderParagraphContent(paragraph, pIdx))}
+                </div>
+              ))}
+
+              {/* End Flourish */}
+              <div className="pt-8 pb-4 flex flex-col items-center justify-center text-center space-y-2 text-[#7A1F26]/75">
+                <div className="flex items-center gap-3">
+                  <div className="h-px w-16 bg-[#7A1F26]/30" />
+                  <span className="text-sm text-[#D4A24C]">❂ ❁ ❂</span>
+                  <div className="h-px w-16 bg-[#7A1F26]/30" />
+                </div>
+                <p className="text-xs tracking-wider uppercase font-serif text-[#8C7A6B] font-semibold">
+                  {t.storySeriesFooter || (isBn ? 'শিউলি • পুজো ঐতিহ্য আখ্যানমালা' : 'Shiuli • PujoPoth Heritage Story Series')}
+                </p>
+              </div>
+            </div>
+
+            {/* Modal Footer with Scroll Hint & Close Button */}
+            <div className="px-5 sm:px-7 py-3 border-t border-[#DFB86C]/40 bg-[#FAF1E4] flex items-center justify-between shrink-0 z-20">
+              <span className="text-xs text-[#7C6352] italic font-serif hidden sm:inline">
+                {t.storyScrollHint || (isBn ? 'সম্পূর্ণ অধ্যায় পড়তে নিচে স্ক্রোল করুন' : 'Scroll inside to read complete chapter')}
+              </span>
+              <span className="text-xs text-[#7C6352] italic font-serif sm:hidden">
+                {t.storyScrollHintMobile || (isBn ? 'আরও পড়তে উপরে সোয়াইপ করুন' : 'Swipe up to read more')}
+              </span>
+              <button
+                onClick={() => setActiveStory(null)}
+                className="px-5 py-2 rounded-xl bg-[#7A1F26] text-white text-xs sm:text-sm font-serif font-bold hover:bg-[#5C1117] active:scale-95 transition-all cursor-pointer shadow-xs"
+              >
+                {t.storyCloseBtn || (isBn ? 'বন্ধ করুন' : 'Close Article')}
+              </button>
+            </div>
+
+          </div>
+        </div>,
+        document.body
+      )}
 
     </section>
   );

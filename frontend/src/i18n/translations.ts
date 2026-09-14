@@ -66,6 +66,44 @@ export const translations = {
     zoneFacilitiesSubtitle: "Emergency & Facilities",
     zoneFacilitiesDesc: "মেট্রো, হাসপাতাল, এটিএম, পেট্রোল পাম্প ও টয়লেট",
 
+    // Zone Pages (North, Central, South, Bonedi)
+    zoneParikramaTag: "III • পরিক্রমা সূচী",
+    zoneBackBtn: "ফিরে যান",
+    zoneRefreshBtn: "রিফ্রেশ",
+    zonePandalsShown: "মণ্ডপ প্রদর্শিত",
+    zoneCardsView: "তালিকা (Cards)",
+    zoneMapView: "মানচিত্র (Map)",
+    zoneSearchPlaceholder: "মণ্ডপের নাম বা ঠিকানা খুঁজুন...",
+    zoneDetailsBtn: "বিস্তারিত ↓",
+    zoneClickHere: "ক্লিক করুন →",
+    zoneLoadMore: "আরও দেখুন",
+    zoneNoPandalsFound: "কোনো মণ্ডপ খুঁজে পাওয়া যায়নি।",
+    zoneNoPandalsDesc: "অন্য কোনো মণ্ডপ বা ঠিকানা দিয়ে অনুসন্ধান করার চেষ্টা করুন।",
+    zoneClearSearch: "অনুসন্ধান মুছুন",
+    zoneLoadingMap: "মানচিত্র লোড হচ্ছে...",
+    zoneViewOnMap: "মানচিত্রে দেখুন",
+    zoneEateriesNear: "কাছাকাছি রেস্তোরাঁ ও ক্যাফে",
+    zoneSearchingEateries: "নিকটবর্তী খাবারের জায়গা খোঁজা হচ্ছে...",
+    zoneEateriesError: "তথ্য লোড করতে সমস্যা হয়েছে।",
+    zoneNoEateriesFound: "কাছাকাছি কোনো খাবারের জায়গা পাওয়া যায়নি।",
+
+    // North Calcutta Page
+    northPageTitle: "উত্তর কলকাতার মণ্ডপসমূহ ও পরিক্রমা গাইড",
+    northPageSubtitle: "ঐতিহ্যবাহী বাগবাজার থেকে শ্যামবাজার ও শোভাবাজারের শতাব্দীপ্রাচীন দুর্গাপুজো এবং তাদের সঠিক কাস্টম মানচিত্র নির্দেশিকা।",
+
+    // Central Calcutta Page
+    centralPageTitle: "মধ্য কলকাতার মণ্ডপসমূহ ও পরিক্রমা গাইড",
+    centralPageSubtitle: "কলেজ স্কয়ার, মহম্মদ আলী পার্ক ও সন্তোষ মিত্র স্কয়ারের চোখ ধাঁধানো দুর্গাপুজো এবং তাদের সঠিক কাস্টম মানচিত্র নির্দেশিকা।",
+
+    // South Calcutta Page
+    southPageTitle: "দক্ষিণ কলকাতার মণ্ডপসমূহ ও পরিক্রমা গাইড",
+    southPageSubtitle: "গড়িয়াহাট থেকে বালিগঞ্জ, ঢাকুরিয়া ও যাদবপুরের ঐতিহ্যবাহী দুর্গাপুজো এবং তাদের সঠিক কাস্টম মানচিত্র নির্দেশিকা।",
+
+    // Bonedi Calcutta Page
+    bonediPageTitle: "ঐতিহ্যবাহী বনেদি কলকাতার পুজো ও ঠাকুরদালান গাইড",
+    bonediPageSubtitle: "শোভাবাজার রাজবাড়ি, ছাতুবাবু লাহাবাড়ি ও দর্জিপাড়া মিত্রবাড়ি সহ কলকাতার শতাব্দীপ্রাচীন পারিবারিক ঐতিহ্যবাহী বনেদি পুজো নির্দেশিকা।",
+
+
     // Puja Guide Section
     guideSectionTag: "এক নজরে সবকিছু",
     guideSectionTitle: "পূজো গাইডলাইন ও রুট ম্যাপ",
@@ -81,6 +119,14 @@ export const translations = {
     storySectionSubtitle: "কলকাতার বিখ্যাত পুজো এবং শহরের ঐতিহ্যবাহী গল্পগুলো শুনুন ও পড়ুন",
     readStory: "গল্প পড়ুন",
     audioStory: "শ্রুতিনাটক শুনুন",
+    storyChronicleHeader: "কলকাতা পুজো ঐতিহ্য ইতিবৃত্ত",
+    storyReadTime: "৪ মিনিট পাঠ",
+    storyArchivalBadge: "প্রামাণ্য ঐতিহাসিক মহাফেজখানা",
+    storyScrollHint: "সম্পূর্ণ অধ্যায় পড়তে নিচে স্ক্রোল করুন",
+    storyScrollHintMobile: "আরও পড়তে উপরে সোয়াইপ করুন",
+    storyCloseBtn: "বন্ধ করুন",
+    storySeriesFooter: "শিউলি • পুজো ঐতিহ্য আখ্যানমালা",
+    storyLanguageSwitch: "Switch to English",
 
     // Essentials Section
     essentialsTag: "জরুরি আপডেট",
@@ -336,6 +382,44 @@ export const translations = {
     zoneFacilitiesSubtitle: "Emergency & Facilities",
     zoneFacilitiesDesc: "Metro Stations, Hospitals, ATMs, Petrol Pumps & Toilets",
 
+    // Zone Pages (North, Central, South, Bonedi)
+    zoneParikramaTag: "III • TOUR ITINERARY",
+    zoneBackBtn: "Back",
+    zoneRefreshBtn: "Refresh",
+    zonePandalsShown: "pandals displayed",
+    zoneCardsView: "Cards",
+    zoneMapView: "Map",
+    zoneSearchPlaceholder: "Search by pandal name or address...",
+    zoneDetailsBtn: "Details ↓",
+    zoneClickHere: "Click here →",
+    zoneLoadMore: "Load More",
+    zoneNoPandalsFound: "No pandals found.",
+    zoneNoPandalsDesc: "Try searching with a different pandal name or address.",
+    zoneClearSearch: "Clear Search",
+    zoneLoadingMap: "Loading map...",
+    zoneViewOnMap: "View on Map",
+    zoneEateriesNear: "Nearby Eateries & Cafes",
+    zoneSearchingEateries: "Searching nearby eateries...",
+    zoneEateriesError: "Failed to load eateries data.",
+    zoneNoEateriesFound: "No eateries found nearby.",
+
+    // North Calcutta Page
+    northPageTitle: "North Kolkata Pandals & Tour Guide",
+    northPageSubtitle: "Centuries-old heritage Durga Pujas from Bagbazar to Shyambazar & Sovabazar, with verified custom map routes.",
+
+    // Central Calcutta Page
+    centralPageTitle: "Central Kolkata Pandals & Tour Guide",
+    centralPageSubtitle: "Spectacular Durga Pujas from College Square, Mohammad Ali Park & Santosh Mitra Square with verified custom map routes.",
+
+    // South Calcutta Page
+    southPageTitle: "South Kolkata Pandals & Tour Guide",
+    southPageSubtitle: "Heritage Durga Pujas from Gariahat to Ballygunge, Dhakuria & Jadavpur with verified custom map routes.",
+
+    // Bonedi Calcutta Page
+    bonediPageTitle: "Traditional Aristocratic Bonedi Kolkata Pujas & Courtyard Guide",
+    bonediPageSubtitle: "Guide to Kolkata's centuries-old traditional aristocratic family Pujas including Sovabazar Rajbari, Chhatubabu Laha Bari, and Darzipara Mitra Bari.",
+
+
     // Puja Guide Section
     guideSectionTag: "At a Glance",
     guideSectionTitle: "Puja Guidelines & Route Maps",
@@ -351,6 +435,14 @@ export const translations = {
     storySectionSubtitle: "Discover the fascinating history and heritage behind Kolkata's famous Pujas",
     readStory: "Read Story",
     audioStory: "Listen Audio",
+    storyChronicleHeader: "Kolkata Puja Heritage Chronicle",
+    storyReadTime: "4 min read",
+    storyArchivalBadge: "Authentic Archival Records",
+    storyScrollHint: "Scroll inside to read complete chapter",
+    storyScrollHintMobile: "Swipe up to read more",
+    storyCloseBtn: "Close Article",
+    storySeriesFooter: "Shiuli • PujoPoth Heritage Story Series",
+    storyLanguageSwitch: "বাংলায় পড়ুন",
 
     // Essentials Section
     essentialsTag: "Live Updates",

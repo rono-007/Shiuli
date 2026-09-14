@@ -20,6 +20,7 @@ import { useNearbyEateries } from '../hooks/useNearbyEateries';
 import { getNearestMetro } from '../utils/nearbyFacilities';
 import { NearbyFacilitiesGrid } from './NearbyFacilitiesGrid';
 import { secureGetItem, secureSetItem } from '../utils/storage';
+import { useLanguage } from '../context/LanguageContext';
 
 
 interface Pandal {
@@ -36,6 +37,9 @@ interface CentralCalcuttaSectionProps {
 }
 
 const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack }) => {
+  const { t, language } = useLanguage();
+  const isBn = language === 'bn';
+
   const getInitialPandals = () => {
     try {
       const cachedData = secureGetItem<Pandal[]>('pujopath_central_pandals_cache');
@@ -162,7 +166,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
             className="flex items-center gap-1.5 bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-full text-xs font-sans font-bold transition-all cursor-pointer"
           >
             <X className="w-3.5 h-3.5" />
-            <span className="hidden sm:inline">বন্ধ করুন</span>
+            <span className="hidden sm:inline">{isBn ? 'বন্ধ করুন' : 'Close'}</span>
           </button>
         </div>
 
@@ -213,7 +217,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
                 className="flex items-center justify-center gap-2 bg-bengali-red text-white py-3 rounded-xl text-xs font-sans font-bold hover:bg-bengali-red/90 transition-colors shadow-md cursor-pointer"
               >
                 <Map className="w-4 h-4" />
-                <span>মানচিত্রে দেখুন</span>
+                <span>{t.zoneViewOnMap}</span>
               </button>
             </div>
 
@@ -234,14 +238,14 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
                 <span className="bg-bengali-red text-white w-7 h-7 rounded-full flex items-center justify-center">
                   <Utensils className="w-3.5 h-3.5" />
                 </span>
-                কাছাকাছি রেস্তোরাঁ ও ক্যাফে
+                {t.zoneEateriesNear}
               </h4>
               {!eateriesLoading && !eateriesError && eateriesData && (
                 <span className={`px-3 py-1 rounded-full text-[10px] font-mono font-bold ${hasEateries
                     ? 'bg-emerald-500/10 text-emerald-800 border border-emerald-500/20'
                     : 'bg-amber-500/10 text-amber-800 border border-amber-500/20'
                   }`}>
-                  {hasEateries ? `${within1km.length} টি (≤১ km)` : `দূরবর্তী ${relativelyFar.length} টি`}
+                  {hasEateries ? (isBn ? `${within1km.length} টি (≤১ km)` : `${within1km.length} places (≤1 km)`) : (isBn ? `দূরবর্তী ${relativelyFar.length} টি` : `${relativelyFar.length} farther places`)}
                 </span>
               )}
             </div>
@@ -249,12 +253,12 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
             {eateriesLoading ? (
               <div className="flex flex-col items-center justify-center py-20 text-ink/50">
                 <div className="w-8 h-8 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin mb-4"></div>
-                <p className="text-xs font-sans">নিকটবর্তী খাবারের জায়গা খোঁজা হচ্ছে...</p>
+                <p className="text-xs font-sans">{t.zoneSearchingEateries}</p>
               </div>
             ) : eateriesError ? (
               <div className="flex flex-col items-center justify-center py-20 text-bengali-red/70">
                 <AlertCircle className="w-8 h-8 mb-4 opacity-50" />
-                <p className="text-xs font-sans">তথ্য লোড করতে সমস্যা হয়েছে।</p>
+                <p className="text-xs font-sans">{t.zoneEateriesError}</p>
               </div>
             ) : (
               <>
@@ -262,7 +266,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
                 {!hasEateries && eateriesToShow.length > 0 && (
                   <div className="flex items-start gap-2 p-3 mb-4 bg-red-500/5 border border-red-500/15 rounded-xl text-red-900 text-xs font-serif">
                     <AlertCircle className="w-4 h-4 text-bengali-red flex-shrink-0 mt-0.5" />
-                    <span>১ কিলোমিটারের মধ্যে কোনো ক্যাফে বা রেস্তোরাঁ পাওয়া যায়নি। কিছুটা দূরের তালিকা দেখানো হচ্ছে।</span>
+                    <span>{isBn ? '১ কিলোমিটারের মধ্যে কোনো ক্যাফে বা রেস্তোরাঁ পাওয়া যায়নি। কিছুটা দূরের তালিকা দেখানো হচ্ছে।' : 'No eateries found within 1km. Showing nearby places slightly farther away.'}</span>
                   </div>
                 )}
 
@@ -314,7 +318,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
                 ) : (
                   <div className="flex flex-col items-center justify-center py-20 text-ink/50">
                     <Utensils className="w-8 h-8 mb-4 opacity-20" />
-                    <p className="text-xs font-sans">কাছাকাছি কোনো খাবারের জায়গা পাওয়া যায়নি।</p>
+                    <p className="text-xs font-sans">{t.zoneNoEateriesFound}</p>
                   </div>
                 )}
               </>
@@ -340,16 +344,16 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
               className="flex items-center gap-2 group text-xs font-mono uppercase tracking-widest text-bengali-red hover:text-ink transition-colors focus:outline-none cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-              <span>ফিরে যান</span>
+              <span>{t.zoneBackBtn}</span>
             </button>
             
             <div className="space-y-2">
-              <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-ink/40">III • পরিক্রমা সূচী</span>
+              <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-ink/40">{t.zoneParikramaTag}</span>
               <h1 className="text-4xl md:text-5xl font-serif text-ink italic font-normal tracking-wide">
-                মধ্য কলকাতার মণ্ডপসমূহ ও পরিক্রমা গাইড
+                {t.centralPageTitle}
               </h1>
               <p className="text-xs font-sans text-ink/60 max-w-lg leading-relaxed">
-                কলেজ স্কয়ার, মহম্মদ আলী পার্ক ও সন্তোষ মিত্র স্কয়ারের চোখ ধাঁধানো দুর্গাপুজো এবং তাদের সঠিক কাস্টম মানচিত্র নির্দেশিকা।
+                {t.centralPageSubtitle}
               </p>
             </div>
           </div>
@@ -362,7 +366,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
               className="flex items-center gap-2 bg-night text-[#FAF6ED] px-4 py-2 hover:bg-night/90 text-xs font-mono uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-              <span>রিফ্রেশ</span>
+              <span>{t.zoneRefreshBtn}</span>
             </button>
           </div>
         </div>
@@ -374,7 +378,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
           <div className="flex items-center gap-4 text-ink/70">
             <Layers className="w-5 h-5 text-bengali-red/60" />
             <div className="text-left font-serif">
-              <span className="text-xl font-bold text-ink">{filteredPandals.length}</span> / {pandals.length} মণ্ডপ প্রদর্শিত
+              <span className="text-xl font-bold text-ink">{filteredPandals.length}</span> / {pandals.length} {t.zonePandalsShown}
             </div>
           </div>
 
@@ -389,7 +393,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" />
-              <span>তালিকা (Cards)</span>
+              <span>{t.zoneCardsView}</span>
             </button>
             <button
               onClick={() => setViewMode('map')}
@@ -400,7 +404,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
               }`}
             >
               <Map className="w-3.5 h-3.5" />
-              <span>মানচিত্র (Map)</span>
+              <span>{t.zoneMapView}</span>
             </button>
           </div>
 
@@ -413,7 +417,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
                 type="text" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="মণ্ডপের নাম বা ঠিকানা খুঁজুন..."
+                placeholder={t.zoneSearchPlaceholder}
                 className="w-full bg-transparent text-sm font-sans placeholder-ink/40 focus:outline-none"
               />
               {searchQuery && (
@@ -450,7 +454,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
             <Suspense fallback={
               <div className="w-full h-full flex flex-col items-center justify-center min-h-[400px]">
                 <div className="w-8 h-8 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin"></div>
-                <p className="text-xs font-sans text-ink/50 mt-4">মানচিত্র লোড হচ্ছে...</p>
+                <p className="text-xs font-sans text-ink/50 mt-4">{t.zoneLoadingMap}</p>
               </div>
             }>
               <PandalMap
@@ -465,7 +469,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
               title="Go to Top"
             >
               <ArrowUp className="w-4 h-4" />
-              <span>উপরে যান (Top)</span>
+              <span>{isBn ? 'উপরে যান (Top)' : 'Go to Top'}</span>
             </button>
           </div>
         ) : filteredPandals.length > 0 ? (
@@ -515,11 +519,11 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
                           </a>
                           {isExpanded ? (
                             <span className="text-[9px] font-mono text-bengali-red font-bold bg-bengali-red/10 px-2 py-0.5 rounded-full">
-                              বিস্তারিত ↓
+                              {t.zoneDetailsBtn}
                             </span>
                           ) : (
                             <span className="text-[9px] font-mono text-ink/40 group-hover:text-bengali-red transition-colors">
-                              ক্লিক করুন →
+                              {t.zoneClickHere}
                             </span>
                           )}
                         </div>
@@ -569,7 +573,7 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
                   className="bg-[#3D0D11]/5 hover:bg-[#3D0D11]/10 text-[#3D0D11] border border-[#3D0D11]/10 px-6 py-2.5 rounded-full font-serif font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
                 >
                   <RefreshCw className="w-4 h-4" />
-                  আরও দেখুন
+                  {t.zoneLoadMore}
                 </button>
               </div>
             )}
@@ -578,16 +582,16 @@ const CentralCalcuttaSection: React.FC<CentralCalcuttaSectionProps> = ({ onBack 
           /* Empty state */
           <div className="text-center py-24 bg-[#FAF6ED] border border-ink/10 max-w-xl mx-auto rounded-3xl">
             <p className="text-base font-serif italic text-ink/50">
-              কোনো মণ্ডপ খুঁজে পাওয়া যায়নি।
+              {t.zoneNoPandalsFound}
             </p>
             <p className="text-xs font-sans text-ink/40 mt-1">
-              অন্য কোনো মণ্ডপ বা ঠিকানা দিয়ে অনুসন্ধান করার চেষ্টা করুন।
+              {t.zoneNoPandalsDesc}
             </p>
             <button 
               onClick={() => setSearchQuery('')} 
               className="mt-4 text-xs font-sans text-bengali-red underline hover:text-ink transition-colors font-semibold cursor-pointer"
             >
-              অনুসন্ধান মুছুন
+              {t.zoneClearSearch}
             </button>
           </div>
         )}

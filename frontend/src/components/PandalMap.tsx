@@ -94,8 +94,8 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
   const [selectedFacilityTitle, setSelectedFacilityTitle] = useState<string | null>(null);
 
   const { eateries: eateryData, loading: eateriesLoading, error: eateriesError } = useNearbyEateries(
-    activePandal?.pandal.lat, 
-    activePandal?.pandal.lon, 
+    activePandal?.pandal.lat,
+    activePandal?.pandal.lon,
     6
   );
 
@@ -865,8 +865,8 @@ const PandalMap: React.FC<PandalMapProps> = ({ pandals, selectedPandalName, sear
                             key={eIdx}
                             onClick={() => highlightSingleItemOnMap(eatery, '🍽️', '#B45309')}
                             className={`bg-paper p-3 rounded-xl border transition-all cursor-pointer space-y-1.5 group ${isSelectedEatery
-                                ? 'border-amber-600 ring-2 ring-amber-500/30 bg-amber-500/10 shadow-sm'
-                                : 'border-ink/8 hover:border-bengali-red/30'
+                              ? 'border-amber-600 ring-2 ring-amber-500/30 bg-amber-500/10 shadow-sm'
+                              : 'border-ink/8 hover:border-bengali-red/30'
                               }`}
                           >
                             <div className="flex items-start justify-between gap-2">

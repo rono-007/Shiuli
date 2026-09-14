@@ -43,6 +43,18 @@ export class RootErrorBoundary extends Component<Props, State> {
               <p className="text-xs sm:text-sm text-[#FAF6ED]/80 font-sans leading-relaxed">
                 Something went wrong while loading the page. Please tap the button below to reload Shiuli.
               </p>
+              {this.state.error && (
+                <div className="mt-3 p-3 rounded-lg bg-black/40 border border-red-500/30 text-left overflow-auto max-h-40">
+                  <p className="text-red-400 text-xs font-mono break-all">
+                    {this.state.error.name}: {this.state.error.message}
+                  </p>
+                  {this.state.error.stack && (
+                    <pre className="text-[10px] text-gray-400 font-mono mt-1 whitespace-pre-wrap">
+                      {this.state.error.stack.slice(0, 300)}
+                    </pre>
+                  )}
+                </div>
+              )}
             </div>
 
             <button

@@ -50,7 +50,8 @@ interface FacilitiesSectionProps {
 const baseUrl = import.meta.env.VITE_API_URL || 'https://shiuli-backend.onrender.com';
 
 const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
+  const isBn = language === 'bn';
   
   const [data, setData] = useState<Eatery[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -158,7 +159,7 @@ const FacilitiesSection: React.FC<FacilitiesSectionProps> = ({ onBack }) => {
         {/* Page Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-8">
           <span className="text-[10px] font-mono tracking-[0.4em] uppercase text-ink/40">
-            গুগল ম্যাপস যাচাইকৃত • ১,০০০+ টি স্থান
+            {isBn ? 'গুগল ম্যাপস যাচাইকৃত • ১,০০০+ টি স্থান' : 'Google Maps Verified • 1,000+ Locations'}
           </span>
           <h1 className="text-4xl md:text-6xl font-serif text-ink italic font-normal">
             {t.foodTitle}

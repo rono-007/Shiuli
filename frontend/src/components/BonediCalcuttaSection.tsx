@@ -3,6 +3,7 @@ import { ArrowLeft, Search, MapPin, ExternalLink, RefreshCw, Layers, LayoutGrid,
 const PandalMap = React.lazy(() => import('./PandalMap'));
 import { getNearestMetro } from '../utils/nearbyFacilities';
 import { secureGetItem, secureSetItem } from '../utils/storage';
+import { useLanguage } from '../context/LanguageContext';
 
 
 interface Pandal {
@@ -19,6 +20,9 @@ interface BonediCalcuttaSectionProps {
 }
 
 const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack }) => {
+  const { t, language } = useLanguage();
+  const isBn = language === 'bn';
+
   const getInitialPandals = () => {
     try {
       const cachedData = secureGetItem<Pandal[]>('pujopath_bonedi_pandals_cache');
@@ -114,19 +118,19 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
           <div className="space-y-4">
             <button 
               onClick={onBack}
-              className="flex items-center gap-2 group text-xs font-mono uppercase tracking-widest text-bengali-red hover:text-ink transition-colors focus:outline-none"
+              className="flex items-center gap-2 group text-xs font-mono uppercase tracking-widest text-bengali-red hover:text-ink transition-colors focus:outline-none cursor-pointer"
             >
               <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" />
-              <span>ফিরে যান</span>
+              <span>{t.zoneBackBtn}</span>
             </button>
             
             <div className="space-y-2">
-              <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-ink/40">III • পরিক্রমা সূচী</span>
+              <span className="text-[10px] font-mono tracking-[0.35em] uppercase text-ink/40">{t.zoneParikramaTag}</span>
               <h1 className="text-4xl md:text-5xl font-serif text-ink italic font-normal tracking-wide">
-                ঐতিহ্যবাহী বনেদি কলকাতার পুজো ও ঠাকুরদালান গাইড
+                {t.bonediPageTitle}
               </h1>
               <p className="text-xs font-sans text-ink/60 max-w-lg leading-relaxed">
-                শোভাবাজার রাজবাড়ি, ছাতুবাবু লাহাবাড়ি ও দর্জিপাড়া মিত্রবাড়ি সহ কলকাতার শতাব্দীপ্রাচীন পারিবারিক ঐতিহ্যবাহী বনেদি পুজো নির্দেশিকা।
+                {t.bonediPageSubtitle}
               </p>
             </div>
           </div>
@@ -136,10 +140,10 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
             <button 
               onClick={fetchData} 
               disabled={loading}
-              className="flex items-center gap-2 bg-night text-[#FAF6ED] px-4 py-2 hover:bg-night/90 text-xs font-mono uppercase tracking-widest transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 bg-night text-[#FAF6ED] px-4 py-2 hover:bg-night/90 text-xs font-mono uppercase tracking-widest transition-colors disabled:opacity-50 cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
-              <span>রিফ্রেশ</span>
+              <span>{t.zoneRefreshBtn}</span>
             </button>
           </div>
         </div>
@@ -151,7 +155,7 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
           <div className="flex items-center gap-4 text-ink/70">
             <Layers className="w-5 h-5 text-bengali-red/60" />
             <div className="text-left font-serif">
-              <span className="text-xl font-bold text-ink">{filteredPandals.length}</span> / {pandals.length} মণ্ডপ প্রদর্শিত
+              <span className="text-xl font-bold text-ink">{filteredPandals.length}</span> / {pandals.length} {t.zonePandalsShown}
             </div>
           </div>
 
@@ -159,25 +163,25 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
           <div className="flex bg-ink/5 p-1 rounded-full border border-ink/10">
             <button
               onClick={() => { setViewMode('cards'); setSelectedPandalName(null); }}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all cursor-pointer ${
                 viewMode === 'cards'
                   ? 'bg-night text-[#FAF6ED] shadow-sm'
                   : 'text-ink/60 hover:text-ink'
               }`}
             >
               <LayoutGrid className="w-3.5 h-3.5" />
-              <span>তালিকা (Cards)</span>
+              <span>{t.zoneCardsView}</span>
             </button>
             <button
               onClick={() => setViewMode('map')}
-              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all ${
+              className={`flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-sans font-semibold transition-all cursor-pointer ${
                 viewMode === 'map'
                   ? 'bg-night text-[#FAF6ED] shadow-sm'
                   : 'text-ink/60 hover:text-ink'
               }`}
             >
               <Map className="w-3.5 h-3.5" />
-              <span>মানচিত্র (Map)</span>
+              <span>{t.zoneMapView}</span>
             </button>
           </div>
 
@@ -190,13 +194,13 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
                 type="text" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="মণ্ডপের নাম বা ঠিকানা খুঁজুন..."
+                placeholder={t.zoneSearchPlaceholder}
                 className="w-full bg-transparent text-sm font-sans placeholder-ink/40 focus:outline-none"
               />
               {searchQuery && (
                 <button 
-                  onClick={() => setSearchQuery('')}
-                  className="text-ink/40 hover:text-bengali-red text-sm font-bold"
+                  onClick={() => setSearchQuery('')} 
+                  className="text-ink/40 hover:text-bengali-red text-sm font-bold cursor-pointer"
                 >
                   &times;
                 </button>
@@ -229,7 +233,7 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
             <Suspense fallback={
               <div className="w-full h-full flex flex-col items-center justify-center min-h-[400px]">
                 <div className="w-8 h-8 border-4 border-bengali-red/20 border-t-bengali-red rounded-full animate-spin"></div>
-                <p className="text-xs font-sans text-ink/50 mt-4">মানচিত্র লোড হচ্ছে...</p>
+                <p className="text-xs font-sans text-ink/50 mt-4">{t.zoneLoadingMap}</p>
               </div>
             }>
               <PandalMap
@@ -244,7 +248,7 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
               title="Go to Top"
             >
               <ArrowUp className="w-4 h-4" />
-              <span>উপরে যান (Top)</span>
+              <span>{isBn ? 'উপরে যান (Top)' : 'Go to Top'}</span>
             </button>
           </div>
         ) : filteredPandals.length > 0 ? (
@@ -259,7 +263,7 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
                     setViewMode('map');
                   }}
                   className="bg-paper p-1.5 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
-                  title={`${pandal.name}\n${pandal.address}\n(মানচিত্রে রুট দেখতে ক্লিক করুন)`}
+                  title={`${pandal.name}\n${pandal.address}\n(${isBn ? 'মানচিত্রে রুট দেখতে ক্লিক করুন' : 'Click to view route on map'})`}
                 >
                   {/* The Inner Stamp Edge */}
                   <div 
@@ -289,7 +293,7 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
                           className="text-ink/20 hover:text-bengali-red p-0.5 transition-colors"
-                          title="Google Maps এ দেখুন"
+                          title="Google Maps"
                         >
                           <ExternalLink className="w-3.5 h-3.5" />
                         </a>
@@ -327,7 +331,7 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
                   className="bg-[#3D0D11]/5 hover:bg-[#3D0D11]/10 text-[#3D0D11] border border-[#3D0D11]/10 px-6 py-2.5 rounded-full font-serif font-bold text-sm shadow-sm transition-all active:scale-95 flex items-center gap-2 cursor-pointer"
                 >
                   <RefreshCw className="w-4 h-4" />
-                  আরও দেখুন
+                  {t.zoneLoadMore}
                 </button>
               </div>
             )}
@@ -336,16 +340,16 @@ const BonediCalcuttaSection: React.FC<BonediCalcuttaSectionProps> = ({ onBack })
           /* Empty state */
           <div className="text-center py-24 bg-[#FAF6ED] border border-ink/10 max-w-xl mx-auto rounded-3xl">
             <p className="text-base font-serif italic text-ink/50">
-              কোনো মণ্ডপ খুঁজে পাওয়া যায়নি।
+              {t.zoneNoPandalsFound}
             </p>
             <p className="text-xs font-sans text-ink/40 mt-1">
-              অন্য কোনো মণ্ডপ বা ঠিকানা দিয়ে অনুসন্ধান করার চেষ্টা করুন।
+              {t.zoneNoPandalsDesc}
             </p>
             <button 
               onClick={() => setSearchQuery('')} 
-              className="mt-4 text-xs font-sans text-bengali-red underline hover:text-ink transition-colors font-semibold"
+              className="mt-4 text-xs font-sans text-bengali-red underline hover:text-ink transition-colors font-semibold cursor-pointer"
             >
-              অনুসন্ধান মুছুন
+              {t.zoneClearSearch}
             </button>
           </div>
         )}

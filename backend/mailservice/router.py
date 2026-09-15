@@ -13,8 +13,8 @@ ADMIN_TOKEN = os.getenv("ADMIN_TOKEN")
 
 def verify_admin(request: Request):
     token = request.headers.get("x-admin-token", "")
-    admin_token = os.getenv("ADMIN_TOKEN", "PujoAdmin2026")
-    if token != admin_token and token != "PujoAdmin2026":
+    admin_token = os.getenv("ADMIN_TOKEN")
+    if not admin_token or token != admin_token:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 @router.get("/generate-code")

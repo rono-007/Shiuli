@@ -2,6 +2,7 @@ import time
 import urllib.request
 import urllib.error
 import json
+import os
 
 BASE_URL = "http://127.0.0.1:8000"
 
@@ -53,7 +54,7 @@ def benchmark():
 
         for run in range(3):
             url = f"{BASE_URL}{path}"
-            headers = {"x-admin-token": "PujoAdmin2026"}
+            headers = {"x-admin-token": os.getenv("ADMIN_TOKEN", "")}
             data = None
             if body:
                 data = json.dumps(body).encode('utf-8')

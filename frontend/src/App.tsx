@@ -4,13 +4,11 @@ import PujaGuideSection from './components/PujaGuideSection';
 import SectionDivider from './components/SectionDivider';
 import SEOHead, { type SEOViewType } from './components/SEOHead';
 
-import { WifiOff, Mail, MapPin, Send, CheckCircle2, HelpCircle, Bug, Star, LogOut, User, ChevronDown, ChevronUp } from 'lucide-react';
+import { WifiOff, Mail, MapPin, Send, CheckCircle2, HelpCircle, Bug, Star, ChevronDown, ChevronUp } from 'lucide-react';
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { InitialLanguageModal } from './components/InitialLanguageModal';
 import { LanguageToggle } from './components/LanguageToggle';
-import BetaAccessModal from './components/BetaAccessModal';
 import BetaModal from './components/BetaModal';
-import { verifyBetaAccessAsync } from './config/betaKeys';
 
 const NorthCalcuttaSection = lazy(() => import('./components/NorthCalcuttaSection'));
 const SouthCalcuttaSection = lazy(() => import('./components/SouthCalcuttaSection'));
@@ -122,42 +120,22 @@ function NotFoundSection({ onGoHome, onExplorePandals }: { onGoHome: () => void;
   );
 }
 
-// Sequential Modal Controller: Language Choice -> Beta Access Code -> Beta Phase Notice
+// Modal Controller: Language Choice -> Beta Phase Notice
 function ModalSequenceController({ view, showBetaNotice, onNoticeClosed }: { view: ViewType; showBetaNotice: boolean; onNoticeClosed: () => void }) {
   if (view === 'admin') return null;
 
   const { showLanguageModal } = useLanguage();
 
-  const [accessDone, setAccessDone] = useState<boolean>(() => {
-    return localStorage.getItem('shiuli_beta_verified') === 'true';
-  });
-
-  const [betaNoticeDone, setBetaNoticeDone] = useState<boolean>(false);
-
-  // Step 1: Language selection modal first
+  // Language selection modal
   if (showLanguageModal) {
     return <InitialLanguageModal />;
   }
 
-  // Step 2: Beta access verification modal second (Strict Security Gate)
-  if (!accessDone) {
-    return (
-      <BetaAccessModal
-        onVerified={() => {
-          setAccessDone(true);
-        }}
-      />
-    );
-  }
-
-  // Step 3: Beta phase notice modal third (either during first visit or when triggered via floating button)
-  if (!betaNoticeDone || showBetaNotice) {
+  // Beta phase notice modal (when triggered via floating button)
+  if (showBetaNotice) {
     return (
       <BetaModal
-        onClose={() => {
-          setBetaNoticeDone(true);
-          onNoticeClosed();
-        }}
+        onClose={onNoticeClosed}
       />
     );
   }
@@ -399,7 +377,6 @@ function AppContent() {
   const { language } = useLanguage();
   const isBn = language === 'bn';
   const [showBetaNotice, setShowBetaNotice] = useState(false);
-  const [showProfile, setShowProfile] = useState(false);
   const [isTourModalOpen, setIsTourModalOpen] = useState(false);
 
   const [view, setViewState] = useState<ViewType>(() => parseRouteFromUrl());
@@ -442,20 +419,6 @@ function AppContent() {
     const handleOffline = () => setIsOffline(true);
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
-
-    // Auto-verify if user clicks an invite link with ?code=70001&email=user@gmail.com
-    const searchParams = new URLSearchParams(window.location.search);
-    const codeParam = searchParams.get('code') || searchParams.get('beta_code');
-    const emailParam = searchParams.get('email');
-    if (codeParam && emailParam) {
-      verifyBetaAccessAsync(emailParam, codeParam).then(res => {
-        if (res.success) {
-          localStorage.setItem('shiuli_beta_verified', 'true');
-          localStorage.setItem('shiuli_beta_email', emailParam.trim().toLowerCase());
-          localStorage.setItem('shiuli_beta_code', codeParam.trim());
-        }
-      });
-    }
 
     // Initialize window history state if missing
     const initialRoute = parseRouteFromUrl();
@@ -540,45 +503,6 @@ function AppContent() {
             {/* Right: Language Selector & Navigation */}
             <div className="flex items-center gap-3 pointer-events-auto">
               <LanguageToggle />
-
-              {/* Profile Dropdown */}
-              <div className="relative">
-                <button
-                  onClick={() => setShowProfile(!showProfile)}
-                  className="bg-[#8B1E2D]/95 hover:bg-[#A82531] text-[#FAF6ED] border border-[#D4A24C]/40 p-2.5 rounded-full text-xs font-serif font-bold shadow-md transition-all active:scale-95 cursor-pointer flex items-center justify-center"
-                  title={isBn ? 'প্রোফাইল' : 'Profile'}
-                >
-                  <User className="w-4 h-4" />
-                </button>
-
-                {showProfile && (
-                  <div className="absolute right-0 mt-2.5 w-56 rounded-2xl bg-[#FAF6ED] border-2 border-[#D4A24C]/60 p-4 shadow-xl z-50 text-left font-sans text-[#3D0D11]">
-                    <div className="mb-3 pb-2 border-b border-[#D4A24C]/20">
-                      <p className="text-xs text-[#A67C52] uppercase font-bold tracking-wider">{isBn ? 'স্বাগতম' : 'Welcome'}</p>
-                      <p className="text-sm font-bold truncate text-[#3D0D11]">
-                        {localStorage.getItem('shiuli_beta_name') || 'Beta Tester'}
-                      </p>
-                      <p className="text-[10px] text-[#5C4D43] truncate mt-0.5">
-                        {localStorage.getItem('shiuli_beta_email') || ''}
-                      </p>
-                    </div>
-
-                    <button
-                      onClick={() => {
-                        localStorage.removeItem('shiuli_beta_verified');
-                        localStorage.removeItem('shiuli_beta_name');
-                        localStorage.removeItem('shiuli_beta_email');
-                        localStorage.removeItem('shiuli_beta_code');
-                        window.location.reload();
-                      }}
-                      className="w-full text-left py-2 px-3 rounded-xl hover:bg-[#8B1E2D]/10 text-[#8B1E2D] font-bold text-xs flex items-center gap-2 cursor-pointer transition-colors"
-                    >
-                      <LogOut className="w-3.5 h-3.5" />
-                      <span>{isBn ? 'লগআউট' : 'Logout'}</span>
-                    </button>
-                  </div>
-                )}
-              </div>
 
               {view !== 'home' && (
                 <button

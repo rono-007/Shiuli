@@ -125,7 +125,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # ─── Admin Config ───────────────────────
-ADMIN_TOKEN = os.getenv("ADMIN_TOKEN", "PujoAdmin2026")
+ADMIN_TOKEN = os.getenv("ADMIN_TOKEN")
 MAX_LOG_ENTRIES = 500                  # Keep last 500 requests in memory
 
 # ─── Dev Mode Config (F3: bypass only active via explicit env var) ─────────
@@ -271,7 +271,7 @@ async def add_security_headers(request: Request, call_next):
 # ─── Admin Auth Dependency (F9: token rotated via env var) ────────────────
 def verify_admin(request: Request):
     token = request.headers.get("x-admin-token", "")
-    if token != ADMIN_TOKEN and token != "PujoAdmin2026":
+    if not ADMIN_TOKEN or token != ADMIN_TOKEN:
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 # ─── CORS Middleware (F5: explicit origin allowlist + workers.dev support) ──
@@ -281,9 +281,13 @@ ALLOWED_ORIGINS = [
     "https://beta.shiuli.online",
     "https://shiuli.vercel.app",
     "https://shiuli.officialronojoy03.workers.dev",
-    "http://localhost:5173",   # Local dev only
-    "http://localhost:4173",   # Vite preview
 ]
+
+if DEV_MODE:
+    ALLOWED_ORIGINS.extend([
+        "http://localhost:5173",   # Local dev only
+        "http://localhost:4173",   # Vite preview
+    ])
 
 app.add_middleware(
     CORSMiddleware,
@@ -1030,7 +1034,8 @@ def load_pandals_data() -> List[dict]:
         with open(file_path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to read pandal data: {str(e)}")
+        logger.error(f"Failed to read pandal data: {e}")
+        raise HTTPException(status_code=500, detail="Internal server error. Please try again later.")
 
 @lru_cache(maxsize=1)
 def load_south_pandals_data() -> List[dict]:

@@ -315,7 +315,7 @@ async function adminFetchHtml(path: string, token: string, options?: RequestInit
 
 // ─── Login Screen ─────────────────────────────────────────────────────────────
 
-function LoginScreen({ onLogin }: { onLogin: (token: string) => void }) {
+function LoginScreen({ onLogin, onBack }: { onLogin: (token: string) => void; onBack?: () => void }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -400,6 +400,19 @@ function LoginScreen({ onLogin }: { onLogin: (token: string) => void }) {
             {loading ? 'Authenticating...' : 'Sign In as Admin'}
           </button>
         </form>
+
+        {onBack && (
+          <div className="text-center mt-6">
+            <button
+              type="button"
+              onClick={onBack}
+              className="text-xs text-slate-400 hover:text-amber-400 transition-colors inline-flex items-center gap-1.5 cursor-pointer"
+            >
+              <ChevronLeft className="w-3.5 h-3.5" />
+              <span>Return to Shiuli</span>
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -2261,7 +2274,7 @@ export default function AdminPanel({ onBack }: { onBack: () => void }) {
   return (
     <AdminErrorBoundary onReset={() => setToken(null)}>
       {!token ? (
-        <LoginScreen onLogin={handleLogin} />
+        <LoginScreen onLogin={handleLogin} onBack={onBack} />
       ) : (
         <AdminDashboard token={token} onLogout={handleLogout} />
       )}

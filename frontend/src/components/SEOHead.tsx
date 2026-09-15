@@ -237,7 +237,7 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
       return {
         title: 'Admin Panel | Shiuli',
         description: 'Shiuli administrative portal.',
-        canonicalPath: '/admin',
+        canonicalPath: '/?admin',
         ogType: 'website',
         ogImage: `${BASE_URL}/og-logo-shiuli.png`,
         robots: 'noindex, nofollow',

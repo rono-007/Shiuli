@@ -2,8 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: light only;
+  supported-color-schemes: light;
+}
+
 @layer base {
   html {
+    color-scheme: light only;
     scrollbar-width: thin;
     scrollbar-color: rgba(247, 241, 231, 0.15) #101827;
     font-family: 'Noto Serif Bengali', 'Tiro Bangla', serif;
@@ -34,7 +40,9 @@
 
   body {
     font-family: 'Noto Serif Bengali', 'Tiro Bangla', serif;
-    @apply bg-night text-paper antialiased;
+    background-color: #F7F1E7;
+    color: #2A2A2A;
+    -webkit-font-smoothing: antialiased;
   }
 
   h1,
@@ -44,7 +52,7 @@
   h5,
   h6 {
     font-family: 'Noto Serif Bengali', 'Tiro Bangla', serif;
-    @apply text-lamp font-normal;
+    font-weight: normal;
   }
 }
 

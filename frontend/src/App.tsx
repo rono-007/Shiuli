@@ -8,7 +8,6 @@ import { WifiOff, Mail, MapPin, Send, CheckCircle2, HelpCircle, Bug, Star, Chevr
 import { LanguageProvider, useLanguage } from './context/LanguageContext';
 import { InitialLanguageModal } from './components/InitialLanguageModal';
 import { LanguageToggle } from './components/LanguageToggle';
-import BetaModal from './components/BetaModal';
 
 const NorthCalcuttaSection = lazy(() => import('./components/NorthCalcuttaSection'));
 const SouthCalcuttaSection = lazy(() => import('./components/SouthCalcuttaSection'));
@@ -47,7 +46,8 @@ export function parseRouteFromUrl(): ViewType {
   const pathname = window.location.pathname.toLowerCase().replace(/\/+$/, '') || '/';
   const searchParams = new URLSearchParams(window.location.search);
 
-  if (searchParams.has('admin') || pathname === '/admin') return 'admin';
+  // Admin view is strictly accessible via /?admin or ?view=admin, not clean /admin path
+  if (searchParams.has('admin') || searchParams.get('view') === 'admin') return 'admin';
 
   // 1. Query parameter fallback (?view=...)
   const queryView = searchParams.get('view') as ViewType;
@@ -65,7 +65,7 @@ export function parseRouteFromUrl(): ViewType {
   if (pathname === '/route-planner' || pathname === '/metro') return 'route-planner';
   if (pathname === '/medical' || pathname === '/emergency') return 'medical';
 
-  // Return 404 for unknown pathnames
+  // Return 404 for unknown pathnames (including /admin, which will now show 404)
   return '404';
 }
 
@@ -80,7 +80,7 @@ export function getViewUrl(v: ViewType): string {
     case 'facilities': return '/facilities';
     case 'route-planner': return '/route-planner';
     case 'medical': return '/medical';
-    case 'admin': return '/admin';
+    case 'admin': return '/?admin';
     default: return '/';
   }
 }
@@ -120,8 +120,8 @@ function NotFoundSection({ onGoHome, onExplorePandals }: { onGoHome: () => void;
   );
 }
 
-// Modal Controller: Language Choice -> Beta Phase Notice
-function ModalSequenceController({ view, showBetaNotice, onNoticeClosed }: { view: ViewType; showBetaNotice: boolean; onNoticeClosed: () => void }) {
+// Modal Controller: Language Choice
+function ModalSequenceController({ view }: { view: ViewType }) {
   if (view === 'admin') return null;
 
   const { showLanguageModal } = useLanguage();
@@ -129,15 +129,6 @@ function ModalSequenceController({ view, showBetaNotice, onNoticeClosed }: { vie
   // Language selection modal
   if (showLanguageModal) {
     return <InitialLanguageModal />;
-  }
-
-  // Beta phase notice modal (when triggered via floating button)
-  if (showBetaNotice) {
-    return (
-      <BetaModal
-        onClose={onNoticeClosed}
-      />
-    );
   }
 
   return null;
@@ -376,7 +367,6 @@ function FooterFeedbackCard() {
 function AppContent() {
   const { language } = useLanguage();
   const isBn = language === 'bn';
-  const [showBetaNotice, setShowBetaNotice] = useState(false);
   const [isTourModalOpen, setIsTourModalOpen] = useState(false);
 
   const [view, setViewState] = useState<ViewType>(() => parseRouteFromUrl());
@@ -451,23 +441,7 @@ function AppContent() {
 
       <ModalSequenceController
         view={view}
-        showBetaNotice={showBetaNotice}
-        onNoticeClosed={() => setShowBetaNotice(false)}
       />
-
-      {/* Sticky Floating Beta Badge */}
-      <button
-        onClick={() => {
-          setShowBetaNotice(true);
-        }}
-        className="fixed bottom-4 right-4 z-40 bg-[#7A1F26]/95 hover:bg-[#8B1E2D] text-[#FAF6ED] border border-[#D4A24C]/40 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold shadow-xl flex items-center gap-2 backdrop-blur-md select-none pointer-events-auto cursor-pointer transition-all active:scale-95"
-      >
-        <span className="flex h-2 w-2 relative">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4A24C] opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-[#D4A24C]"></span>
-        </span>
-        <span>BETA VERSION</span>
-      </button>
 
       {isOffline && (
         <div className="bg-[#8B1E2D] text-[#FAF6ED] text-xs font-serif font-bold py-2.5 px-4 text-center sticky top-0 z-50 flex items-center justify-center gap-2 shadow-md border-b border-[#E5B05C]/30">

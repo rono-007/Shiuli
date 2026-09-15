@@ -260,12 +260,8 @@ export function getMetadataForView(view: SEOViewType, language: 'bn' | 'en' = 'b
     case 'home':
     default:
       return {
-        title: isBn 
-          ? 'শিউলি — কলকাতার দুর্গাপুজো গাইড | মণ্ডপ, খাওয়া-দাওয়া, ঐতিহ্য ও যাতায়াত' 
-          : 'Shiuli — Kolkata Durga Puja Guide | Pandals, Food, Heritage & More',
-        description: isBn
-          ? 'শিউলি-র সাথে আবিষ্কার করুন কলকাতার দুর্গাপুজো — উত্তর ও দক্ষিণ কলকাতার মণ্ডপ পরিক্রমা, বনেদি বাড়ির পুজো, সেরা খাবারের ঠিকানা, মেট্রো রুট এবং সাংস্কৃতিক ইতিহাস।'
-          : 'Explore Kolkata Durga Puja with Shiuli — discover pandals, food, heritage, history, neighbourhoods, transport and everything you need for Puja season.',
+        title: 'Shiuli — Kolkata Durga Puja Guide 2026',
+        description: 'Your guide to Kolkata Durga Puja 2026 — discover pandals, food, metro routes, facilities, stories, history and more with Shiuli.',
         canonicalPath: '/',
         ogType: 'website',
         ogImage: `${BASE_URL}/og-her-banner.jpg`,

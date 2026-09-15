@@ -1,5 +1,5 @@
-const CACHE_NAME = 'pujopoth-pwa-v13';
-const API_CACHE_NAME = 'pujopoth-api-v13';
+const CACHE_NAME = 'pujopoth-pwa-v14';
+const API_CACHE_NAME = 'pujopoth-api-v14';
 
 const STATIC_ASSETS = [
   '/',

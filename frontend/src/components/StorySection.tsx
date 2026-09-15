@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { 
   ChevronLeft, 
   ChevronRight, 
-  ArrowRight, 
+  ArrowRight,
   X,
   BookOpen,
   Clock,
@@ -193,16 +193,6 @@ const StorySection: React.FC = () => {
             <span className="text-[#7A1F26] text-[10px]">✦</span>
             <div className="h-px w-10 sm:w-12 bg-[#7A1F26]" />
           </div>
-        </div>
-
-        <div className="mt-4 md:mt-0 md:absolute md:right-8 md:top-1/2 md:-translate-y-1/2">
-          <button
-            onClick={() => showDevToast(t.storySectionTitle)}
-            className="px-4.5 py-2 rounded-full border border-[#A0353A]/40 text-[#7A1F26] font-serif text-xs sm:text-sm hover:bg-[#A0353A]/5 transition-all flex items-center gap-2 group cursor-pointer shadow-2xs"
-          >
-            <span>{isBn ? 'ঐতিহ্য সংকলন' : 'Puja Heritage Archive'}</span>
-            <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-          </button>
         </div>
 
       </div>
